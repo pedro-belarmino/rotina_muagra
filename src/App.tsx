@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Login from './views/Login'
+import CreateTask from './views/CreateTask'
 
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path='' element={<Login />} />
+        <Route path='/criar-tarefa' element={<CreateTask />} />
       </Routes>
     </BrowserRouter>
   )
