@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import type { User } from "firebase/auth";
-import { auth } from "../firebase/config";
+import type { User } from "firebase/auth"
+import { auth, db } from "../firebase/config";
+import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
 
 type AuthContextType = {
     user: User | null;
@@ -18,8 +19,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                // Referência ao documento do usuário
+                const userRef = doc(db, "users", currentUser.uid);
+                const snapshot = await getDoc(userRef);
+
+                // Se ainda não existe, cria
+                if (!snapshot.exists()) {
+                    await setDoc(userRef, {
+                        uid: currentUser.uid,
+                        displayName: currentUser.displayName,
+                        email: currentUser.email,
+                        photoURL: currentUser.photoURL,
+                        createdAt: serverTimestamp(),
+                    });
+                }
+
+                setUser(currentUser);
+            } else {
+                setUser(null);
+            }
+
             setLoading(false);
         });
 

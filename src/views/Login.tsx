@@ -1,6 +1,12 @@
 import { useAuth } from "../context/AuthContext";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
+import GoogleIcon from '@mui/icons-material/Google';
+import {
+    Box, Button, Typography,
+    //  Avatar,
+    Card, CardContent, CardActions
+} from "@mui/material";
 
 function App() {
     const { user, loading } = useAuth();
@@ -17,16 +23,93 @@ function App() {
     if (loading) return <p>Carregando...</p>;
 
     return (
-        <div>
-            {user ? (
-                <>
-                    <p>Bem-vindo, {user.displayName}</p>
-                    <button onClick={handleLogout}>Sair</button>
-                </>
-            ) : (
-                <button onClick={handleLogin}>Login com Google</button>
-            )}
-        </div>
+        <Card
+            sx={{
+                maxWidth: 400,
+                mx: "auto",
+                mt: 4,
+                p: 2,
+                borderRadius: 3,
+                boxShadow: 6,
+                textAlign: "center",
+            }}
+        >
+            <CardContent>
+                {user ? (
+                    <>
+                        <Typography variant="h5" fontWeight={'bold'} fontFamily={"Segoe UI Emoji"}>MUAGRA ROTINA</Typography>
+                        <Box
+                            display="flex"
+                            flexDirection={{ xs: "column", sm: "row" }}
+                            alignItems="center"
+                            justifyContent="center"
+                            sx={{ gap: 2 }}
+                        >
+                            <Box>
+                                <img
+                                    src="/logo_semfundo.png"
+                                    alt="Logo"
+                                    style={{ width: 80, maxWidth: "100%" }}
+                                />
+                                <Typography
+                                    variant="h6"
+                                    sx={{ mt: 1 }}
+                                >
+                                    Bem-vindo, {user.displayName}
+                                </Typography>
+                            </Box>
+
+                            {/* <Avatar
+                                src={user.photoURL || ""}
+                                alt={user.displayName || ''}
+                                sx={{ width: 64, height: 64 }}
+                            /> */}
+                        </Box>
+                    </>
+                ) : (
+                    <Typography
+                        variant="h6"
+                        sx={{ mb: 2 }}
+                    >
+                        Acesse sua conta
+                    </Typography>
+                )}
+            </CardContent>
+
+            <CardActions
+                sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    gap: 2,
+                    justifyContent: "center",
+                }}
+            >
+                {user ? (
+                    <>
+                        <Button variant="contained" color="warning" fullWidth>
+                            Entrar
+                        </Button>
+                        <Button
+                            variant="outlined"
+                            color="error"
+                            onClick={handleLogout}
+                            fullWidth
+                        >
+                            Sair
+                        </Button>
+                    </>
+                ) : (
+                    <Button
+                        variant="contained"
+                        onClick={handleLogin}
+                        startIcon={<GoogleIcon />}
+                        fullWidth
+                    >
+                        Login com Google
+                    </Button>
+                )}
+            </CardActions>
+        </Card>
     );
 }
 
