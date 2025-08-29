@@ -5,7 +5,8 @@ import CreateTask from './views/CreateTask'
 
 import { ThemeProvider, createTheme, } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
-import DailyTasks from './components/DailyTasks';
+import Home from './views/Home';
+import Template from './components/shared/Template';
 
 function App() {
 
@@ -21,9 +22,11 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path='' element={<Login />} />
+          <Route path='' element={<Template />}>
             <Route path='/criar-tarefa' element={<CreateTask />} />
-            <Route path='/home' element={<DailyTasks />} />
+            <Route path='/home' element={<Home />} />
+          </Route>
+          <Route path='/' element={<Login />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

@@ -7,4 +7,5 @@ export type Task = {
     totalGoal: number;
     createdAt: any; // Timestamp do Firestore
     schedule: string; // "HH:mm"
+    dailyTask: boolean;
 };

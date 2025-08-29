@@ -7,8 +7,11 @@ import {
     //  Avatar,
     Card, CardContent, CardActions
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 function App() {
+
+    const navigate = useNavigate()
     const { user, loading } = useAuth();
 
     const handleLogin = async () => {
@@ -34,10 +37,16 @@ function App() {
                 textAlign: "center",
             }}
         >
+            <Typography variant="h5" fontWeight={'bold'} fontFamily={"Segoe UI Emoji"}>MUAGRA ROTINA</Typography>
+            <br />
+            <img
+                src="/logo_semfundo.png"
+                alt="Logo"
+                style={{ width: 80, maxWidth: "100%" }}
+            />
             <CardContent>
                 {user ? (
                     <>
-                        <Typography variant="h5" fontWeight={'bold'} fontFamily={"Segoe UI Emoji"}>MUAGRA ROTINA</Typography>
                         <Box
                             display="flex"
                             flexDirection={{ xs: "column", sm: "row" }}
@@ -46,11 +55,6 @@ function App() {
                             sx={{ gap: 2 }}
                         >
                             <Box>
-                                <img
-                                    src="/logo_semfundo.png"
-                                    alt="Logo"
-                                    style={{ width: 80, maxWidth: "100%" }}
-                                />
                                 <Typography
                                     variant="h6"
                                     sx={{ mt: 1 }}
@@ -86,7 +90,7 @@ function App() {
             >
                 {user ? (
                     <>
-                        <Button variant="contained" color="warning" fullWidth>
+                        <Button variant="contained" color="warning" fullWidth onClick={() => navigate('/home')}>
                             Entrar
                         </Button>
                         <Button
