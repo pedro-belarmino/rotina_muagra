@@ -2,7 +2,7 @@ import {
     BottomNavigation, BottomNavigationAction, Box,
     // Typography
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HomeIcon from '@mui/icons-material/Home';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import TimelineIcon from '@mui/icons-material/Timeline';
@@ -15,6 +15,16 @@ export default function NavBar() {
     // const { user } = useAuth();
     const navigate = useNavigate()
     const [value, setValue] = useState(0);
+
+    useEffect(() => {
+        if (location.pathname === "/home") {
+            setValue(0);
+        } else if (location.pathname === "/criar-tarefa") {
+            setValue(1);
+        } else if (location.pathname === "/historico") {
+            setValue(2);
+        }
+    }, [location.pathname]);
 
     return (
         <Box sx={{ width: 'full', }}>

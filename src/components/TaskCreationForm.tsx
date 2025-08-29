@@ -14,9 +14,16 @@ import {
 import { useAuth } from "../context/AuthContext";
 import { addTask } from "../service/taskService";
 import type { Task } from "../types/Task";
+import SharedSnackbar, { type SeverityType } from "./shared/SharedSnackbar";
 
 export default function TaskCreationForm() {
     const { user } = useAuth();
+
+    const [snackbar, setSnackbar] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('')
+    const [severity, setSeverity] = useState<SeverityType>('info')
+
+
 
     const [task, setTask] = useState<Task>({
         name: "",
@@ -40,13 +47,18 @@ export default function TaskCreationForm() {
         }
 
         if (!task.name || !task.measure || !task.dailyGoal || !task.schedule) {
-            alert("Preencha todos os campos obrigatórios (*)");
+            setSnackbar(true)
+            setSnackbarMessage('Preencha todos os campos obrigatórios')
+            setSeverity('error')
             return;
         }
 
         try {
             await addTask(user.uid, task);
-            alert("Tarefa salva com sucesso!");
+            setSnackbar(true)
+            setSnackbarMessage('Tafera Criada com Sucesso')
+            setSeverity('success')
+
 
             // resetar formulário
             setTask({
@@ -61,7 +73,9 @@ export default function TaskCreationForm() {
             });
         } catch (error) {
             console.error("Erro ao salvar tarefa:", error);
-            alert("Erro ao salvar tarefa!");
+            setSnackbar(true)
+            setSnackbarMessage('Tivemos um erro inesperado, contate o suporte')
+            setSeverity('error')
         }
     };
 
@@ -185,6 +199,14 @@ export default function TaskCreationForm() {
                     </Button>
                 </Box>
             </Paper>
+
+            <SharedSnackbar
+                open={snackbar}
+                message={snackbarMessage}
+                severity={severity}
+                variant="filled"
+                onClose={() => setSnackbar(false)}
+            />
         </Container>
     );
 }

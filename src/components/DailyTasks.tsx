@@ -29,7 +29,16 @@ function DailyTasks() {
             if (!user) return;
 
             const userTasks = await getTasks(user.uid);
+
+            // ordenar pelo horário (ex: "08:30", "14:00")
+            userTasks.sort((a, b) => {
+                const [ah, am] = a.schedule.split(":").map(Number);
+                const [bh, bm] = b.schedule.split(":").map(Number);
+                return ah * 60 + am - (bh * 60 + bm);
+            });
+
             setTasks(userTasks);
+
 
             // também buscar se já foi concluída hoje
             const today = new Date().toISOString().split("T")[0];
