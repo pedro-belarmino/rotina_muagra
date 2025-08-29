@@ -83,7 +83,7 @@ export default function TaskCreationForm() {
                     autoComplete="off"
                 >
                     <TextField
-                        label="Nome *"
+                        label="Nome"
                         value={task.name}
                         onChange={(e) => handleChange("name", e.target.value)}
                         fullWidth
@@ -111,8 +111,21 @@ export default function TaskCreationForm() {
                     </Select>
 
                     <TextField
-                        label="Meta Diária *"
+                        label="Meta Diária"
                         type="number"
+                        InputProps={{
+                            inputProps: { min: 0 },
+                            sx: {
+                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button":
+                                {
+                                    WebkitAppearance: "none",
+                                    margin: 0,
+                                },
+                                "& input[type=number]": {
+                                    MozAppearance: "textfield", // Firefox
+                                },
+                            },
+                        }}
                         value={task.dailyGoal}
                         onChange={(e) => handleChange("dailyGoal", Number(e.target.value))}
                         fullWidth
@@ -122,13 +135,26 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Meta Geral"
                         type="number"
+                        InputProps={{
+                            inputProps: { min: 0 },
+                            sx: {
+                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button":
+                                {
+                                    WebkitAppearance: "none",
+                                    margin: 0,
+                                },
+                                "& input[type=number]": {
+                                    MozAppearance: "textfield", // Firefox
+                                },
+                            },
+                        }}
                         value={task.totalGoal}
                         onChange={(e) => handleChange("totalGoal", Number(e.target.value))}
                         fullWidth
                     />
 
                     <TextField
-                        label="Horário *"
+                        label="Horário"
                         type="time"
                         value={task.schedule}
                         onChange={(e) => handleChange("schedule", e.target.value)}
@@ -140,6 +166,7 @@ export default function TaskCreationForm() {
                     <FormControlLabel
                         control={
                             <Switch
+                                color="warning"
                                 checked={task.dailyTask}
                                 onChange={(e) => handleChange("dailyTask", e.target.checked)}
                             />
@@ -149,7 +176,7 @@ export default function TaskCreationForm() {
 
                     <Button
                         variant="contained"
-                        color="primary"
+                        color="warning"
                         onClick={handleSave}
                         fullWidth
                         sx={{ mt: 2 }}

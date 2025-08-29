@@ -1,7 +1,10 @@
+import { Box, } from "@mui/material";
 import DailyTasks from "../components/DailyTasks";
 
 export default function Home() {
     return (
-        <DailyTasks />
+        <Box>
+            <DailyTasks />
+        </Box>
     )
 }

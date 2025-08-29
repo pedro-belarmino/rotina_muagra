@@ -4,14 +4,28 @@ import { getTasks } from "../service/taskService";
 import { addTaskLog, deleteTaskLog, getTaskLogByDate } from "../service/taskLogService";
 import type { Task } from "../types/Task";
 
+import {
+    Container,
+    Typography,
+    List,
+    ListItem,
+    ListItemText,
+    Button,
+    Card,
+    CardContent,
+} from "@mui/material";
+import LoadingScreen from "../views/LoadingScreen";
+
 function DailyTasks() {
     const { user } = useAuth();
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [loading, setLoading] = useState(false)
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
     // taskId -> logId se concluída, null se não
 
     useEffect(() => {
         const fetchTasks = async () => {
+            setLoading(true)
             if (!user) return;
 
             const userTasks = await getTasks(user.uid);
@@ -27,6 +41,7 @@ function DailyTasks() {
             }
 
             setDoneToday(status);
+            setLoading(false)
         };
 
         fetchTasks();
@@ -35,7 +50,6 @@ function DailyTasks() {
     const handleToggleTask = async (task: Task) => {
         if (!user || !task.id) return;
 
-        // const today = new Date().toISOString().split("T")[0];
         const logId = doneToday[task.id];
 
         if (logId) {
@@ -43,8 +57,7 @@ function DailyTasks() {
             await deleteTaskLog(user.uid, logId);
             setDoneToday((prev) => ({ ...prev, [task.id!]: null }));
         } else {
-            // abrir modal de confirmação (por enquanto vamos direto)
-            const value = task.dailyGoal; // aqui depois entra o valor editado no modal
+            const value = task.dailyGoal; // depois entra modal
             const newLogId = await addTaskLog(user.uid, {
                 taskId: task.id!,
                 doneAt: new Date(),
@@ -54,32 +67,64 @@ function DailyTasks() {
         }
     };
 
-    return (
-        <div style={{ padding: 20 }}>
-            <h1>Minhas Tarefas do Dia</h1>
 
-            <ul>
+    if (loading) return <LoadingScreen />
+    return (
+        <Container maxWidth="sm" sx={{ py: 3 }}>
+            <Typography
+                variant="h5"
+                align="center"
+                gutterBottom
+                fontWeight="bold"
+            >
+                Minhas Tarefas do Dia
+            </Typography>
+
+            <List>
                 {tasks.map((task) => (
-                    <li key={task.id} style={{ marginBottom: 10 }}>
-                        <b>{task.schedule} - {task.name}</b> - {task.dailyGoal} {task.measure}/dia
-                        <button
-                            onClick={() => handleToggleTask(task)}
-                            style={{
-                                marginLeft: 10,
-                                backgroundColor: doneToday[task.id!] ? "green" : "gray",
-                                color: "white",
-                                border: "none",
-                                padding: "5px 10px",
-                                borderRadius: "6px",
-                                cursor: "pointer"
-                            }}
-                        >
-                            {doneToday[task.id!] ? "Concluída" : "Marcar"}
-                        </button>
-                    </li>
+                    <Card
+                        key={task.id}
+                        sx={{
+                            mb: 2,
+                            borderRadius: 3,
+                            boxShadow: 2,
+                        }}
+                    >
+                        <CardContent>
+                            <ListItem
+                                disableGutters
+                                secondaryAction={
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        color={doneToday[task.id!] ? "success" : "primary"}
+                                        onClick={() => handleToggleTask(task)}
+                                    >
+                                        {doneToday[task.id!] ? "Concluída" : "Marcar"}
+                                    </Button>
+                                }
+                            >
+                                <ListItemText
+                                    primary={
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            {task.schedule} - {task.name}
+                                        </Typography>
+                                    }
+                                    secondary={
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                        >
+                                            {task.dailyGoal} {task.measure}/dia
+                                        </Typography>
+                                    }
+                                />
+                            </ListItem>
+                        </CardContent>
+                    </Card>
                 ))}
-            </ul>
-        </div>
+            </List>
+        </Container>
     );
 }
 
