@@ -7,30 +7,36 @@ import { ThemeProvider, createTheme, } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import Home from './views/Home';
 import Template from './components/shared/Template';
+import History from './views/History';
+import PrivateWrapper from './routes/PriavateWrapper';
 
 function App() {
 
-  const theme = createTheme({
-    colorSchemes: {
-      dark: true,
-    },
-  });
+    const theme = createTheme({
+        colorSchemes: {
+            dark: true,
+        },
+    });
 
 
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path='' element={<Template />}>
-            <Route path='/criar-tarefa' element={<CreateTask />} />
-            <Route path='/home' element={<Home />} />
-          </Route>
-          <Route path='/' element={<Login />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
-  )
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <BrowserRouter>
+                <Routes>
+                    <Route path='/' element={<Login />} />
+
+                    <Route element={<PrivateWrapper />}>
+                        <Route element={<Template />}>
+                            <Route path='/criar-tarefa' element={<CreateTask />} />
+                            <Route path='/home' element={<Home />} />
+                            <Route path='/historico' element={<History />} />
+                        </Route>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </ThemeProvider>
+    )
 }
 
 export default App

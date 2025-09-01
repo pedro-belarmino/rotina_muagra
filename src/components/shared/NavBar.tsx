@@ -28,10 +28,6 @@ export default function NavBar() {
 
     return (
         <Box sx={{ width: 'full', }}>
-            <Box sx={{ width: 'full', display: 'flex', placeContent: 'end', pr: 2, placeItems: 'center' }}>
-                {/* <Typography sx={{ p: 2 }}>{user?.displayName}</Typography> */}
-                <div><LogoutRoundedIcon /></div>
-            </Box>
             <BottomNavigation
 
                 showLabels
@@ -43,6 +39,7 @@ export default function NavBar() {
                 <BottomNavigationAction label="Home" icon={<HomeIcon />} onClick={() => navigate('/home')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Criar" icon={<AddBoxIcon />} onClick={() => navigate('/criar-tarefa')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Historico" icon={<TimelineIcon />} onClick={() => navigate('/historico')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
+                <BottomNavigationAction label="Sair" icon={<LogoutRoundedIcon />} onClick={() => navigate('/')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
             </BottomNavigation>
         </Box>
     )

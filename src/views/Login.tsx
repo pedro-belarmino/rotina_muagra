@@ -99,7 +99,7 @@ function App() {
                             onClick={handleLogout}
                             fullWidth
                         >
-                            Sair
+                            Sair da conta
                         </Button>
                     </>
                 ) : (

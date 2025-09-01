@@ -65,3 +65,13 @@ export const getTaskLogByDate = async (
 
     return null;
 };
+
+export async function getAllTaskLogs(userId: string): Promise<TaskLog[]> {
+    const q = query(collection(db, "taskLogs"), where("userId", "==", userId));
+    const snap = await getDocs(q);
+
+    return snap.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as TaskLog),
+    }));
+}
