@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { getTasks } from "../service/taskService";
 import { addTaskLog, deleteTaskLog, getTaskLogByDate } from "../service/taskLogService";
 import type { Task } from "../types/Task";
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import {
     Container,
     Typography,
@@ -69,6 +69,7 @@ function DailyTasks() {
             const value = task.dailyGoal; // depois entra modal
             const newLogId = await addTaskLog(user.uid, {
                 taskId: task.id!,
+                userId: user.uid,
                 doneAt: new Date(),
                 value,
             });
@@ -78,6 +79,16 @@ function DailyTasks() {
 
 
     if (loading) return <LoadingScreen />
+    if (tasks.length == 0) {
+        return (
+            <Typography
+                fontSize={22}
+                sx={{ justifyContent: 'center', display: 'flex', p: 1 }
+                }>
+                Crie uma Tarefa para visualizá-la aqui
+            </Typography >
+        )
+    }
     return (
         <Container maxWidth="sm" sx={{ py: 3 }}>
             <Typography
@@ -103,14 +114,17 @@ function DailyTasks() {
                             <ListItem
                                 disableGutters
                                 secondaryAction={
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        color={doneToday[task.id!] ? "success" : "primary"}
-                                        onClick={() => handleToggleTask(task)}
-                                    >
-                                        {doneToday[task.id!] ? "Concluída" : "Marcar"}
-                                    </Button>
+                                    <>
+                                        <Button
+                                            variant="contained"
+                                            size="small"
+                                            color={doneToday[task.id!] ? "success" : "primary"}
+                                            onClick={() => handleToggleTask(task)}
+                                        >
+                                            {doneToday[task.id!] ? "Concluída" : "Marcar"}
+                                        </Button>
+                                        <Button color="error"><DeleteOutlineIcon /></Button>
+                                    </>
                                 }
                             >
                                 <ListItemText

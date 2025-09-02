@@ -10,13 +10,8 @@ import {
     doc,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
+import type { TaskLog } from "../types/TaskLog";
 
-export interface TaskLog {
-    id?: string;
-    taskId: string;
-    doneAt: Date; // no código a gente converte para Firestore Timestamp
-    value: number;
-}
 
 // Adicionar um log
 export const addTaskLog = async (uid: string, log: TaskLog) => {
@@ -55,6 +50,7 @@ export const getTaskLogByDate = async (
 
         if (logKey === dateKey) {
             return {
+                userId: uid,
                 id: docSnap.id,
                 taskId: data.taskId,
                 doneAt: logDate,
