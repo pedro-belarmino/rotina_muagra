@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getTasks } from "../service/taskService";
+import { deleteTask, getTasks } from "../service/taskService";
 import { addTaskLog, deleteTaskLog, getTaskLogByDate } from "../service/taskLogService";
 import type { Task } from "../types/Task";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -23,36 +23,36 @@ function DailyTasks() {
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
     // taskId -> logId se concluída, null se não
 
+    const fetchTasks = async () => {
+        setLoading(true)
+        if (!user) return;
+
+        const userTasks = await getTasks(user.uid);
+
+        // ordenar pelo horário (ex: "08:30", "14:00")
+        userTasks.sort((a, b) => {
+            const [ah, am] = a.schedule.split(":").map(Number);
+            const [bh, bm] = b.schedule.split(":").map(Number);
+            return ah * 60 + am - (bh * 60 + bm);
+        });
+
+        setTasks(userTasks);
+
+
+        // também buscar se já foi concluída hoje
+        const today = new Date().toISOString().split("T")[0];
+        const status: Record<string, string | null> = {};
+
+        for (const task of userTasks) {
+            const log = await getTaskLogByDate(user.uid, task.id!, today);
+            status[task.id!] = log ? log.id! : null;
+        }
+
+        setDoneToday(status);
+        setLoading(false)
+    };
+
     useEffect(() => {
-        const fetchTasks = async () => {
-            setLoading(true)
-            if (!user) return;
-
-            const userTasks = await getTasks(user.uid);
-
-            // ordenar pelo horário (ex: "08:30", "14:00")
-            userTasks.sort((a, b) => {
-                const [ah, am] = a.schedule.split(":").map(Number);
-                const [bh, bm] = b.schedule.split(":").map(Number);
-                return ah * 60 + am - (bh * 60 + bm);
-            });
-
-            setTasks(userTasks);
-
-
-            // também buscar se já foi concluída hoje
-            const today = new Date().toISOString().split("T")[0];
-            const status: Record<string, string | null> = {};
-
-            for (const task of userTasks) {
-                const log = await getTaskLogByDate(user.uid, task.id!, today);
-                status[task.id!] = log ? log.id! : null;
-            }
-
-            setDoneToday(status);
-            setLoading(false)
-        };
-
         fetchTasks();
     }, [user]);
 
@@ -76,6 +76,12 @@ function DailyTasks() {
             setDoneToday((prev) => ({ ...prev, [task.id!]: newLogId }));
         }
     };
+
+
+    function removeTaskFromTaskList(userId: string, taskId: string) {
+        deleteTask(userId, taskId);
+        fetchTasks()
+    }
 
 
     if (loading) return <LoadingScreen />
@@ -123,7 +129,12 @@ function DailyTasks() {
                                         >
                                             {doneToday[task.id!] ? "Concluída" : "Marcar"}
                                         </Button>
-                                        <Button color="error"><DeleteOutlineIcon /></Button>
+                                        <Button
+                                            color="error"
+                                            onClick={() => { if (user && task.id) removeTaskFromTaskList(user.uid, task.id); }}
+                                        >
+                                            <DeleteOutlineIcon />
+                                        </Button>
                                     </>
                                 }
                             >
