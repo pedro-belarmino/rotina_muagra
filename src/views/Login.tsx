@@ -5,7 +5,7 @@ import { auth } from "../firebase/config";
 import GoogleIcon from '@mui/icons-material/Google';
 import {
     Box, Button, Typography,
-    //  Avatar,
+    Avatar,
     Card, CardContent, CardActions
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -66,11 +66,11 @@ function App() {
                                 </Typography>
                             </Box>
 
-                            {/* <Avatar
+                            <Avatar
                                 src={user.photoURL || ""}
                                 alt={user.displayName || ''}
-                                sx={{ width: 64, height: 64 }}
-                            /> */}
+                                sx={{ width: 56, height: 56 }}
+                            />
                         </Box>
                     </>
                 ) : (
