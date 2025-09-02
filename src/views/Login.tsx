@@ -113,7 +113,7 @@ function App() {
                     </Button>
                 )}
             </CardActions>
-            <p>0.0.1</p>
+            <p>0.1.0</p>
         </Card>
     );
 }
