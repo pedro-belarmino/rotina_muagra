@@ -8,6 +8,7 @@ import {
     Card, CardContent, CardActions
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { version } from '../../versioning'
 
 function App() {
 
@@ -113,7 +114,7 @@ function App() {
                     </Button>
                 )}
             </CardActions>
-            <p>0.1.0</p>
+            <p>{version}</p>
         </Card>
     );
 }
