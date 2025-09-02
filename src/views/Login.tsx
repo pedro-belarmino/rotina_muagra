@@ -1,5 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+import { setPersistence, browserLocalPersistence } from "firebase/auth";
 import { auth } from "../firebase/config";
 import GoogleIcon from '@mui/icons-material/Google';
 import {
@@ -17,6 +18,7 @@ function App() {
 
     const handleLogin = async () => {
         const provider = new GoogleAuthProvider();
+        setPersistence(auth, browserLocalPersistence);
         await signInWithPopup(auth, provider);
     };
 
