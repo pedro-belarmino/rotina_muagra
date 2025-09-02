@@ -14,6 +14,10 @@ import {
     ListItem,
     ListItemText,
     Divider,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Paper,
 } from "@mui/material";
 
 type TaskStats = {
@@ -27,6 +31,15 @@ function History() {
     const { user } = useAuth();
     const [taskStats, setTaskStats] = useState<Record<string, TaskStats>>({});
     const [tasks, setTasks] = useState<Record<string, Task>>({});
+
+
+    const [expanded, setExpanded] = useState<string | false>('panel1');
+
+    const handleChange =
+        (panel: string) => (_event: React.SyntheticEvent, newExpanded: boolean) => {
+            setExpanded(newExpanded ? panel : false);
+        };
+
 
     useEffect(() => {
         if (!user) return;
@@ -126,18 +139,24 @@ function History() {
                             </Typography>
 
                             <Divider sx={{ my: 2 }} />
+                            <Accordion component={Paper} elevation={5} expanded={expanded === `panel${taskId}`} onChange={handleChange(`panel${taskId}`)}>
+                                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                                    <Typography component="span">Logs:</Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <List dense>
+                                        {stats.logs.map((log) => (
+                                            <ListItem key={log.id}>
+                                                <ListItemText
+                                                    primary={`${log.value} ${task?.measure}`}
+                                                    secondary={new Date(log.doneAt).toLocaleString()}
+                                                />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </AccordionDetails>
+                            </Accordion>
 
-                            <Typography variant="subtitle2">Logs:</Typography>
-                            <List dense>
-                                {stats.logs.map((log) => (
-                                    <ListItem key={log.id}>
-                                        <ListItemText
-                                            primary={`${log.value} ${task?.measure}`}
-                                            secondary={new Date(log.doneAt).toLocaleString()}
-                                        />
-                                    </ListItem>
-                                ))}
-                            </List>
                         </CardContent>
                     </Card>
                 );
