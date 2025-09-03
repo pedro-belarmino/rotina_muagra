@@ -4,6 +4,8 @@ export type TaskLog = {
     userId: string;
     doneAt: Date;
     value: number;
+    taskName: string;
+    measure: string;
     createdAt?: Date;
     updatedAt?: Date;
 };
