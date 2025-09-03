@@ -24,6 +24,7 @@ type TaskStats = {
     totalDays: number;
     streak: number;
     totalMeasure: number;
+    taskName: string;
     logs: TaskLog[];
 };
 
@@ -31,15 +32,12 @@ function History() {
     const { user } = useAuth();
     const [taskStats, setTaskStats] = useState<Record<string, TaskStats>>({});
     const [tasks, setTasks] = useState<Record<string, Task>>({});
-
-
-    const [expanded, setExpanded] = useState<string | false>('panel1');
+    const [expanded, setExpanded] = useState<string | false>(false);
 
     const handleChange =
         (panel: string) => (_event: React.SyntheticEvent, newExpanded: boolean) => {
             setExpanded(newExpanded ? panel : false);
         };
-
 
     useEffect(() => {
         if (!user) return;
@@ -47,63 +45,73 @@ function History() {
         const fetchData = async () => {
             const [allLogs, allTasks] = await Promise.all([
                 getAllTaskLogs(user.uid),
-                getTasks(user.uid),
+                getTasks(user.uid, true), // 🔑 agora inclui arquivadas
             ]);
 
-            // map taskId -> task
+
+            // Map taskId -> task
             const taskMap: Record<string, Task> = {};
-            allTasks.forEach((t: any) => {
-                taskMap[t.id!] = t;
+            allTasks.forEach((t: Task) => {
+                if (t.id) {
+                    taskMap[t.id] = t;
+                }
             });
             setTasks(taskMap);
 
-            // Agrupar logs por tarefa
+            // Group logs by task
             const statsByTask: Record<string, TaskStats> = {};
 
-            allLogs.forEach((log: any) => {
+            allLogs.forEach((log: TaskLog) => {
                 if (!statsByTask[log.taskId]) {
                     statsByTask[log.taskId] = {
                         totalDays: 0,
                         streak: 0,
                         totalMeasure: 0,
+                        taskName: '',
                         logs: [],
                     };
                 }
                 statsByTask[log.taskId].logs.push(log);
             });
 
-            // Calcular stats por tarefa
+            // Calculate stats for each task
             Object.entries(statsByTask).forEach(([_taskId, stats]) => {
-                // dias totais (dias únicos em que houve log)
+                // Unique days
                 const dates = new Set(
-                    stats.logs.map((l) => new Date(l.doneAt).toDateString())
+                    stats.logs.map((l) =>
+                        new Date(l.doneAt).toDateString()
+                    )
                 );
                 stats.totalDays = dates.size;
 
-                // streak
+                // Streak calculation
                 const sortedDates = [...dates]
-                    .map((d) => new Date(d))
+                    .map((d) => {
+                        const date = new Date(d);
+                        date.setHours(0, 0, 0, 0);
+                        return date;
+                    })
                     .sort((a, b) => b.getTime() - a.getTime());
 
                 let streak = 0;
-                let currentDate = new Date();
+                let today = new Date();
+                today.setHours(0, 0, 0, 0);
+
                 for (const d of sortedDates) {
-                    if (d.toDateString() === currentDate.toDateString()) {
+                    if (d.getTime() === today.getTime()) {
                         streak++;
-                        currentDate.setDate(currentDate.getDate() - 1);
-                    } else if (
-                        d.toDateString() ===
-                        new Date(currentDate.setDate(currentDate.getDate() - 1)).toDateString()
-                    ) {
-                        streak++;
+                        today.setDate(today.getDate() - 1);
                     } else {
                         break;
                     }
                 }
                 stats.streak = streak;
 
-                // medida total
-                stats.totalMeasure = stats.logs.reduce((sum, l) => sum + l.value, 0);
+                // Total measure
+                stats.totalMeasure = stats.logs.reduce(
+                    (sum, l) => sum + l.value,
+                    0
+                );
             });
 
             setTaskStats(statsByTask);
@@ -132,6 +140,7 @@ function History() {
                                     ? new Date(task.createdAt).toLocaleDateString()
                                     : "-"}
                             </Typography>
+
                             <Typography><b>Dias totais:</b> {stats.totalDays}</Typography>
                             <Typography><b>Dias seguidos:</b> {stats.streak}</Typography>
                             <Typography>
@@ -139,24 +148,34 @@ function History() {
                             </Typography>
 
                             <Divider sx={{ my: 2 }} />
-                            <Accordion component={Paper} elevation={5} expanded={expanded === `panel${taskId}`} onChange={handleChange(`panel${taskId}`)}>
-                                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+                            <Accordion
+                                component={Paper}
+                                elevation={5}
+                                expanded={expanded === `panel${taskId}`}
+                                onChange={handleChange(`panel${taskId}`)}
+                            >
+                                <AccordionSummary>
                                     <Typography component="span">Logs:</Typography>
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <List dense>
-                                        {stats.logs.map((log) => (
-                                            <ListItem key={log.id}>
-                                                <ListItemText
-                                                    primary={`${log.value} ${task?.measure}`}
-                                                    secondary={new Date(log.doneAt).toLocaleString()}
-                                                />
-                                            </ListItem>
-                                        ))}
+                                        {stats.logs
+                                            .sort(
+                                                (a, b) =>
+                                                    new Date(b.doneAt).getTime() -
+                                                    new Date(a.doneAt).getTime()
+                                            )
+                                            .map((log) => (
+                                                <ListItem key={log.id}>
+                                                    <ListItemText
+                                                        primary={`${log.value} ${task?.measure}`}
+                                                        secondary={new Date(log.doneAt).toLocaleString()}
+                                                    />
+                                                </ListItem>
+                                            ))}
                                     </List>
                                 </AccordionDetails>
                             </Accordion>
-
                         </CardContent>
                     </Card>
                 );

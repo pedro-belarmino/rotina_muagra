@@ -34,6 +34,7 @@ export default function TaskCreationForm() {
         createdAt: null,
         schedule: "",
         dailyTask: true,
+        archived: false,
     });
 
     const handleChange = (field: keyof Task, value: any) => {
@@ -70,6 +71,7 @@ export default function TaskCreationForm() {
                 createdAt: null,
                 schedule: "",
                 dailyTask: true,
+                archived: false,
             });
         } catch (error) {
             console.error("Erro ao salvar tarefa:", error);
@@ -121,7 +123,8 @@ export default function TaskCreationForm() {
                         <MenuItem value="m">Metros</MenuItem>
                         <MenuItem value="km">Quilômetros</MenuItem>
                         <MenuItem value="repetition">Repetições</MenuItem>
-                        <MenuItem value="time">Tempo</MenuItem>
+                        <MenuItem value="hour">Horas</MenuItem>
+                        <MenuItem value="minute">Minutos</MenuItem>
                     </Select>
 
                     <TextField

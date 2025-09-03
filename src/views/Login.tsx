@@ -116,7 +116,7 @@ function App() {
                     </Button>
                 )}
             </CardActions>
-            <p>{version}</p>
+            <p style={{ fontSize: 'small', }}>{version}</p>
         </Card>
     );
 }
