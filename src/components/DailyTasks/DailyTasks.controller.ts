@@ -1,0 +1,98 @@
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
+import { getTasks, archiveTask } from "../../service/taskService";
+import type { Task } from "../../types/Task";
+
+
+export const useDailyTasksController = () => {
+
+
+    const { user } = useAuth();
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null); // tarefa selecionada
+
+    const fetchTasks = async () => {
+        if (!user) return;
+        setLoading(true);
+
+        const userTasks = await getTasks(user.uid, false);
+
+        // ordenar pelo horário (ex: "08:30", "14:00")
+        userTasks.sort((a, b) => {
+            const [ah, am] = a.schedule.split(":").map(Number);
+            const [bh, bm] = b.schedule.split(":").map(Number);
+            return ah * 60 + am - (bh * 60 + bm);
+        });
+
+        setTasks(userTasks);
+
+        // também buscar se já foi concluída hoje
+        const today = new Date().toISOString().split("T")[0];
+        const status: Record<string, string | null> = {};
+
+        for (const task of userTasks) {
+            const log = await getTaskLogByDate(user.uid, task.id!, today);
+            status[task.id!] = log ? log.id! : null;
+        }
+
+        setDoneToday(status);
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        fetchTasks();
+    }, [user]);
+
+    const handleToggleTask = async (task: Task) => {
+        if (!user || !task.id) return;
+
+        const logId = doneToday[task.id];
+
+        if (logId) {
+            await deleteTaskLog(user.uid, logId);
+            setDoneToday((prev) => ({ ...prev, [task.id!]: null }));
+        } else {
+            const value = task.dailyGoal;
+            const newLogId = await addTaskLog(
+                user.uid,
+                {
+                    taskId: task.id!,
+                    userId: user.uid,
+                    doneAt: new Date(),
+                    value,
+                    measure: task.measure,
+                    taskName: task.name,
+                },
+                task.name,
+                task.measure
+            );
+            setDoneToday((prev) => ({ ...prev, [task.id!]: newLogId }));
+        }
+    };
+
+    const confirmArchiveTask = async () => {
+        if (!user || !selectedTask?.id) return;
+        await archiveTask(user.uid, selectedTask.id);
+        setOpenModal(false);
+        setSelectedTask(null);
+        await fetchTasks();
+    };
+
+
+    return {
+        confirmArchiveTask,
+        handleToggleTask,
+        setOpenModal,
+        setSelectedTask,
+        selectedTask,
+        doneToday,
+        tasks,
+        loading,
+        openModal,
+    }
+
+}
