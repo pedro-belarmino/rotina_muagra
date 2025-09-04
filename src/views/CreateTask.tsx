@@ -1,4 +1,4 @@
-import TaskCreationForm from "../components/TaskCreationForm";
+import TaskCreationForm from "../components/TaskCreationForm/TaskCreationForm";
 
 export default function CreateTask() {
     return (

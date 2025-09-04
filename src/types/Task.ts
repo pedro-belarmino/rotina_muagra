@@ -2,7 +2,7 @@ export type Task = {
     id?: string;
     name: string;
     description: string;
-    measure: "m" | "km" | "repetition" | "hour" | 'minute';
+    measure: "m" | "km" | "repetition" | "hour" | 'minute' | '';
     dailyGoal: number;
     totalGoal: number;
     archived: boolean;

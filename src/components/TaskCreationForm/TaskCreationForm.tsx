@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Button,
     Container,
@@ -11,75 +10,19 @@ import {
     Box,
     Paper,
 } from "@mui/material";
-import { useAuth } from "../context/AuthContext";
-import { addTask } from "../service/taskService";
-import type { Task } from "../types/Task";
-import SharedSnackbar, { type SeverityType } from "./shared/SharedSnackbar";
+import SharedSnackbar from "../shared/SharedSnackbar";
+import { useTaskController } from "./TaskCreationForm.controller";
 
 export default function TaskCreationForm() {
-    const { user } = useAuth();
-
-    const [snackbar, setSnackbar] = useState(false)
-    const [snackbarMessage, setSnackbarMessage] = useState('')
-    const [severity, setSeverity] = useState<SeverityType>('info')
-
-
-
-    const [task, setTask] = useState<Task>({
-        name: "",
-        description: "",
-        measure: "m",
-        dailyGoal: 0,
-        totalGoal: 0,
-        createdAt: null,
-        schedule: "",
-        dailyTask: true,
-        archived: false,
-    });
-
-    const handleChange = (field: keyof Task, value: any) => {
-        setTask((prev) => ({ ...prev, [field]: value }));
-    };
-
-    const handleSave = async () => {
-        if (!user) {
-            alert("Você precisa estar logado para criar tarefas.");
-            return;
-        }
-
-        if (!task.name || !task.measure || !task.dailyGoal || !task.schedule) {
-            setSnackbar(true)
-            setSnackbarMessage('Preencha todos os campos obrigatórios')
-            setSeverity('error')
-            return;
-        }
-
-        try {
-            await addTask(user.uid, task);
-            setSnackbar(true)
-            setSnackbarMessage('Tafera Criada com Sucesso')
-            setSeverity('success')
-
-
-            // resetar formulário
-            setTask({
-                name: "",
-                description: "",
-                measure: "m",
-                dailyGoal: 0,
-                totalGoal: 0,
-                createdAt: null,
-                schedule: "",
-                dailyTask: true,
-                archived: false,
-            });
-        } catch (error) {
-            console.error("Erro ao salvar tarefa:", error);
-            setSnackbar(true)
-            setSnackbarMessage('Tivemos um erro inesperado, contate o suporte')
-            setSeverity('error')
-        }
-    };
+    const {
+        task,
+        snackbar,
+        snackbarMessage,
+        severity,
+        handleChange,
+        handleSave,
+        setSnackbar,
+    } = useTaskController();
 
     return (
         <Container maxWidth="sm" sx={{ mt: 3 }}>
@@ -90,14 +33,11 @@ export default function TaskCreationForm() {
 
                 <Box
                     component="form"
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 2,
-                    }}
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
                     noValidate
                     autoComplete="off"
                 >
+
                     <TextField
                         label="Nome"
                         value={task.name}
@@ -119,7 +59,10 @@ export default function TaskCreationForm() {
                         value={task.measure}
                         onChange={(e) => handleChange("measure", e.target.value)}
                         fullWidth
+                        required
+                        displayEmpty
                     >
+                        <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
                         <MenuItem value="m">Metros</MenuItem>
                         <MenuItem value="km">Quilômetros</MenuItem>
                         <MenuItem value="repetition">Repetições</MenuItem>
@@ -130,45 +73,40 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Meta Diária"
                         type="number"
+                        value={task.dailyGoal === 0 ? "" : task.dailyGoal} // mostra vazio se for 0
+                        onChange={(e) => handleChange("dailyGoal", e.target.value)}
+                        fullWidth
+                        required
                         InputProps={{
                             inputProps: { min: 0 },
                             sx: {
-                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button":
-                                {
+                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
                                     WebkitAppearance: "none",
                                     margin: 0,
                                 },
-                                "& input[type=number]": {
-                                    MozAppearance: "textfield", // Firefox
-                                },
+                                "& input[type=number]": { MozAppearance: "textfield" },
                             },
                         }}
-                        value={task.dailyGoal}
-                        onChange={(e) => handleChange("dailyGoal", Number(e.target.value))}
-                        fullWidth
-                        required
                     />
 
                     <TextField
                         label="Meta Geral"
                         type="number"
+                        value={task.totalGoal === 0 ? "" : task.totalGoal}
+                        onChange={(e) => handleChange("totalGoal", e.target.value)}
+                        fullWidth
                         InputProps={{
                             inputProps: { min: 0 },
                             sx: {
-                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button":
-                                {
+                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
                                     WebkitAppearance: "none",
                                     margin: 0,
                                 },
-                                "& input[type=number]": {
-                                    MozAppearance: "textfield", // Firefox
-                                },
+                                "& input[type=number]": { MozAppearance: "textfield" },
                             },
                         }}
-                        value={task.totalGoal}
-                        onChange={(e) => handleChange("totalGoal", Number(e.target.value))}
-                        fullWidth
                     />
+
 
                     <TextField
                         label="Horário"
@@ -177,7 +115,6 @@ export default function TaskCreationForm() {
                         onChange={(e) => handleChange("schedule", e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        required
                     />
 
                     <FormControlLabel
@@ -200,7 +137,9 @@ export default function TaskCreationForm() {
                     >
                         Salvar
                     </Button>
+
                 </Box>
+
             </Paper>
 
             <SharedSnackbar
