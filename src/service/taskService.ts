@@ -7,7 +7,8 @@ import {
     doc,
     updateDoc,
     deleteDoc,
-    // query,
+    query,
+    where,
     // orderBy,
     // limit,
 } from "firebase/firestore";
@@ -55,6 +56,18 @@ export async function archiveTask(userId: string, taskId: string) {
 
 // ⚠️ Se quiser realmente apagar do Firestore
 export async function deleteTaskPermanently(userId: string, taskId: string) {
+    // 1. Apagar a própria tarefa
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await deleteDoc(taskRef);
+
+    // 2. Buscar e apagar todos os logs daquela tarefa
+    const logsRef = collection(db, "users", userId, "taskLogs");
+    const q = query(logsRef, where("taskId", "==", taskId));
+    const snapshot = await getDocs(q);
+
+    const batchDeletes = snapshot.docs.map((logDoc) =>
+        deleteDoc(logDoc.ref)
+    );
+
+    await Promise.all(batchDeletes);
 }
