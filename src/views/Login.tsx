@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { version } from '../../versioning'
+import LoadingScreen from "./LoadingScreen";
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
         await signOut(auth);
     };
 
-    if (loading) return <p>Carregando...</p>;
+    if (loading) return <LoadingScreen />
 
     return (
         <Card

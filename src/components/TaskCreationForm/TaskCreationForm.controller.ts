@@ -10,7 +10,7 @@ export function useTaskController() {
     const [task, setTask] = useState<Task>({
         name: "",
         description: "",
-        measure: "m",
+        measure: "",
         dailyGoal: 0,
         totalGoal: 0,
         createdAt: null,
@@ -23,15 +23,35 @@ export function useTaskController() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [severity, setSeverity] = useState<SeverityType>('info');
 
-    const handleChange = (field: keyof Task, value: any) => {
-        setTask((prev) => ({ ...prev, [field]: value }));
+    const handleChange = (field: string, value: any) => {
+        if (field === "dailyGoal" || field === "totalGoal") {
+            // Se o usuário apagar, deixa como string vazia
+            if (value === "" || value === null) {
+                setTask((prev) => ({ ...prev, [field]: "" }));
+                return;
+            }
+
+            let numericValue = Number(value);
+
+            if (field === "dailyGoal" && task.measure === "minute" && numericValue > 59) {
+                setSnackbar(true);
+                setSnackbarMessage('Para valores a partir de 60 minutos, selecione a medida em horas.');
+                setSeverity('warning');
+                numericValue = 59;
+            }
+
+            setTask((prev) => ({ ...prev, [field]: numericValue }));
+        } else {
+            setTask((prev) => ({ ...prev, [field]: value }));
+        }
     };
+
 
     const resetForm = () => {
         setTask({
             name: "",
             description: "",
-            measure: "m",
+            measure: "",
             dailyGoal: 0,
             totalGoal: 0,
             createdAt: null,
@@ -47,7 +67,7 @@ export function useTaskController() {
             return;
         }
 
-        if (!task.name || !task.measure || !task.dailyGoal || !task.schedule) {
+        if (!task.name || !task.measure || task.dailyGoal == 0) {
             setSnackbar(true);
             setSnackbarMessage('Preencha todos os campos obrigatórios');
             setSeverity('error');

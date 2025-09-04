@@ -1,4 +1,6 @@
-import ArchiveIcon from '@mui/icons-material/Archive';
+import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
+import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
+
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import {
     Container,
@@ -14,6 +16,7 @@ import {
 } from "@mui/material";
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
+import { useNavigate } from 'react-router-dom';
 
 function DailyTasks() {
 
@@ -28,7 +31,7 @@ function DailyTasks() {
         loading,
         openModal,
     } = useDailyTasksController()
-
+    const navigate = useNavigate()
 
     if (loading) return <LoadingScreen />;
 
@@ -85,7 +88,7 @@ function DailyTasks() {
                                                     setOpenModal(true);
                                                 }}
                                             >
-                                                <ArchiveIcon />
+                                                <ArchiveOutlinedIcon />
                                             </Button>
                                         </>
                                     }
@@ -110,6 +113,10 @@ function DailyTasks() {
                         </Card>
                     ))}
                 </List>
+                <Button color='inherit' onClick={() => navigate('/arquivadas')}>
+                    <UnarchiveOutlinedIcon />
+                    tarefas arquivadas
+                </Button>
             </Container>
             <Modal
                 open={openModal}
@@ -126,7 +133,7 @@ function DailyTasks() {
                         Deseja arquivar a tarefa <b>{selectedTask?.name}</b>?
                     </Typography>
                     <Typography sx={{ mt: 2 }}>
-                        Você pode exibi-la de novo acessando através do histórico.
+                        Você pode reexibi-la acessando-a através da página de tarefas arquivadas.
                     </Typography>
                     <div style={{ display: "flex", justifyContent: 'space-around', paddingTop: 20 }}>
                         <Button color="info" variant="contained" onClick={confirmArchiveTask}>sim</Button>

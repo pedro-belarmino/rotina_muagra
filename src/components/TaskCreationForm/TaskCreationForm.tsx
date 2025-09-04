@@ -37,6 +37,7 @@ export default function TaskCreationForm() {
                     noValidate
                     autoComplete="off"
                 >
+
                     <TextField
                         label="Nome"
                         value={task.name}
@@ -58,7 +59,10 @@ export default function TaskCreationForm() {
                         value={task.measure}
                         onChange={(e) => handleChange("measure", e.target.value)}
                         fullWidth
+                        required
+                        displayEmpty
                     >
+                        <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
                         <MenuItem value="m">Metros</MenuItem>
                         <MenuItem value="km">Quilômetros</MenuItem>
                         <MenuItem value="repetition">Repetições</MenuItem>
@@ -69,8 +73,8 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Meta Diária"
                         type="number"
-                        value={task.dailyGoal}
-                        onChange={(e) => handleChange("dailyGoal", Number(e.target.value))}
+                        value={task.dailyGoal === 0 ? "" : task.dailyGoal} // mostra vazio se for 0
+                        onChange={(e) => handleChange("dailyGoal", e.target.value)}
                         fullWidth
                         required
                         InputProps={{
@@ -88,10 +92,21 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Meta Geral"
                         type="number"
-                        value={task.totalGoal}
-                        onChange={(e) => handleChange("totalGoal", Number(e.target.value))}
+                        value={task.totalGoal === 0 ? "" : task.totalGoal}
+                        onChange={(e) => handleChange("totalGoal", e.target.value)}
                         fullWidth
+                        InputProps={{
+                            inputProps: { min: 0 },
+                            sx: {
+                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                    WebkitAppearance: "none",
+                                    margin: 0,
+                                },
+                                "& input[type=number]": { MozAppearance: "textfield" },
+                            },
+                        }}
                     />
+
 
                     <TextField
                         label="Horário"
@@ -100,7 +115,6 @@ export default function TaskCreationForm() {
                         onChange={(e) => handleChange("schedule", e.target.value)}
                         InputLabelProps={{ shrink: true }}
                         fullWidth
-                        required
                     />
 
                     <FormControlLabel
@@ -123,7 +137,9 @@ export default function TaskCreationForm() {
                     >
                         Salvar
                     </Button>
+
                 </Box>
+
             </Paper>
 
             <SharedSnackbar
