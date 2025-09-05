@@ -13,6 +13,7 @@ import {
     CardContent,
     Modal,
     Box,
+    Paper,
 } from "@mui/material";
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -37,12 +38,23 @@ function DailyTasks() {
 
     if (tasks.length === 0) {
         return (
-            <Typography
-                fontSize={22}
-                sx={{ justifyContent: 'center', display: 'flex', p: 1 }}
-            >
-                Crie uma tarefa para visualizá-la aqui
-            </Typography>
+            <>
+                <Container>
+                    <Container component={Paper} >
+
+                        <Typography
+                            fontSize={22}
+                            sx={{ justifyContent: 'center', display: 'flex', p: 1 }}
+                        >
+                            Crie uma tarefa para visualizá-la aqui
+                        </Typography>
+                    </Container>
+                    <Button sx={{ display: 'flex' }} color='inherit' onClick={() => navigate('/arquivadas')}>
+                        <UnarchiveOutlinedIcon />
+                        tarefas arquivadas
+                    </Button>
+                </Container>
+            </>
         );
     }
 

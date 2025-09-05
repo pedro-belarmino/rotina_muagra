@@ -41,10 +41,25 @@ export function useTaskController() {
             }
 
             setTask((prev) => ({ ...prev, [field]: numericValue }));
+        } else if (field === "measure") {
+            setTask((prev) => {
+                let updated = { ...prev, measure: value };
+
+                // valida dailyGoal caso já exista valor
+                if (value === "minute" && Number(updated.dailyGoal) > 59) {
+                    setSnackbar(true);
+                    setSnackbarMessage('Para valores a partir de 60 minutos, selecione a medida em horas.');
+                    setSeverity('warning');
+                    updated.dailyGoal = 59;
+                }
+
+                return updated;
+            });
         } else {
             setTask((prev) => ({ ...prev, [field]: value }));
         }
     };
+
 
 
     const resetForm = () => {
