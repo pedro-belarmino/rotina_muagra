@@ -4,6 +4,7 @@ import { useArchivedTasksListController } from "./ArchivedTasksList.controller";
 import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import AssignmentReturnOutlinedIcon from '@mui/icons-material/AssignmentReturnOutlined';
+import { formatMeasure } from "../../utils/formatting";
 
 export default function ArchivedTasksList() {
 
@@ -113,7 +114,7 @@ export default function ArchivedTasksList() {
                                                 variant="body2"
                                                 color="text.secondary"
                                             >
-                                                {task.dailyGoal} {task.measure}/dia
+                                                {task.dailyGoal} {formatMeasure(task.measure)}/dia
                                             </Typography>
                                         }
                                     />

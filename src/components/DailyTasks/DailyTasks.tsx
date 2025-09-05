@@ -1,6 +1,5 @@
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
-
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import {
     Container,
@@ -18,6 +17,7 @@ import {
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
 import { useNavigate } from 'react-router-dom';
+import { formatMeasure } from '../../utils/formatting';
 
 function DailyTasks() {
 
@@ -108,7 +108,7 @@ function DailyTasks() {
                                     <ListItemText
                                         primary={
                                             <Typography variant="subtitle1" fontWeight="bold">
-                                                {task.schedule} - {task.name}
+                                                {task.schedule == '' ? <>{task.name}</> : <>{task.schedule} - {task.name}</>}
                                             </Typography>
                                         }
                                         secondary={
@@ -116,7 +116,7 @@ function DailyTasks() {
                                                 variant="body2"
                                                 color="text.secondary"
                                             >
-                                                {task.dailyGoal} {task.measure}/dia
+                                                {task.dailyGoal} {formatMeasure(task.measure)} / dia
                                             </Typography>
                                         }
                                     />
