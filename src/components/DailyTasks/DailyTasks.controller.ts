@@ -7,8 +7,8 @@ import type { Task } from "../../types/Task";
 
 export const useDailyTasksController = () => {
 
-
     const { user } = useAuth();
+    const [timeLeft, setTimeLeft] = useState("");
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(false);
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
@@ -87,6 +87,27 @@ export const useDailyTasksController = () => {
         fetchTasks();
     }, [user]);
 
+    useEffect(() => {
+        const updateTimer = () => {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0); // próxima meia-noite
+
+            const diff = midnight.getTime() - now.getTime();
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+        };
+
+        updateTimer(); // inicializa já com o valor
+        const interval = setInterval(updateTimer, 1000);
+
+        return () => clearInterval(interval); // limpa quando desmonta
+    }, []);
+
     const handleToggleTask = async (task: Task) => {
         if (!user || !task.id) return;
 
@@ -135,6 +156,7 @@ export const useDailyTasksController = () => {
         goalType,
         confirmModalOpen,
         goalValue,
+        timeLeft,
         selectedTask,
         doneToday,
         tasks,

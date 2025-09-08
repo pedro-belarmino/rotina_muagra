@@ -14,15 +14,18 @@ import {
     Box,
     Paper,
     TextField,
+    Pagination,
+    Stack
 } from "@mui/material";
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
 import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
+import { useState } from 'react';
 
 function DailyTasks() {
-
     const {
+        timeLeft,
         confirmArchiveTask,
         confirmModalOpen,
         setConfirmModalOpen,
@@ -41,44 +44,62 @@ function DailyTasks() {
     } = useDailyTasksController()
     const navigate = useNavigate()
 
+    // Estado da paginação
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 5;
+
+    // Cálculo da paginação
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedTasks = tasks.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(tasks.length / itemsPerPage);
+
     if (loading) return <LoadingScreen />;
 
     if (tasks.length === 0) {
         return (
-            <>
-                <Container>
-                    <Container component={Paper} >
-
-                        <Typography
-                            fontSize={22}
-                            sx={{ justifyContent: 'center', display: 'flex', p: 1 }}
-                        >
-                            Crie uma tarefa para visualizá-la aqui
-                        </Typography>
-                    </Container>
-                    <Button sx={{ display: 'flex' }} color='inherit' onClick={() => navigate('/arquivadas')}>
-                        <UnarchiveOutlinedIcon />
-                        tarefas arquivadas
-                    </Button>
+            <Container>
+                <Container component={Paper} >
+                    <Typography
+                        fontSize={22}
+                        sx={{ justifyContent: 'center', display: 'flex', p: 1 }}
+                    >
+                        Crie uma tarefa para visualizá-la aqui
+                    </Typography>
                 </Container>
-            </>
+                <Button sx={{ display: 'flex' }} color='inherit' onClick={() => navigate('/arquivadas')}>
+                    <UnarchiveOutlinedIcon />
+                    tarefas arquivadas
+                </Button>
+            </Container>
         );
     }
 
     return (
         <>
             <Container maxWidth="sm" sx={{ py: 3 }}>
-                <Typography
-                    variant="h5"
-                    align="center"
-                    gutterBottom
-                    fontWeight="bold"
+                <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={1}
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ mb: 2, textAlign: { xs: "center", sm: "left" } }}
                 >
-                    Minhas Tarefas do Dia
-                </Typography>
+                    <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
+                        <Typography variant="h5" fontWeight="bold" noWrap>
+                            Minhas Tarefas do Dia
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
+                        <Typography variant="body2" color="text.secondary" sx={{ textDecoration: "underline" }}>
+                            {timeLeft}
+                        </Typography>
+                    </Box>
+                </Stack>
 
                 <List>
-                    {tasks.map((task) => (
+                    {paginatedTasks.map((task) => (
                         <Card
                             key={task.id}
                             sx={{
@@ -132,11 +153,24 @@ function DailyTasks() {
                         </Card>
                     ))}
                 </List>
+
+                {/* Paginação */}
+                <Box display="flex" justifyContent="center" mt={2}>
+                    <Pagination
+                        count={totalPages}
+                        page={page}
+                        onChange={(_, value) => setPage(value)}
+                        color="standard"
+                        shape="rounded"
+                    />
+                </Box>
+
                 <Button color='inherit' onClick={() => navigate('/arquivadas')}>
                     <UnarchiveOutlinedIcon />
                     tarefas arquivadas
                 </Button>
             </Container>
+
             <Modal
                 open={openModal}
                 onClose={() => setOpenModal(false)}
