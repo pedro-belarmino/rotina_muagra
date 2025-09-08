@@ -153,7 +153,7 @@ function DailyTasks() {
                         count={totalPages}
                         page={page}
                         onChange={(_, value) => setPage(value)}
-                        color="warning"
+                        color="standard"
                         shape="rounded"
                     />
                 </Box>
