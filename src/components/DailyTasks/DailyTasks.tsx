@@ -22,6 +22,7 @@ import { formatMeasure } from '../../utils/formatting';
 function DailyTasks() {
 
     const {
+        timeLeft,
         confirmArchiveTask,
         handleToggleTask,
         setOpenModal,
@@ -33,6 +34,9 @@ function DailyTasks() {
         openModal,
     } = useDailyTasksController()
     const navigate = useNavigate()
+
+
+
 
     if (loading) return <LoadingScreen />;
 
@@ -61,14 +65,17 @@ function DailyTasks() {
     return (
         <>
             <Container maxWidth="sm" sx={{ py: 3 }}>
-                <Typography
-                    variant="h5"
-                    align="center"
-                    gutterBottom
-                    fontWeight="bold"
-                >
-                    Minhas Tarefas do Dia
-                </Typography>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <Typography
+                        variant="h5"
+                        fontWeight="bold"
+                    >
+                        Minhas Tarefas do Dia
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ textDecoration: 'underline' }}>
+                        {timeLeft}
+                    </Typography>
+                </div>
 
                 <List>
                     {tasks.map((task) => (
