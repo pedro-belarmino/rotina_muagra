@@ -15,6 +15,46 @@ export const useDailyTasksController = () => {
     const [openModal, setOpenModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null); // tarefa selecionada
 
+    const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+    const [goalValue, setGoalValue] = useState<number | string>("");
+    const [goalType, setGoalType] = useState<string>("");
+
+
+    const openConfirmModal = (task: Task) => {
+        setSelectedTask(task);
+        setGoalValue(task.dailyGoal); // valor inicial
+        setGoalType(task.measure)
+        setConfirmModalOpen(true);
+    };
+
+    const confirmToggleTask = async () => {
+        if (!user || !selectedTask?.id) return;
+
+        const logId = doneToday[selectedTask.id];
+        if (logId) {
+            await deleteTaskLog(user.uid, logId);
+            setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: null }));
+        } else {
+            const newLogId = await addTaskLog(
+                user.uid,
+                {
+                    taskId: selectedTask.id!,
+                    userId: user.uid,
+                    doneAt: new Date(),
+                    value: Number(goalValue),
+                    measure: selectedTask.measure,
+                    taskName: selectedTask.name,
+                },
+                selectedTask.name,
+                selectedTask.measure
+            );
+            setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: newLogId }));
+        }
+        setConfirmModalOpen(false);
+        setSelectedTask(null);
+    };
+
+
     const fetchTasks = async () => {
         if (!user) return;
         setLoading(true);
@@ -88,6 +128,13 @@ export const useDailyTasksController = () => {
         handleToggleTask,
         setOpenModal,
         setSelectedTask,
+        setConfirmModalOpen,
+        setGoalValue,
+        openConfirmModal,
+        confirmToggleTask,
+        goalType,
+        confirmModalOpen,
+        goalValue,
         selectedTask,
         doneToday,
         tasks,

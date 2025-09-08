@@ -13,6 +13,7 @@ import {
     Modal,
     Box,
     Paper,
+    TextField,
 } from "@mui/material";
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -23,7 +24,13 @@ function DailyTasks() {
 
     const {
         confirmArchiveTask,
-        handleToggleTask,
+        confirmModalOpen,
+        setConfirmModalOpen,
+        goalValue,
+        setGoalValue,
+        openConfirmModal,
+        confirmToggleTask,
+        goalType,
         setOpenModal,
         setSelectedTask,
         selectedTask,
@@ -89,7 +96,7 @@ function DailyTasks() {
                                                 variant="contained"
                                                 size="small"
                                                 color={doneToday[task.id!] ? "success" : "primary"}
-                                                onClick={() => handleToggleTask(task)}
+                                                onClick={() => openConfirmModal(task)}
                                             >
                                                 {doneToday[task.id!] ? "Concluída" : "Marcar"}
                                             </Button>
@@ -153,6 +160,56 @@ function DailyTasks() {
                     </div>
                 </Box>
             </Modal>
+            <Modal
+                open={confirmModalOpen}
+                onClose={() => setConfirmModalOpen(false)}
+            >
+                <Box sx={styleBoxModal}>
+                    <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography variant="h6" component="h2">
+                            Confirmar Tarefa
+                        </Typography>
+                        <Button color="inherit" onClick={() => setConfirmModalOpen(false)}>
+                            <CancelPresentationIcon />
+                        </Button>
+                    </div>
+                    <Typography sx={{ mt: 2 }}>
+                        {doneToday[selectedTask?.id ?? ""]
+                            ? `Deseja desmarcar a tarefa "${selectedTask?.name}"?`
+                            : `Deseja marcar a tarefa "${selectedTask?.name}" como concluída?`}
+                    </Typography>
+
+                    {!doneToday[selectedTask?.id ?? ""] && (
+                        <Box sx={{ mt: 2, display: `flex` }}>
+                            <TextField
+                                variant='standard'
+                                type="number"
+                                label='Meta'
+                                value={goalValue}
+                                onChange={(e) => setGoalValue(e.target.value)}
+                                InputProps={{
+                                    inputProps: { min: 0 },
+                                    sx: {
+                                        "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                            WebkitAppearance: "none",
+                                            margin: 0,
+                                        },
+                                        "& input[type=number]": { MozAppearance: "textfield" },
+                                    },
+                                }}
+                            />
+                            <p>{formatMeasure(goalType)}</p>
+                        </Box>
+
+                    )}
+
+                    <div style={{ display: "flex", justifyContent: 'space-around', paddingTop: 20 }}>
+                        <Button color="info" variant="contained" onClick={confirmToggleTask}>Confirmar</Button>
+                        <Button color="error" variant="contained" onClick={() => setConfirmModalOpen(false)}>Cancelar</Button>
+                    </div>
+                </Box>
+            </Modal>
+
         </>
     );
 }
