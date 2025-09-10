@@ -1,10 +1,11 @@
 export type Task = {
     id?: string;
     name: string;
-    description: string;
-    measure: "m" | "km" | "repetition" | "hour" | 'minute' | '';
+    measure?: "m" | "km" | "repetition" | "hour" | 'minute' | '';
+    description?: string;
     dailyGoal: number;
-    totalGoal: number;
+    totalGoal?: number;
+    totalGoalType?: 'monthly' | 'weekly' | 'general' | '';
     archived: boolean;
     createdAt: any; // Timestamp do Firestore
     schedule: string; // "HH:mm"

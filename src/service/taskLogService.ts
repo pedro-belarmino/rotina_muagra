@@ -21,8 +21,8 @@ export const addTaskLog = async (
     const logsRef = collection(db, "users", uid, "taskLogs");
     const docRef = await addDoc(logsRef, {
         taskId: log.taskId,
-        taskName,          // 🔹 snapshot
-        measure,           // 🔹 snapshot
+        taskName,          // snapshot
+        measure,           // snapshot
         doneAt: Timestamp.fromDate(log.doneAt),
         value: log.value,
         userId: uid,
