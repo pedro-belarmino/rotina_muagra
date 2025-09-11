@@ -3,6 +3,8 @@ import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
 import { getTasks, archiveTask } from "../../service/taskService";
 import type { Task } from "../../types/Task";
+import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
+import type { SeverityType } from "../shared/SharedSnackbar";
 
 
 export const useDailyTasksController = () => {
@@ -18,7 +20,11 @@ export const useDailyTasksController = () => {
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
+    const [counter, setCounter] = useState<number>(0)
 
+    const [snackbar, setSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [severity, setSeverity] = useState<SeverityType>('info');
 
     const openConfirmModal = (task: Task) => {
         setSelectedTask(task);
@@ -108,6 +114,29 @@ export const useDailyTasksController = () => {
         return () => clearInterval(interval); // limpa quando desmonta
     }, []);
 
+    useEffect(() => {
+        const fetchCounter = async () => {
+            if (user) {
+                setCounter(await getDailyCounter(user.uid));
+            }
+        };
+        fetchCounter();
+    }, [user]);
+
+
+    const getRandomString = (): string => ['Muito Obrigado!', 'Muito Agradecido', 'Muagra'][Math.floor(Math.random() * 3)];
+
+    async function addCounter() {
+        if (user) {
+            const newValue = await incrementDailyCounter(user.uid);
+            setCounter(newValue); // atualiza no estado
+            setSnackbarMessage(getRandomString)
+            setSeverity('success')
+            setSnackbar(true)
+        }
+    }
+
+
     const handleToggleTask = async (task: Task) => {
         if (!user || !task.id) return;
 
@@ -153,6 +182,12 @@ export const useDailyTasksController = () => {
         setGoalValue,
         openConfirmModal,
         confirmToggleTask,
+        addCounter,
+        snackbar,
+        setSnackbar,
+        snackbarMessage,
+        severity,
+        counter,
         goalType,
         confirmModalOpen,
         goalValue,
