@@ -144,7 +144,7 @@ export function useTaskController() {
             setSeverity('error');
             return;
         }
-        if (task.totalGoal && !task.totalGoalType) {
+        if (!task.totalGoal && task.totalGoalType) {
             setSnackbar(true);
             setSnackbarMessage('Você inseriu um período para sua meta geral. Insira também o valor dessa meta');
             setSeverity('error');

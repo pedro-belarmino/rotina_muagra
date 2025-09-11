@@ -160,23 +160,27 @@ export default function TaskCreationForm() {
                                             },
                                         }}
                                     />
+                                    <FormControl fullWidth >
+                                        <InputLabel id="time-label">Período</InputLabel>
 
-                                    <Select
-                                        inputProps={{
-                                            'aria-label': 'periodo da meta',
-                                        }}
-                                        value={task.totalGoalType}
-                                        onChange={(e) => handleChange("totalGoalType", e.target.value)}
-                                        fullWidth
-                                        required
-                                        displayEmpty
-                                        variant="outlined"
-                                    >
-                                        <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
-                                        <MenuItem value="general">Geral</MenuItem>
-                                        <MenuItem value="monthly">Mensal</MenuItem>
-                                        <MenuItem value="weekly">Semanal</MenuItem>
-                                    </Select>
+                                        <Select
+                                            labelId="time-label"
+                                            inputProps={{
+                                                'aria-label': 'periodo da meta',
+                                            }}
+                                            value={task.totalGoalType}
+                                            onChange={(e) => handleChange("totalGoalType", e.target.value)}
+                                            fullWidth
+                                            displayEmpty
+                                            variant="outlined"
+                                            label='Período'
+                                        >
+                                            <MenuItem value="" disabled></MenuItem>
+                                            <MenuItem value="general">Geral</MenuItem>
+                                            <MenuItem value="monthly">Mensal</MenuItem>
+                                            <MenuItem value="weekly">Semanal</MenuItem>
+                                        </Select>
+                                    </FormControl>
                                 </Box>
                             )}
                         </>

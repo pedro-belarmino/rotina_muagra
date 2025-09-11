@@ -124,12 +124,12 @@ export const useDailyTasksController = () => {
     }, [user]);
 
 
-    const getRandomString = (): string => ['Muito Obrigado!', 'Muito Agradecido', 'Muagra'][Math.floor(Math.random() * 3)];
+    const getRandomString = (): string => ['Parabéns 👏', 'Muagra 🙌'][Math.floor(Math.random() * 2)];
 
     async function addCounter() {
         if (user) {
             const newValue = await incrementDailyCounter(user.uid);
-            setCounter(newValue); // atualiza no estado
+            setCounter(newValue);
             setSnackbarMessage(getRandomString)
             setSeverity('success')
             setSnackbar(true)
