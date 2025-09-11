@@ -65,15 +65,18 @@ function DailyTasks() {
 
     if (tasks.length === 0) {
         return (
-            <Container>
-                <Container component={Paper} >
+            <Container maxWidth="sm" sx={{ py: 3 }}>
+
+                <Container component={Paper} sx={{ margin: 4, placeSelf: "center" }}>
                     <Typography
-                        fontSize={22}
-                        sx={{ justifyContent: 'center', display: 'flex', p: 1 }}
+                        fontSize={20}
+                        sx={{ justifyContent: "center", display: "flex", p: 1 }}
                     >
-                        Crie uma tarefa para visualizá-la aqui
+                        Crie uma tafera para visualizá-la aqui.
                     </Typography>
                 </Container>
+
+
                 <Button sx={{ display: 'flex' }} color='inherit' onClick={() => navigate('/arquivadas')}>
                     <UnarchiveOutlinedIcon />
                     tarefas arquivadas
