@@ -171,7 +171,7 @@ function DailyTasks() {
                                             }
                                             secondary={
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {task.dailyGoal} {formatMeasure(task.measure)} / dia
+                                                    {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
                                                 </Typography>
                                             }
                                         />
