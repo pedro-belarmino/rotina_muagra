@@ -9,24 +9,31 @@ import {
     FormControlLabel,
     Box,
     Paper,
+    FormControl,
+    InputLabel,
+    Divider,
 } from "@mui/material";
 import SharedSnackbar from "../shared/SharedSnackbar";
 import { useTaskController } from "./TaskCreationForm.controller";
-import { useState } from "react";
 
 export default function TaskCreationForm() {
     const {
         task,
         snackbar,
         snackbarMessage,
-        resetGoals,
         severity,
+        defineGeneralGoal,
+        defineDailyGoal,
+        resetGeneralGoals,
+        setDefineDailyGoal,
+        resetDailyGoals,
+        setDefineGeneralGoal,
         handleChange,
         handleSave,
         setSnackbar,
     } = useTaskController();
 
-    const [defineGoals, setDefineGoals] = useState(false)
+
 
     return (
         <Container maxWidth="sm" sx={{ mt: 3 }}>
@@ -61,92 +68,120 @@ export default function TaskCreationForm() {
                     <FormControlLabel control={
 
                         <Switch
-                            checked={defineGoals}
+                            checked={defineDailyGoal}
                             onChange={() => {
-                                setDefineGoals(!defineGoals);
-                                if (defineGoals) {
-                                    resetGoals();
+                                setDefineDailyGoal(!defineDailyGoal);
+                                if (defineDailyGoal) {
+                                    resetDailyGoals();
                                 }
                             }}
                             color="warning"
                         />
                     }
-                        label='Definir Metas'
+                        label='Definir Meta Diária'
                     />
 
-                    {defineGoals && (
+                    {defineDailyGoal && (
 
                         <>
-                            <Select
-                                value={task.measure}
-                                onChange={(e) => handleChange("measure", e.target.value)}
-                                fullWidth
-                                required
-                                label='Medida'
-                                displayEmpty
-                            >
-                                <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
-                                <MenuItem value="m">Metros</MenuItem>
-                                <MenuItem value="km">Quilômetros</MenuItem>
-                                <MenuItem value="repetition">Repetições</MenuItem>
-                                <MenuItem value="hour">Horas</MenuItem>
-                                <MenuItem value="minute">Minutos</MenuItem>
-                            </Select>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
 
-                            <TextField
-                                label="Meta Diária"
-                                type="number"
-                                value={task.dailyGoal === 0 ? "" : task.dailyGoal} // mostra vazio se for 0
-                                onChange={(e) => handleChange("dailyGoal", e.target.value)}
-                                fullWidth
-                                InputProps={{
-                                    inputProps: { min: 0 },
-                                    sx: {
-                                        "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
-                                            WebkitAppearance: "none",
-                                            margin: 0,
+                                <TextField
+                                    label="Meta Diária"
+                                    type="number"
+                                    value={task.dailyGoal === 0 ? "" : task.dailyGoal} // mostra vazio se for 0
+                                    onChange={(e) => handleChange("dailyGoal", e.target.value)}
+                                    fullWidth
+                                    InputProps={{
+                                        inputProps: { min: 0 },
+                                        sx: {
+                                            "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                                WebkitAppearance: "none",
+                                                margin: 0,
+                                            },
+                                            "& input[type=number]": { MozAppearance: "textfield" },
                                         },
-                                        "& input[type=number]": { MozAppearance: "textfield" },
-                                    },
-                                }}
-                            />
+                                    }}
+                                />
 
-                            <TextField
-                                label="Meta Geral"
-                                type="number"
-                                value={task.totalGoal === 0 ? "" : task.totalGoal}
-                                onChange={(e) => handleChange("totalGoal", e.target.value)}
-                                fullWidth
-                                InputProps={{
-                                    inputProps: { min: 0 },
-                                    sx: {
-                                        "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
-                                            WebkitAppearance: "none",
-                                            margin: 0,
-                                        },
-                                        "& input[type=number]": { MozAppearance: "textfield" },
-                                    },
-                                }}
-                            />
+                                <FormControl fullWidth >
+                                    <InputLabel id="measure-label">Medida</InputLabel>
+                                    <Select
+                                        labelId="measure-label"
+                                        value={task.measure}
+                                        onChange={(e) => handleChange("measure", e.target.value)}
+                                        displayEmpty
+                                        label='Medida'
+                                    >
+                                        <MenuItem value="" disabled>
 
-                            <Select
-                                inputProps={{
-                                    'aria-label': 'periodo da meta',
-                                }}
-                                value={task.totalGoalType}
-                                onChange={(e) => handleChange("totalGoalType", e.target.value)}
-                                fullWidth
-                                required
-                                displayEmpty
-                                variant="outlined"
-                            >
-                                <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
-                                <MenuItem value="general">Geral</MenuItem>
-                                <MenuItem value="monthly">Mensal</MenuItem>
-                                <MenuItem value="weekly">Semanal</MenuItem>
-                            </Select>
+                                        </MenuItem>
+                                        <MenuItem value="m">Metros</MenuItem>
+                                        <MenuItem value="km">Quilômetros</MenuItem>
+                                        <MenuItem value="repetition">Repetições</MenuItem>
+                                        <MenuItem value="hour">Horas</MenuItem>
+                                        <MenuItem value="minute">Minutos</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+
+                            <FormControlLabel control={
+                                <Switch
+                                    checked={defineGeneralGoal}
+                                    onChange={() => {
+                                        setDefineGeneralGoal(!defineGeneralGoal);
+                                        if (defineGeneralGoal) {
+                                            resetGeneralGoals();
+                                        }
+                                    }}
+                                    color="warning"
+                                />
+                            }
+                                label='Definir Metas Gerais'
+                            />
+                            {defineGeneralGoal && (
+
+                                <Box sx={{ display: 'flex', gap: 2 }}>
+
+                                    <TextField
+                                        label="Meta Geral"
+                                        type="number"
+                                        value={task.totalGoal === 0 ? "" : task.totalGoal}
+                                        onChange={(e) => handleChange("totalGoal", e.target.value)}
+                                        fullWidth
+                                        InputProps={{
+                                            inputProps: { min: 0 },
+                                            sx: {
+                                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                                    WebkitAppearance: "none",
+                                                    margin: 0,
+                                                },
+                                                "& input[type=number]": { MozAppearance: "textfield" },
+                                            },
+                                        }}
+                                    />
+
+                                    <Select
+                                        inputProps={{
+                                            'aria-label': 'periodo da meta',
+                                        }}
+                                        value={task.totalGoalType}
+                                        onChange={(e) => handleChange("totalGoalType", e.target.value)}
+                                        fullWidth
+                                        required
+                                        displayEmpty
+                                        variant="outlined"
+                                    >
+                                        <MenuItem value="" disabled>Selecione uma opção:</MenuItem>
+                                        <MenuItem value="general">Geral</MenuItem>
+                                        <MenuItem value="monthly">Mensal</MenuItem>
+                                        <MenuItem value="weekly">Semanal</MenuItem>
+                                    </Select>
+                                </Box>
+                            )}
                         </>
                     )}
+                    <Divider />
                     <TextField
                         label="Horário"
                         type="time"

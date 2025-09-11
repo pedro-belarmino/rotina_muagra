@@ -19,6 +19,7 @@ export function useTaskController() {
         schedule: "",
         dailyTask: true,
         archived: false,
+        // days: []
     });
 
     const resetForm = () => {
@@ -33,10 +34,11 @@ export function useTaskController() {
             schedule: "",
             dailyTask: true,
             archived: false,
+            // days: []
         });
     };
 
-    const resetGoals = () => {
+    const resetDailyGoals = () => {
         setTask((prev) => ({
             ...prev,
             measure: '',
@@ -44,11 +46,24 @@ export function useTaskController() {
             totalGoal: 0,
             totalGoalType: "",
         }))
+        setDefineGeneralGoal(false)
+    }
+
+    const resetGeneralGoals = () => {
+        setTask((prev) => ({
+            ...prev,
+            totalGoal: 0,
+            totalGoalType: ''
+        }))
     }
 
     const [snackbar, setSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [severity, setSeverity] = useState<SeverityType>('info');
+
+    const [defineDailyGoal, setDefineDailyGoal] = useState(false)
+    const [defineGeneralGoal, setDefineGeneralGoal] = useState(false)
+
     const navigate = useNavigate()
 
 
@@ -156,7 +171,12 @@ export function useTaskController() {
         snackbar,
         snackbarMessage,
         severity,
-        resetGoals,
+        defineGeneralGoal,
+        defineDailyGoal,
+        setDefineDailyGoal,
+        resetGeneralGoals,
+        setDefineGeneralGoal,
+        resetDailyGoals,
         handleChange,
         handleSave,
         setSnackbar,

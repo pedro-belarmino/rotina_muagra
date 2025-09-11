@@ -10,4 +10,7 @@ export type Task = {
     createdAt: any; // Timestamp do Firestore
     schedule: string; // "HH:mm"
     dailyTask: boolean;
+    // days: Weekday[]
 };
+
+// type Weekday = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
