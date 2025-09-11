@@ -20,7 +20,7 @@ export async function addTask(userId: string, task: Task) {
     await addDoc(tasksRef, {
         ...task,
         createdAt: Timestamp.now(),
-        archived: false, // 🔹 nova flag
+        archived: false, //  nova flag
     });
 }
 
@@ -54,7 +54,7 @@ export async function archiveTask(userId: string, taskId: string) {
     await updateDoc(taskRef, { archived: true });
 }
 
-// ⚠️ Se quiser realmente apagar do Firestore
+//  Se quiser realmente apagar do Firestore
 export async function deleteTaskPermanently(userId: string, taskId: string) {
     // 1. Apagar a própria tarefa
     const taskRef = doc(db, "users", userId, "tasks", taskId);
