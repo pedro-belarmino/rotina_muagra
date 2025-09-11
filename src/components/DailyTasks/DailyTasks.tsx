@@ -22,20 +22,27 @@ import { useDailyTasksController } from './DailyTasks.controller';
 import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
 import { useState } from 'react';
+import SharedSnackbar from '../shared/SharedSnackbar';
 
 function DailyTasks() {
     const {
-        timeLeft,
-        confirmArchiveTask,
-        confirmModalOpen,
+        addCounter,
         setConfirmModalOpen,
-        goalValue,
         setGoalValue,
         openConfirmModal,
         confirmToggleTask,
-        goalType,
+        confirmArchiveTask,
         setOpenModal,
         setSelectedTask,
+        setSnackbar,
+        snackbarMessage,
+        severity,
+        snackbar,
+        confirmModalOpen,
+        timeLeft,
+        goalValue,
+        goalType,
+        counter,
         selectedTask,
         doneToday,
         tasks,
@@ -98,6 +105,42 @@ function DailyTasks() {
                     </Box>
                 </Stack>
 
+                {/* Contador de Muagradecimentos */}
+                <Card
+                    sx={{
+                        mb: 2,
+                        borderRadius: 3,
+                        boxShadow: 1,
+                        textAlign: "center",
+                        p: 1.5,
+                    }}
+                >
+                    <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Muagradecimentos
+                        </Typography>
+                        <Typography
+                            variant="h5"
+                            fontWeight="bold"
+                            color="warning.main"
+                            sx={{ my: 0.5 }}
+                        >
+                            {counter}
+                        </Typography>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            color="warning"
+                            onClick={addCounter}
+                            sx={{ textTransform: "none", fontWeight: "bold" }}
+                        >
+                            + Adicionar
+                        </Button>
+                    </CardContent>
+                </Card>
+
+
+
                 <List>
                     {paginatedTasks.map((task) => (
                         <Card
@@ -109,10 +152,37 @@ function DailyTasks() {
                             }}
                         >
                             <CardContent>
-                                <ListItem
-                                    disableGutters
-                                    secondaryAction={
-                                        <>
+                                <ListItem disableGutters>
+                                    <Stack
+                                        direction={{ xs: "column", sm: "row" }}
+                                        spacing={1}
+                                        alignItems={{ xs: "flex-start", sm: "center" }}
+                                        justifyContent="space-between"
+                                        sx={{ width: "100%" }}
+                                    >
+                                        {/* Nome da tarefa */}
+                                        <ListItemText
+                                            primary={
+                                                <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
+                                                    {task.schedule === ""
+                                                        ? task.name
+                                                        : `${task.schedule} - ${task.name}`}
+                                                </Typography>
+                                            }
+                                            secondary={
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {task.dailyGoal} {formatMeasure(task.measure)} / dia
+                                                </Typography>
+                                            }
+                                        />
+
+                                        {/* Botões */}
+                                        <Stack
+                                            direction="row"
+                                            spacing={1}
+                                            justifyContent={{ xs: "flex-end", sm: "flex-start" }}
+                                            sx={{ width: { xs: "100%", sm: "auto" } }}
+                                        >
                                             <Button
                                                 variant="contained"
                                                 size="small"
@@ -130,25 +200,10 @@ function DailyTasks() {
                                             >
                                                 <ArchiveOutlinedIcon />
                                             </Button>
-                                        </>
-                                    }
-                                >
-                                    <ListItemText
-                                        primary={
-                                            <Typography variant="subtitle1" fontWeight="bold">
-                                                {task.schedule == '' ? <>{task.name}</> : <>{task.schedule} - {task.name}</>}
-                                            </Typography>
-                                        }
-                                        secondary={
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                            >
-                                                {task.dailyGoal} {formatMeasure(task.measure)} / dia
-                                            </Typography>
-                                        }
-                                    />
+                                        </Stack>
+                                    </Stack>
                                 </ListItem>
+
                             </CardContent>
                         </Card>
                     ))}
@@ -243,7 +298,13 @@ function DailyTasks() {
                     </div>
                 </Box>
             </Modal>
-
+            <SharedSnackbar
+                open={snackbar}
+                message={snackbarMessage}
+                severity={severity}
+                variant="filled"
+                onClose={() => setSnackbar(false)}
+            />
         </>
     );
 }
