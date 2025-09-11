@@ -105,7 +105,7 @@ function DailyTasks() {
                     </Box>
                 </Stack>
 
-                {/* Contador de Muagradecimentos */}
+                {/* Contador de Muagra */}
                 <Card
                     sx={{
                         mb: 2,
@@ -117,7 +117,7 @@ function DailyTasks() {
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
                         <Typography variant="subtitle2" color="text.secondary">
-                            Muagradecimentos
+                            Muagrôemtro Digital
                         </Typography>
                         <Typography
                             variant="h5"
@@ -134,7 +134,7 @@ function DailyTasks() {
                             onClick={addCounter}
                             sx={{ textTransform: "none", fontWeight: "bold" }}
                         >
-                            + Adicionar
+                            + Lembrei de Agradecer
                         </Button>
                     </CardContent>
                 </Card>

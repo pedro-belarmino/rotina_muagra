@@ -4,6 +4,8 @@ export function formatMeasure(measure: string) {
             return 'repetições';
         case 'minute':
             return 'minutos';
+        case 'hour':
+            return 'horas';
 
         default:
             return measure

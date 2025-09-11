@@ -83,18 +83,30 @@ export function useTaskController() {
                 setSeverity('warning');
                 numericValue = 59;
             }
+            if (field === "dailyGoal" && task.measure === "hour" && numericValue > 23) {
+                setSnackbar(true);
+                setSnackbarMessage('Você selecionou horas muito altas, selecione um valor realista.');
+                setSeverity('warning');
+                numericValue = 0;
+            }
 
             setTask((prev) => ({ ...prev, [field]: numericValue }));
         } else if (field === "measure") {
             setTask((prev) => {
                 let updated = { ...prev, measure: value };
 
-                // valida dailyGoal caso já exista valor
                 if (value === "minute" && Number(updated.dailyGoal) > 59) {
                     setSnackbar(true);
                     setSnackbarMessage('Para valores a partir de 60 minutos, selecione a medida em horas.');
                     setSeverity('warning');
                     updated.dailyGoal = 59;
+                }
+
+                if (value === "hour" && Number(updated.dailyGoal) > 59) {
+                    setSnackbar(true);
+                    setSnackbarMessage('Você selecionou horas muito altas, selecione um valor realista.');
+                    setSeverity('warning');
+                    updated.dailyGoal = 0;
                 }
 
                 return updated;
@@ -144,7 +156,7 @@ export function useTaskController() {
             setSeverity('error');
             return;
         }
-        if (task.totalGoal && !task.totalGoalType) {
+        if (!task.totalGoal && task.totalGoalType) {
             setSnackbar(true);
             setSnackbarMessage('Você inseriu um período para sua meta geral. Insira também o valor dessa meta');
             setSeverity('error');

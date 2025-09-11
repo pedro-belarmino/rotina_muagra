@@ -52,10 +52,12 @@ export default function HistoryDisplay() {
 
                                 <Typography><b>Dias totais:</b> {stats.totalDays}</Typography>
                                 <Typography><b>Dias seguidos:</b> {stats.streak}</Typography>
-                                <Typography>
-                                    <b>Medida total:</b> {stats.totalMeasure} {task?.measure}
-                                </Typography>
+                                {task.measure != '' && (
 
+                                    <Typography>
+                                        <b>Meta total alcançada:</b> {stats.totalMeasure} {task?.measure}
+                                    </Typography>
+                                )}
                                 <Divider sx={{ my: 2 }} />
                                 <Accordion
                                     component={Paper}
@@ -77,8 +79,8 @@ export default function HistoryDisplay() {
                                                 .map((log) => (
                                                     <ListItem key={log.id}>
                                                         <ListItemText
-                                                            primary={`${log.value} ${task?.measure}`}
-                                                            secondary={new Date(log.doneAt).toLocaleString()}
+                                                            primary={new Date(log.doneAt).toLocaleString()}
+                                                            secondary={task.measure != '' && `${log.value} ${task?.measure}`}
                                                         />
                                                     </ListItem>
                                                 ))}
