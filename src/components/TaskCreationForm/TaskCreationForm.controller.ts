@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { addTask } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import type { SeverityType } from "../../components/shared/SharedSnackbar";
+import { useNavigate } from "react-router-dom";
 
 export function useTaskController() {
     const { user } = useAuth();
@@ -13,15 +14,58 @@ export function useTaskController() {
         measure: "",
         dailyGoal: 0,
         totalGoal: 0,
+        totalGoalType: '',
         createdAt: null,
         schedule: "",
         dailyTask: true,
         archived: false,
+        // days: []
     });
+
+    const resetForm = () => {
+        setTask({
+            name: "",
+            description: "",
+            measure: "",
+            dailyGoal: 0,
+            totalGoal: 0,
+            totalGoalType: '',
+            createdAt: null,
+            schedule: "",
+            dailyTask: true,
+            archived: false,
+            // days: []
+        });
+    };
+
+    const resetDailyGoals = () => {
+        setTask((prev) => ({
+            ...prev,
+            measure: '',
+            dailyGoal: 0,
+            totalGoal: 0,
+            totalGoalType: "",
+        }))
+        setDefineGeneralGoal(false)
+    }
+
+    const resetGeneralGoals = () => {
+        setTask((prev) => ({
+            ...prev,
+            totalGoal: 0,
+            totalGoalType: ''
+        }))
+    }
 
     const [snackbar, setSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [severity, setSeverity] = useState<SeverityType>('info');
+
+    const [defineDailyGoal, setDefineDailyGoal] = useState(false)
+    const [defineGeneralGoal, setDefineGeneralGoal] = useState(false)
+
+    const navigate = useNavigate()
+
 
     const handleChange = (field: string, value: any) => {
         if (field === "dailyGoal" || field === "totalGoal") {
@@ -62,32 +106,51 @@ export function useTaskController() {
 
 
 
-    const resetForm = () => {
-        setTask({
-            name: "",
-            description: "",
-            measure: "",
-            dailyGoal: 0,
-            totalGoal: 0,
-            createdAt: null,
-            schedule: "",
-            dailyTask: true,
-            archived: false,
-        });
-    };
+
 
     const handleSave = async () => {
         if (!user) {
-            alert("Você precisa estar logado para criar tarefas.");
+            alert("Você não está logado. Você será redirecionado para o login");
+            navigate('')
             return;
         }
-
-        if (!task.name || !task.measure || task.dailyGoal == 0) {
+        if (!task.name) {
             setSnackbar(true);
-            setSnackbarMessage('Preencha todos os campos obrigatórios');
+            setSnackbarMessage('Insira o nome da tarefa');
             setSeverity('error');
             return;
         }
+        if (task.dailyGoal && !task.measure) {
+            setSnackbar(true);
+            setSnackbarMessage('Insira uma medida para sua meta.');
+            setSeverity('error');
+            return;
+        }
+        if (task.totalGoal && !task.dailyGoal) {
+            setSnackbar(true);
+            setSnackbarMessage('Insira o quanto quer fazer por dia para bater a sua meta geral.');
+            setSeverity('error');
+            return;
+        }
+        if (task.measure && !task.dailyGoal) {
+            setSnackbar(true);
+            setSnackbarMessage('Você inseriu uma medida. Insira também o valor da sua meta diária.');
+            setSeverity('error');
+            return;
+        }
+        if (task.totalGoal && !task.totalGoalType) {
+            setSnackbar(true);
+            setSnackbarMessage('Adicione o período da sua tarefa geral.');
+            setSeverity('error');
+            return;
+        }
+        if (task.totalGoal && !task.totalGoalType) {
+            setSnackbar(true);
+            setSnackbarMessage('Você inseriu um período para sua meta geral. Insira também o valor dessa meta');
+            setSeverity('error');
+            return;
+        }
+
 
         try {
             await addTask(user.uid, task);
@@ -108,6 +171,12 @@ export function useTaskController() {
         snackbar,
         snackbarMessage,
         severity,
+        defineGeneralGoal,
+        defineDailyGoal,
+        setDefineDailyGoal,
+        resetGeneralGoals,
+        setDefineGeneralGoal,
+        resetDailyGoals,
         handleChange,
         handleSave,
         setSnackbar,

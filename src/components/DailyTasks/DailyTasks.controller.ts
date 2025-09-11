@@ -29,7 +29,7 @@ export const useDailyTasksController = () => {
     const openConfirmModal = (task: Task) => {
         setSelectedTask(task);
         setGoalValue(task.dailyGoal); // valor inicial
-        setGoalType(task.measure)
+        setGoalType(task.measure || '')
         setConfirmModalOpen(true);
     };
 
@@ -48,11 +48,11 @@ export const useDailyTasksController = () => {
                     userId: user.uid,
                     doneAt: new Date(),
                     value: Number(goalValue),
-                    measure: selectedTask.measure,
+                    measure: selectedTask.measure || '',
                     taskName: selectedTask.name,
                 },
                 selectedTask.name,
-                selectedTask.measure
+                selectedTask.measure || ''
             );
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: newLogId }));
         }
@@ -154,11 +154,11 @@ export const useDailyTasksController = () => {
                     userId: user.uid,
                     doneAt: new Date(),
                     value,
-                    measure: task.measure,
+                    measure: task.measure || '',
                     taskName: task.name,
                 },
                 task.name,
-                task.measure
+                task.measure || ''
             );
             setDoneToday((prev) => ({ ...prev, [task.id!]: newLogId }));
         }

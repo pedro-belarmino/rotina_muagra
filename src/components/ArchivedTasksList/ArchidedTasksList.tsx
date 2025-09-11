@@ -126,18 +126,28 @@ export default function ArchivedTasksList() {
                                         </>
                                     }
                                 >
-                                    <ListItemText
-                                        primary={
-                                            <Typography variant="subtitle1" fontWeight="bold">
-                                                {task.schedule} - {task.name}
-                                            </Typography>
-                                        }
-                                        secondary={
-                                            <Typography variant="body2" color="text.secondary">
-                                                {task.dailyGoal} {formatMeasure(task.measure)}/dia
-                                            </Typography>
-                                        }
-                                    />
+                                    {task.measure ? (
+                                        <ListItemText
+                                            primary={
+                                                <Typography variant="subtitle1" fontWeight="bold">
+                                                    {task.schedule} - {task.name}
+                                                </Typography>
+                                            }
+                                            secondary={
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {task.dailyGoal} {formatMeasure(task.measure)}/dia
+                                                </Typography>
+                                            }
+                                        />
+                                    ) : (
+                                        <ListItemText
+                                            primary={
+                                                <Typography variant="subtitle1" fontWeight="bold">
+                                                    {task.schedule} - {task.name}
+                                                </Typography>
+                                            }
+                                        />
+                                    )}
                                 </ListItem>
                             </CardContent>
                         </Card>
