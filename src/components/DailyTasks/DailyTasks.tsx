@@ -53,7 +53,7 @@ function DailyTasks() {
 
     // Estado da paginação
     const [page, setPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 8;
 
     // Cálculo da paginação
     const startIndex = (page - 1) * itemsPerPage;
