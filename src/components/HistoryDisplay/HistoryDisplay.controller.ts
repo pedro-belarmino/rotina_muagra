@@ -4,6 +4,7 @@ import { getAllTaskLogs } from "../../service/taskLogService";
 import { getTasks } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import type { TaskLog } from "../../types/TaskLog";
+import { getAllDailyCounters, getTotalCounter } from "../../service/counterService";
 
 type TaskStats = {
     totalDays: number;
@@ -18,6 +19,9 @@ export const useHistoryDisplayController = () => {
     const [taskStats, setTaskStats] = useState<Record<string, TaskStats>>({});
     const [tasks, setTasks] = useState<Record<string, Task>>({});
     const [expanded, setExpanded] = useState<string | false>(false);
+
+    const [counterAll, setCounterAll] = useState<{ dateKey: string; value: number }[] | undefined>()
+    const [counterTotal, setCounterTotal] = useState<number>(0)
 
     const handleChange =
         (panel: string) => (_event: React.SyntheticEvent, newExpanded: boolean) => {
@@ -102,7 +106,23 @@ export const useHistoryDisplayController = () => {
             setTaskStats(statsByTask);
         };
 
+        const fechAllCounter = async () => {
+            const value = await getAllDailyCounters(user.uid)
+            setCounterAll(value)
+        }
+        const fechTotalCounter = async () => {
+            const value = await getTotalCounter(user.uid)
+            setCounterTotal(value)
+        }
+
+
+
+        fechTotalCounter()
+        fechAllCounter()
         fetchData();
+
+
+
     }, [user]);
 
 
@@ -110,6 +130,8 @@ export const useHistoryDisplayController = () => {
         taskStats,
         tasks,
         expanded,
+        counterAll,
+        counterTotal,
         handleChange,
     }
 }

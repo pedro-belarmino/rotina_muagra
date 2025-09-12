@@ -24,7 +24,8 @@ export default function HistoryDisplay() {
         taskStats,
         tasks,
         expanded,
-
+        counterAll,
+        counterTotal,
         handleChange,
     } = useHistoryDisplayController()
 
@@ -34,6 +35,20 @@ export default function HistoryDisplay() {
                 <Typography variant="h5" align="center" gutterBottom fontWeight="bold">
                     Histórico por Tarefa
                 </Typography>
+                <Card variant="outlined" sx={{ mb: 3, borderRadius: 3, p: 3 }}>
+
+                    <p>
+                        {counterTotal}
+                    </p>
+                    <br />
+                    {counterAll?.map(item => (
+                        <>
+                            <li>{item.dateKey}</li>
+                            <li>{item.value}</li>
+                            <br />
+                        </>
+                    ))}
+                </Card>
 
                 {Object.entries(taskStats).map(([taskId, stats]) => {
                     const task = tasks[taskId];

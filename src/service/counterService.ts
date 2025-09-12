@@ -6,6 +6,8 @@ import {
     updateDoc,
     increment,
     serverTimestamp,
+    collection,
+    getDocs,
 } from "firebase/firestore";
 
 const getTodayKey = () => {
@@ -13,46 +15,28 @@ const getTodayKey = () => {
     return today.toISOString().split("T")[0]; // yyyy-mm-dd
 };
 
-// Buscar valor atual do contador
-export async function getDailyCounter(userId: string): Promise<number> {
-    const counterRef = doc(db, "users", userId, "meta", "dailyCounter");
+//  Pegar valor de um dia específico
+export async function getDailyCounter(userId: string, dateKey?: string): Promise<number> {
+    const key = dateKey ?? getTodayKey();
+    const counterRef = doc(db, "users", userId, "dailyCounters", key);
     const snap = await getDoc(counterRef);
 
-    const todayKey = getTodayKey();
-
     if (!snap.exists()) {
-        // Se não existe, cria zerado
-        await setDoc(counterRef, {
-            value: 0,
-            dateKey: todayKey,
-            updatedAt: serverTimestamp(),
-        });
         return 0;
     }
 
-    const data = snap.data() as { value: number; dateKey: string };
-
-    // Se é de outro dia, resetar
-    if (data.dateKey !== todayKey) {
-        await setDoc(counterRef, {
-            value: 0,
-            dateKey: todayKey,
-            updatedAt: serverTimestamp(),
-        });
-        return 0;
-    }
-
+    const data = snap.data() as { value: number };
     return data.value;
 }
 
-// Incrementar em +1
+//  Incrementar o contador do dia atual
 export async function incrementDailyCounter(userId: string): Promise<number> {
-    const counterRef = doc(db, "users", userId, "meta", "dailyCounter");
     const todayKey = getTodayKey();
+    const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
     const snap = await getDoc(counterRef);
 
     if (!snap.exists()) {
-        // Se não existe, cria já com valor 1
+        // cria já com valor 1
         await setDoc(counterRef, {
             value: 1,
             dateKey: todayKey,
@@ -61,24 +45,32 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
         return 1;
     }
 
-    const data = snap.data() as { value: number; dateKey: string };
+    const data = snap.data() as { value: number };
 
-    if (data.dateKey !== todayKey) {
-        // Se é de outro dia, resetar e começar do 1
-        await setDoc(counterRef, {
-            value: 1,
-            dateKey: todayKey,
-            updatedAt: serverTimestamp(),
-        });
-        return 1;
-    }
-
-    // Se é do mesmo dia, incrementar
     await updateDoc(counterRef, {
         value: increment(1),
-        dateKey: todayKey,
         updatedAt: serverTimestamp(),
     });
 
     return data.value + 1;
+}
+
+//  Buscar todos os dias (histórico)
+export async function getAllDailyCounters(userId: string): Promise<{ dateKey: string; value: number }[]> {
+    const countersRef = collection(db, "users", userId, "dailyCounters");
+    const snap = await getDocs(countersRef);
+
+    const result: { dateKey: string; value: number }[] = [];
+    snap.forEach(docSnap => {
+        const data = docSnap.data() as { value: number; dateKey: string };
+        result.push({ dateKey: data.dateKey, value: data.value });
+    });
+
+    return result;
+}
+
+//  Somar valor total de todos os dias
+export async function getTotalCounter(userId: string): Promise<number> {
+    const all = await getAllDailyCounters(userId);
+    return all.reduce((acc, cur) => acc + cur.value, 0);
 }
