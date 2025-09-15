@@ -12,3 +12,14 @@ export function formatMeasure(measure: string) {
 
     }
 }
+export function formatData(data: string): string {
+    const partes = data.split('-');
+
+    if (partes.length !== 3) {
+        return '--';
+    }
+
+    const [ano, mes, dia] = partes;
+
+    return `${dia}/${mes}/${ano}`;
+}

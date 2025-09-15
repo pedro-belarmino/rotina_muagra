@@ -210,7 +210,11 @@ function DailyTasks() {
                                             }
                                             secondary={
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
+                                                    {task.dailyGoal > 0 && (
+                                                        <>
+                                                            {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
+                                                        </>
+                                                    )}
                                                 </Typography>
                                             }
                                         />
@@ -307,7 +311,7 @@ function DailyTasks() {
                             : `Deseja marcar a tarefa "${selectedTask?.name}" como concluída?`}
                     </Typography>
 
-                    {!doneToday[selectedTask?.id ?? ""] && (
+                    {!doneToday[selectedTask?.id ?? ""] && (selectedTask?.dailyGoal ?? 0) > 0 ? (
                         <Box sx={{ mt: 2, display: `flex` }}>
                             <TextField
                                 variant='standard'
@@ -329,7 +333,9 @@ function DailyTasks() {
                             <p>{formatMeasure(goalType)}</p>
                         </Box>
 
-                    )}
+                    ) :
+                        <></>
+                    }
 
                     <div style={{ display: "flex", justifyContent: 'space-around', paddingTop: 20 }}>
                         <Button color="info" variant="contained" onClick={confirmToggleTask}>Confirmar</Button>
