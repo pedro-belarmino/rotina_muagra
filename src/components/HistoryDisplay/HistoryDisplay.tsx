@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useHistoryDisplayController } from "./HistoryDisplay.controller";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { formatData } from '../../utils/formatting'
 
 export default function HistoryDisplay() {
 
@@ -68,35 +69,34 @@ export default function HistoryDisplay() {
                             </Typography>
                         </Box>
 
-                        <Divider sx={{ mb: 2 }} />
-
                         {/* Histórico detalhado */}
-                        {counterAll?.map((item, index) => (
-                            <Accordion key={index} sx={{ borderRadius: 2, mb: 1, boxShadow: "none" }}>
-                                <AccordionSummary
-                                    expandIcon={<KeyboardArrowUpIcon />}
-                                    sx={{
-                                        borderRadius: 2,
-                                        px: 2,
-                                        py: 1,
-                                    }}
-                                >
-                                    <Typography variant="body1" fontWeight="medium">
-                                        Ver todos os registros
-                                    </Typography>
-                                </AccordionSummary>
-                                <AccordionDetails sx={{ borderRadius: 2, px: 2 }}>
+                        <Accordion sx={{ borderRadius: 2, mb: 1, boxShadow: "none" }}>
+                            <AccordionSummary
+                                expandIcon={<KeyboardArrowUpIcon />}
+                                sx={{
+                                    borderRadius: 2,
+                                    px: 2,
+                                    py: 1,
+                                }}
+                            >
+                                <Typography variant="body1" fontWeight="medium">
+                                    Ver todos os registros
+                                </Typography>
+                            </AccordionSummary>
+                            {counterAll?.map((item, index) => (
+                                <AccordionDetails key={index} sx={{ borderRadius: 2, px: 2 }}>
                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                                         <Typography variant="body2" color="textSecondary">
-                                            <strong>Data:</strong> {item.dateKey}
+                                            <strong>Data:</strong> {formatData(item.dateKey)}
                                         </Typography>
                                         <Typography variant="body2" color="textSecondary">
                                             <strong>Valor:</strong> {item.value}
                                         </Typography>
                                     </Box>
+                                    <Divider sx={{ mt: 2 }} />
                                 </AccordionDetails>
-                            </Accordion>
-                        ))}
+                            ))}
+                        </Accordion>
                     </Card>
                 )}
 
@@ -142,12 +142,15 @@ export default function HistoryDisplay() {
                                                         new Date(a.doneAt).getTime()
                                                 )
                                                 .map((log) => (
-                                                    <ListItem key={log.id}>
-                                                        <ListItemText
-                                                            primary={new Date(log.doneAt).toLocaleString()}
-                                                            secondary={task.measure != '' && `${log.value} ${task?.measure}`}
-                                                        />
-                                                    </ListItem>
+                                                    <>
+                                                        <ListItem key={log.id}>
+                                                            <ListItemText
+                                                                primary={new Date(log.doneAt).toLocaleString()}
+                                                                secondary={task.measure != '' && `${log.value} ${task?.measure}`}
+                                                            />
+                                                        </ListItem>
+                                                        <Divider />
+                                                    </>
                                                 ))}
                                         </List>
                                     </AccordionDetails>
