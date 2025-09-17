@@ -10,7 +10,10 @@ export type Task = {
     createdAt: any; // Timestamp do Firestore
     schedule: string; // "HH:mm"
     dailyTask: boolean;
-    // days: Weekday[]
+
+    days?: number; // quantos dias no período atual
+    periodStart?: string | null; // data 'YYYY-MM-DD' que marca o início do período atual (semana/mes) para essa tarefa
+
+
 };
 
-// type Weekday = "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";

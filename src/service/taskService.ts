@@ -13,14 +13,19 @@ import {
     // limit,
 } from "firebase/firestore";
 import type { Task } from "../types/Task";
+import { getPeriodStartForType } from "../utils/period";
 
 // Adicionar tarefa
 export async function addTask(userId: string, task: Task) {
     const tasksRef = collection(db, "users", userId, "tasks");
+    const now = new Date();
+    const periodStart = getPeriodStartForType(now, task.totalGoalType as any);
     await addDoc(tasksRef, {
         ...task,
         createdAt: Timestamp.now(),
-        archived: false, //  nova flag
+        archived: false,
+        days: 0,
+        periodStart: periodStart ?? null,
     });
 }
 
@@ -30,15 +35,17 @@ export async function getTasks(userId: string, includeArchived = false): Promise
     const snapshot = await getDocs(tasksRef);
 
     return snapshot.docs
-        .map((doc) => {
-            const data = doc.data();
+        .map((docSnap) => {
+            const data = docSnap.data();
             return {
-                id: doc.id,
+                id: docSnap.id,
                 ...data,
                 createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
+                days: data.days ?? 0,
+                periodStart: data.periodStart ?? null,
             } as Task;
         })
-        .filter((task) => includeArchived || !task.archived); // 🔑 filtra arquivadas se não pedir
+        .filter((task) => includeArchived || !task.archived);
 }
 
 
@@ -47,6 +54,31 @@ export async function updateTask(userId: string, taskId: string, updates: Partia
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, updates);
 }
+
+// Função util: verifica se o período da tarefa ainda corresponde ao período corrente
+// Se mudou -> reseta days para 0 e atualiza periodStart. Retorna true se atualizou.
+export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Promise<boolean> {
+    if (!task || !task.id) return false;
+    const now = new Date();
+    const currentPeriodStart = getPeriodStartForType(now, task.totalGoalType as any);
+    // se tarefa não tem tipo de período (general, etc.), nada a fazer
+    if (!currentPeriodStart) {
+        // ainda podemos normalizar periodStart para null
+        if (task.periodStart) {
+            await updateTask(userId, task.id, { periodStart: null, days: task.days ?? 0 });
+            return true;
+        }
+        return false;
+    }
+
+    if (task.periodStart !== currentPeriodStart) {
+        // período mudou: resetar days para 0 e atualizar periodStart
+        await updateTask(userId, task.id, { days: 0, periodStart: currentPeriodStart });
+        return true;
+    }
+    return false;
+}
+
 
 // Arquivar tarefa (em vez de deletar)
 export async function archiveTask(userId: string, taskId: string) {

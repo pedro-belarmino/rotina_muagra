@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
 import { useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
+import { daysInMonthFor } from '../../utils/period';
 
 function DailyTasks() {
     const {
@@ -213,6 +214,14 @@ function DailyTasks() {
                                                     {task.dailyGoal > 0 && (
                                                         <>
                                                             {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
+                                                        </>
+                                                    )}
+
+                                                    {/* mostra X/Y apenas se tarefa tiver tipo mensal ou semanal (conforme totalGoalType) */}
+                                                    {(task.totalGoalType === 'weekly' || task.totalGoalType === 'monthly') && (
+                                                        <>
+                                                            <br />
+                                                            {(task.days ?? 0)} / {task.totalGoalType === 'weekly' ? 7 : daysInMonthFor(new Date())}
                                                         </>
                                                     )}
                                                 </Typography>
