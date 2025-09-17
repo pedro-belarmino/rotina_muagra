@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
-import { getTasks, archiveTask } from "../../service/taskService";
+import { getTasks, archiveTask, ensureTaskPeriodIsCurrent } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
@@ -65,7 +65,15 @@ export const useDailyTasksController = () => {
         if (!user) return;
         setLoading(true);
 
-        const userTasks = await getTasks(user.uid, false);
+        let userTasks = await getTasks(user.uid, false);
+
+        // garante período atual (reseta days se necessário)
+        for (const t of userTasks) {
+            await ensureTaskPeriodIsCurrent(user.uid, t);
+        }
+
+        // refetch after potential updates
+        userTasks = await getTasks(user.uid, false);
 
         // ordenar pelo horário (ex: "08:30", "14:00")
         userTasks.sort((a, b) => {
