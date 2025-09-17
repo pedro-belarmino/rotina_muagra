@@ -58,6 +58,7 @@ export const useDailyTasksController = () => {
         }
         setConfirmModalOpen(false);
         setSelectedTask(null);
+        fetchTasks()
     };
 
 
