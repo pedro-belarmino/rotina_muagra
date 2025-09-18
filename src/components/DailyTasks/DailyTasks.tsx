@@ -221,7 +221,7 @@ function DailyTasks() {
                                                     {(task.totalGoalType === 'weekly' || task.totalGoalType === 'monthly') && (
                                                         <>
                                                             <br />
-                                                            {(task.days ?? 0)} / {task.totalGoalType === 'weekly' ? 7 : daysInMonthFor(new Date())}
+                                                            Dias feitos: {(task.days ?? 0)} / {task.totalGoalType === 'weekly' ? 7 : daysInMonthFor(new Date())}
                                                         </>
                                                     )}
                                                 </Typography>
