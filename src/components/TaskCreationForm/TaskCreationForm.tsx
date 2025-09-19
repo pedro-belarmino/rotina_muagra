@@ -186,14 +186,6 @@ export default function TaskCreationForm() {
                         </>
                     )}
                     <Divider />
-                    <TextField
-                        label="Horário"
-                        type="time"
-                        value={task.schedule}
-                        onChange={(e) => handleChange("schedule", e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                    />
 
                     <FormControlLabel
                         control={
