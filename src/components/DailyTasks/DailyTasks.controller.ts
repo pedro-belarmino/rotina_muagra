@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
-import { getTasks, archiveTask, ensureTaskPeriodIsCurrent } from "../../service/taskService";
+import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
@@ -40,21 +40,25 @@ export const useDailyTasksController = () => {
         if (logId) {
             await deleteTaskLog(user.uid, logId);
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: null }));
+
+            await updateTask(user.uid, selectedTask.id, {
+                days: (selectedTask.days ?? 0) - 1,
+                daysYear: (selectedTask.daysYear ?? 0) - 1,
+            });
         } else {
+            const value = selectedTask.dailyGoal;
             const newLogId = await addTaskLog(
                 user.uid,
-                {
-                    taskId: selectedTask.id!,
-                    userId: user.uid,
-                    doneAt: new Date(),
-                    value: Number(goalValue),
-                    measure: selectedTask.measure || '',
-                    taskName: selectedTask.name,
-                },
+                { taskId: selectedTask.id!, userId: user.uid, doneAt: new Date(), value, measure: selectedTask.measure || '', taskName: selectedTask.name },
                 selectedTask.name,
                 selectedTask.measure || ''
             );
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: newLogId }));
+
+            await updateTask(user.uid, selectedTask.id, {
+                days: (selectedTask.days ?? 0) + 1,
+                daysYear: (selectedTask.daysYear ?? 0) + 1,
+            });
         }
         setConfirmModalOpen(false);
         setSelectedTask(null);
@@ -71,6 +75,7 @@ export const useDailyTasksController = () => {
         // garante período atual (reseta days se necessário)
         for (const t of userTasks) {
             await ensureTaskPeriodIsCurrent(user.uid, t);
+            await ensureTaskYearIsCurrent(user.uid, t);
         }
 
         // refetch after potential updates
@@ -152,24 +157,29 @@ export const useDailyTasksController = () => {
         const logId = doneToday[task.id];
 
         if (logId) {
+            // Desmarcar
             await deleteTaskLog(user.uid, logId);
             setDoneToday((prev) => ({ ...prev, [task.id!]: null }));
+
+            await updateTask(user.uid, task.id, {
+                days: (task.days ?? 0) - 1,
+                daysYear: (task.daysYear ?? 0) - 1, // 👈 decrementa
+            });
         } else {
+            // Marcar como feito
             const value = task.dailyGoal;
             const newLogId = await addTaskLog(
                 user.uid,
-                {
-                    taskId: task.id!,
-                    userId: user.uid,
-                    doneAt: new Date(),
-                    value,
-                    measure: task.measure || '',
-                    taskName: task.name,
-                },
+                { taskId: task.id!, userId: user.uid, doneAt: new Date(), value, measure: task.measure || '', taskName: task.name },
                 task.name,
                 task.measure || ''
             );
             setDoneToday((prev) => ({ ...prev, [task.id!]: newLogId }));
+
+            await updateTask(user.uid, task.id, {
+                days: (task.days ?? 0) + 1,
+                daysYear: (task.daysYear ?? 0) + 1, // 👈 incrementa
+            });
         }
     };
 

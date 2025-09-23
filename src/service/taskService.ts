@@ -26,6 +26,8 @@ export async function addTask(userId: string, task: Task) {
         archived: false,
         days: 0,
         periodStart: periodStart ?? null,
+        daysYear: 0, //  inicializa contador anual
+        yearStart: String(now.getFullYear()), //  marca ano atual
     });
 }
 
@@ -43,6 +45,8 @@ export async function getTasks(userId: string, includeArchived = false): Promise
                 createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
                 days: data.days ?? 0,
                 periodStart: data.periodStart ?? null,
+                daysYear: data.daysYear ?? 0,      // garante que vem do Firestore
+                yearStart: data.yearStart ?? null
             } as Task;
         })
         .filter((task) => includeArchived || !task.archived);
@@ -74,6 +78,19 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
     if (task.periodStart !== currentPeriodStart) {
         // período mudou: resetar days para 0 e atualizar periodStart
         await updateTask(userId, task.id, { days: 0, periodStart: currentPeriodStart });
+        return true;
+    }
+    return false;
+}
+
+export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promise<boolean> {
+    if (!task || !task.id) return false;
+    const now = new Date();
+    const currentYear = String(now.getFullYear());
+
+    if (task.yearStart !== currentYear) {
+        // mudou o ano → resetar diasYear
+        await updateTask(userId, task.id, { daysYear: 0, yearStart: currentYear });
         return true;
     }
     return false;
