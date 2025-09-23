@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
 import { useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
-import { daysInMonthFor } from '../../utils/period';
+import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 
 function DailyTasks() {
     const {
@@ -88,8 +88,8 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="subtitle2" color="text.secondary">
-                            Muagrôemtro Digital
+                        <Typography variant="body1" color="text.secondary">
+                            Muagrôemtro
                         </Typography>
                         <Typography
                             variant="h5"
@@ -217,13 +217,14 @@ function DailyTasks() {
                                                         </>
                                                     )}
 
-                                                    {/* mostra X/Y apenas se tarefa tiver tipo mensal ou semanal (conforme totalGoalType) */}
-                                                    {(task.totalGoalType === 'weekly' || task.totalGoalType === 'monthly') && (
-                                                        <>
-                                                            <br />
-                                                            Dias feitos: {(task.days ?? 0)} / {task.totalGoalType === 'weekly' ? 7 : daysInMonthFor(new Date())}
-                                                        </>
-                                                    )}
+                                                    <>
+                                                        <br />
+                                                        Dias feitos no mês: {(task.days ?? 0)} / {daysInMonthFor(new Date())}
+                                                        <br />
+                                                        Dias feitos no ano: {(task.daysYear ?? 0)} / {daysInYearFor(new Date())}
+
+                                                    </>
+
                                                 </Typography>
                                             }
                                         />

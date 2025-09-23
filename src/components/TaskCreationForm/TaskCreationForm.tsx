@@ -22,12 +22,9 @@ export default function TaskCreationForm() {
         snackbar,
         snackbarMessage,
         severity,
-        defineGeneralGoal,
         defineDailyGoal,
-        resetGeneralGoals,
         setDefineDailyGoal,
         resetDailyGoals,
-        setDefineGeneralGoal,
         handleChange,
         handleSave,
         setSnackbar,
@@ -58,7 +55,7 @@ export default function TaskCreationForm() {
                     />
 
                     <TextField
-                        label="Descrição"
+                        label="Descrição (opcional)"
                         value={task.description}
                         onChange={(e) => handleChange("description", e.target.value)}
                         multiline
@@ -121,68 +118,12 @@ export default function TaskCreationForm() {
                                         <MenuItem value="repetition">Repetições</MenuItem>
                                         <MenuItem value="hour">Horas</MenuItem>
                                         <MenuItem value="minute">Minutos</MenuItem>
+                                        <MenuItem value="liter">Litros</MenuItem>
+                                        <MenuItem value="milliliter">Mililitros</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Box>
 
-                            <FormControlLabel control={
-                                <Switch
-                                    checked={defineGeneralGoal}
-                                    onChange={() => {
-                                        setDefineGeneralGoal(!defineGeneralGoal);
-                                        if (defineGeneralGoal) {
-                                            resetGeneralGoals();
-                                        }
-                                    }}
-                                    color="warning"
-                                />
-                            }
-                                label='Definir Metas Gerais'
-                            />
-                            {defineGeneralGoal && (
-
-                                <Box sx={{ display: 'flex', gap: 2 }}>
-
-                                    <TextField
-                                        label="Meta Geral"
-                                        type="number"
-                                        value={task.totalGoal === 0 ? "" : task.totalGoal}
-                                        onChange={(e) => handleChange("totalGoal", e.target.value)}
-                                        fullWidth
-                                        InputProps={{
-                                            inputProps: { min: 0 },
-                                            sx: {
-                                                "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
-                                                    WebkitAppearance: "none",
-                                                    margin: 0,
-                                                },
-                                                "& input[type=number]": { MozAppearance: "textfield" },
-                                            },
-                                        }}
-                                    />
-                                    <FormControl fullWidth >
-                                        <InputLabel id="time-label">Período</InputLabel>
-
-                                        <Select
-                                            labelId="time-label"
-                                            inputProps={{
-                                                'aria-label': 'periodo da meta',
-                                            }}
-                                            value={task.totalGoalType}
-                                            onChange={(e) => handleChange("totalGoalType", e.target.value)}
-                                            fullWidth
-                                            displayEmpty
-                                            variant="outlined"
-                                            label='Período'
-                                        >
-                                            <MenuItem value="" disabled></MenuItem>
-                                            <MenuItem value="general">Geral</MenuItem>
-                                            <MenuItem value="monthly">Mensal</MenuItem>
-                                            <MenuItem value="weekly">Semanal</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Box>
-                            )}
                         </>
                     )}
                     <Divider />

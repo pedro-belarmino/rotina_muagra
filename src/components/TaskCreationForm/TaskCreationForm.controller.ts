@@ -14,7 +14,7 @@ export function useTaskController() {
         measure: "",
         dailyGoal: 0,
         totalGoal: 0,
-        totalGoalType: '',
+        totalGoalType: 'monthly',
         createdAt: null,
         schedule: "",
         dailyTask: true,
@@ -29,7 +29,7 @@ export function useTaskController() {
             measure: "",
             dailyGoal: 0,
             totalGoal: 0,
-            totalGoalType: '',
+            totalGoalType: 'monthly',
             createdAt: null,
             schedule: "",
             dailyTask: true,
@@ -44,7 +44,6 @@ export function useTaskController() {
             measure: '',
             dailyGoal: 0,
             totalGoal: 0,
-            totalGoalType: "",
         }))
         setDefineGeneralGoal(false)
     }
@@ -53,7 +52,6 @@ export function useTaskController() {
         setTask((prev) => ({
             ...prev,
             totalGoal: 0,
-            totalGoalType: ''
         }))
     }
 
@@ -138,27 +136,9 @@ export function useTaskController() {
             setSeverity('error');
             return;
         }
-        if (task.totalGoal && !task.dailyGoal) {
-            setSnackbar(true);
-            setSnackbarMessage('Insira o quanto quer fazer por dia para bater a sua meta geral.');
-            setSeverity('error');
-            return;
-        }
         if (task.measure && !task.dailyGoal) {
             setSnackbar(true);
             setSnackbarMessage('Você inseriu uma medida. Insira também o valor da sua meta diária.');
-            setSeverity('error');
-            return;
-        }
-        if (task.totalGoal && !task.totalGoalType) {
-            setSnackbar(true);
-            setSnackbarMessage('Adicione o período da sua tarefa geral.');
-            setSeverity('error');
-            return;
-        }
-        if (!task.totalGoal && task.totalGoalType) {
-            setSnackbar(true);
-            setSnackbarMessage('Você inseriu um período para sua meta geral. Insira também o valor dessa meta');
             setSeverity('error');
             return;
         }

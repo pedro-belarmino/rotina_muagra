@@ -34,3 +34,8 @@ export function daysInMonthFor(date: Date): number {
     const m = date.getMonth();
     return new Date(y, m + 1, 0).getDate();
 }
+export function daysInYearFor(date: Date): number {
+    const y = date.getFullYear();
+    // Ano bissexto tem 366 dias, caso contrário 365
+    return ((y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0)) ? 366 : 365;
+}
