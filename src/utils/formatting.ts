@@ -6,6 +6,10 @@ export function formatMeasure(measure: string) {
             return 'minutos';
         case 'hour':
             return 'horas';
+        case 'liter':
+            return 'litros';
+        case 'milliliter':
+            return 'mls';
 
         default:
             return measure

@@ -88,7 +88,7 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="body1" color="text.secondary">
+                        <Typography variant="body1" color="text.secondary" sx={{ textDecoration: 'underline' }}>
                             Muagrôemtro
                         </Typography>
                         <Typography
@@ -156,7 +156,7 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="body1" color="text.secondary">
+                        <Typography variant="body1" color="text.secondary" sx={{ textDecoration: 'underline' }}>
                             Muagrôemtro
                         </Typography>
                         <Typography
@@ -219,21 +219,19 @@ function DailyTasks() {
                                                     {task.dailyGoal != 0 ? (
                                                         <>
                                                             <br />
-                                                            Total no mês: {(task.totalMonth ?? 0)} {formatMeasure(task.measure || '')}
+                                                            Total no mês: {(task.totalMonth ?? 0)} {formatMeasure(task.measure || '')} ({(task.days ?? 0)} / {daysInMonthFor(new Date())} dias)
                                                             <br />
-                                                            Total no ano: {(task.totalYear ?? 0)} {formatMeasure(task.measure || '')}
+                                                            Total no ano: {(task.totalYear ?? 0)} {formatMeasure(task.measure || '')} ({(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias)
 
                                                         </>
-                                                    ) :
-                                                        (
-                                                            <>
-                                                                <br />
-                                                                Feitos no mês: {(task.days ?? 0)} / {daysInMonthFor(new Date())}
-                                                                <br />
-                                                                Feitos no ano: {(task.daysYear ?? 0)} / {daysInYearFor(new Date())}
-
-                                                            </>
-                                                        )}
+                                                    ) : (
+                                                        <>
+                                                            <br />
+                                                            Feitos no mês: {(task.days ?? 0)} / {daysInMonthFor(new Date())}
+                                                            <br />
+                                                            Feitos no ano: {(task.daysYear ?? 0)} / {daysInYearFor(new Date())}
+                                                        </>
+                                                    )}
 
                                                 </Typography>
                                             }
