@@ -16,5 +16,8 @@ export type Task = {
 
     daysYear?: number; //  novo campo: dias feitos no ano
     yearStart?: string | null; //  marca início do ano "YYYY"
+
+    totalMonth?: number;  //  novo: medida acumulada do mês
+    totalYear?: number;   // novo: medida acumulada do ano
 };
 
