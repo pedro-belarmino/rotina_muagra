@@ -37,6 +37,8 @@ export const useDailyTasksController = () => {
         if (!user || !selectedTask?.id) return;
 
         const logId = doneToday[selectedTask.id];
+        const value = Number(goalValue ?? selectedTask.dailyGoal ?? 0);
+
         if (logId) {
             await deleteTaskLog(user.uid, logId);
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: null }));
@@ -44,9 +46,10 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, selectedTask.id, {
                 days: (selectedTask.days ?? 0) - 1,
                 daysYear: (selectedTask.daysYear ?? 0) - 1,
+                totalMonth: (selectedTask.totalMonth ?? 0) - value,
+                totalYear: (selectedTask.totalYear ?? 0) - value,
             });
         } else {
-            const value = selectedTask.dailyGoal;
             const newLogId = await addTaskLog(
                 user.uid,
                 { taskId: selectedTask.id!, userId: user.uid, doneAt: new Date(), value, measure: selectedTask.measure || '', taskName: selectedTask.name },
@@ -58,8 +61,11 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, selectedTask.id, {
                 days: (selectedTask.days ?? 0) + 1,
                 daysYear: (selectedTask.daysYear ?? 0) + 1,
+                totalMonth: (selectedTask.totalMonth ?? 0) + value,
+                totalYear: (selectedTask.totalYear ?? 0) + value,
             });
         }
+
         setConfirmModalOpen(false);
         setSelectedTask(null);
         fetchTasks()
@@ -156,6 +162,9 @@ export const useDailyTasksController = () => {
 
         const logId = doneToday[task.id];
 
+        const value = Number(goalValue ?? task.dailyGoal ?? 0);
+
+
         if (logId) {
             // Desmarcar
             await deleteTaskLog(user.uid, logId);
@@ -163,11 +172,12 @@ export const useDailyTasksController = () => {
 
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) - 1,
-                daysYear: (task.daysYear ?? 0) - 1, // 👈 decrementa
+                daysYear: (task.daysYear ?? 0) - 1,
+                totalMonth: (task.totalMonth ?? 0) - value,   // 👈 decrementa
+                totalYear: (task.totalYear ?? 0) - value,     // 👈 decrementa
             });
         } else {
             // Marcar como feito
-            const value = task.dailyGoal;
             const newLogId = await addTaskLog(
                 user.uid,
                 { taskId: task.id!, userId: user.uid, doneAt: new Date(), value, measure: task.measure || '', taskName: task.name },
@@ -178,9 +188,12 @@ export const useDailyTasksController = () => {
 
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) + 1,
-                daysYear: (task.daysYear ?? 0) + 1, // 👈 incrementa
+                daysYear: (task.daysYear ?? 0) + 1,
+                totalMonth: (task.totalMonth ?? 0) + value,   // 👈 incrementa
+                totalYear: (task.totalYear ?? 0) + value,     // 👈 incrementa
             });
         }
+
     };
 
     const confirmArchiveTask = async () => {
