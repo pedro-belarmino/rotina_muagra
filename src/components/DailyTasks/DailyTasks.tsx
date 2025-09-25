@@ -89,7 +89,7 @@ function DailyTasks() {
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
                         <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'underline' }}>
-                            Muagrôemtro
+                            Muagrômetro
                         </Typography>
                         <Typography
                             variant="h5"
@@ -157,7 +157,7 @@ function DailyTasks() {
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
                         <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'underline' }}>
-                            Muagrôemtro
+                            Muagrômetro
                         </Typography>
                         <Typography
                             variant="h5"
