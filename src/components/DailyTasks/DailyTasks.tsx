@@ -134,7 +134,7 @@ function DailyTasks() {
                 >
                     <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
                         <Typography variant="h5" fontWeight="bold" noWrap>
-                            Minhas Tarefas do Dia
+                            Minhas Rotinas Diárias
                         </Typography>
                     </Box>
 
@@ -156,7 +156,7 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="body1" color="text.secondary" sx={{ textDecoration: 'underline' }}>
+                        <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'underline' }}>
                             Muagrôemtro
                         </Typography>
                         <Typography
