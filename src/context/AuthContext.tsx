@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth"
 import { auth, db } from "../firebase/config";
-import { doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 
 type AuthContextType = {
     user: User | null;
@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         displayName: currentUser.displayName,
                         email: currentUser.email,
                         photoURL: currentUser.photoURL,
-                        createdAt: serverTimestamp(),
+                        createdAt: Timestamp.now(),
                     });
                 }
 

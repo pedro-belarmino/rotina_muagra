@@ -5,7 +5,7 @@ import {
     setDoc,
     updateDoc,
     increment,
-    serverTimestamp,
+    Timestamp,
     collection,
     getDocs,
 } from "firebase/firestore";
@@ -40,7 +40,7 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
         await setDoc(counterRef, {
             value: 1,
             dateKey: todayKey,
-            updatedAt: serverTimestamp(),
+            updatedAt: Timestamp.now(),
         });
         return 1;
     }
@@ -49,7 +49,7 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
 
     await updateDoc(counterRef, {
         value: increment(1),
-        updatedAt: serverTimestamp(),
+        updatedAt: Timestamp.now(),
     });
 
     return data.value + 1;
