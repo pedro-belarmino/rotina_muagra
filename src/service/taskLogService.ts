@@ -13,34 +13,9 @@ import {
     runTransaction,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
+import { formatISODate, getNowInBrasilia, getPeriodStartForType } from "../utils/period";
 import type { TaskLog } from "../types/TaskLog";
 import type { Task } from "../types/Task";
-
-/* ---------- Helpers locais ---------- */
-function formatISODate(d: Date): string {
-    const year = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${m}-${day}`;
-}
-
-function getPeriodStartForType(date: Date, type?: "monthly" | "weekly" | "general" | ""): string | null {
-    if (!type) return null;
-    if (type === "monthly") {
-        const start = new Date(date.getFullYear(), date.getMonth(), 1);
-        start.setHours(0, 0, 0, 0);
-        return formatISODate(start);
-    }
-    if (type === "weekly") {
-        const d = new Date(date);
-        const day = d.getDay(); // 0 = Sunday
-        const diff = d.getDate() - day;
-        const sunday = new Date(d.setDate(diff));
-        sunday.setHours(0, 0, 0, 0);
-        return formatISODate(sunday);
-    }
-    return null;
-}
 
 // Adicionar log com snapshot da tarefa
 export const addTaskLog = async (
@@ -134,8 +109,9 @@ export const addTaskLog = async (
         });
 
         // atualizar task.days levando em conta reset de período
-        const now = new Date();
-        const currentPeriodStart = getPeriodStartForType(now, totalGoalType as any);
+        // IMPORTANTE: usar a data da marcação (doneDate) para determinar o período,
+        // não a data atual. Isso evita bugs de timezone.
+        const currentPeriodStart = getPeriodStartForType(doneDate, totalGoalType as any);
 
         if (!currentPeriodStart) {
             // tarefa sem periodicidade (general) -> não atualizamos days (opcional)
@@ -201,7 +177,7 @@ export const deleteTaskLog = async (uid: string, logId: string) => {
         const totalGoalType = (taskData.totalGoalType as any) ?? null;
 
         // se o período mudou desde que o dayMark foi criado, não devemos decrementar
-        const now = new Date();
+        const now = getNowInBrasilia(); // Usar horário de Brasília
         const currentPeriodStart = getPeriodStartForType(now, totalGoalType as any);
 
         if (!currentPeriodStart) {

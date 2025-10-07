@@ -13,12 +13,12 @@ import {
     // limit,
 } from "firebase/firestore";
 import type { Task } from "../types/Task";
-import { getPeriodStartForType } from "../utils/period";
+import { getNowInBrasilia, getPeriodStartForType } from "../utils/period";
 
 // Adicionar tarefa
 export async function addTask(userId: string, task: Task) {
     const tasksRef = collection(db, "users", userId, "tasks");
-    const now = new Date();
+    const now = getNowInBrasilia(); // Usar horário de Brasília
     const periodStart = getPeriodStartForType(now, task.totalGoalType as any);
     await addDoc(tasksRef, {
         ...task,
@@ -27,7 +27,7 @@ export async function addTask(userId: string, task: Task) {
         days: 0,
         periodStart: periodStart ?? null,
         daysYear: 0, //  inicializa contador anual
-        yearStart: String(now.getFullYear()), //  marca ano atual
+        yearStart: String(now.getUTCFullYear()), //  marca ano atual (em UTC)
         totalMonth: 0,
         totalYear: 0,
     });
@@ -67,7 +67,7 @@ export async function updateTask(userId: string, taskId: string, updates: Partia
 // Se mudou -> reseta days para 0 e atualiza periodStart. Retorna true se atualizou.
 export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Promise<boolean> {
     if (!task || !task.id) return false;
-    const now = new Date();
+    const now = getNowInBrasilia(); // Usar horário de Brasília
     const currentPeriodStart = getPeriodStartForType(now, task.totalGoalType as any);
     // se tarefa não tem tipo de período (general, etc.), nada a fazer
     if (!currentPeriodStart) {
@@ -89,8 +89,8 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
 
 export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promise<boolean> {
     if (!task || !task.id) return false;
-    const now = new Date();
-    const currentYear = String(now.getFullYear());
+    const now = getNowInBrasilia(); // Usar horário de Brasília
+    const currentYear = String(now.getUTCFullYear()); // Usar ano UTC do horário de Brasília
 
     if (task.yearStart !== currentYear) {
         // mudou o ano → resetar diasYear

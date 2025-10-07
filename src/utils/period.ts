@@ -39,3 +39,18 @@ export function daysInYearFor(date: Date): number {
     // Ano bissexto tem 366 dias, caso contrário 365
     return ((y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0)) ? 366 : 365;
 }
+
+/**
+ * Retorna um objeto Date representando o horário atual em Brasília (UTC-3).
+ * Isso é crucial para garantir que operações baseadas no "dia atual" (como criar um log)
+ * usem a perspectiva do usuário no Brasil, não a do servidor (que pode estar em UTC).
+ */
+export function getNowInBrasilia(): Date {
+    const now = new Date();
+    // getTime() retorna UTC. getTimezoneOffset() retorna a diferença em MINUTOS entre UTC e o local.
+    // Queremos UTC-3, então precisamos ajustar o offset local para o offset de Brasília.
+    const localOffsetInMs = now.getTimezoneOffset() * 60 * 1000;
+    const brasiliaOffsetInMs = -3 * 60 * 60 * 1000; // UTC-3
+    const utcTime = now.getTime() + localOffsetInMs;
+    return new Date(utcTime + brasiliaOffsetInMs);
+}
