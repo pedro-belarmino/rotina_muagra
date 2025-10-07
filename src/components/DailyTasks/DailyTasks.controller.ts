@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
-import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask } from "../../service/taskService";
+import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
@@ -87,8 +87,18 @@ export const useDailyTasksController = () => {
         // refetch after potential updates
         userTasks = await getTasks(user.uid, false);
 
-        // ordenar pelo horário (ex: "08:30", "14:00")
+        // Ordenar: prioridade primeiro, depois por horário
         userTasks.sort((a, b) => {
+            // 1. Prioridade
+            if (a.priority && !b.priority) return -1;
+            if (!a.priority && b.priority) return 1;
+
+            // 2. Se ambos têm prioridade, o mais recente primeiro
+            if (a.priority && b.priority) {
+                return b.priority.toMillis() - a.priority.toMillis();
+            }
+
+            // 3. Se nenhum tem prioridade, ordenar por horário
             const [ah, am] = a.schedule.split(":").map(Number);
             const [bh, bm] = b.schedule.split(":").map(Number);
             return ah * 60 + am - (bh * 60 + bm);
@@ -205,7 +215,14 @@ export const useDailyTasksController = () => {
     };
 
 
+    const handleTogglePriority = async (task: Task) => {
+        if (!user || !task.id) return;
+        await updateTaskPriority(user.uid, task.id, !task.priority);
+        await fetchTasks();
+    };
+
     return {
+        handleTogglePriority,
         confirmArchiveTask,
         handleToggleTask,
         setOpenModal,

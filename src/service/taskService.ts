@@ -63,6 +63,13 @@ export async function updateTask(userId: string, taskId: string, updates: Partia
     await updateDoc(taskRef, updates);
 }
 
+// Atualizar a prioridade de uma tarefa
+export async function updateTaskPriority(userId: string, taskId: string, isPriority: boolean) {
+    const taskRef = doc(db, "users", userId, "tasks", taskId);
+    const priorityValue = isPriority ? Timestamp.now() : null;
+    await updateDoc(taskRef, { priority: priorityValue });
+}
+
 // Função util: verifica se o período da tarefa ainda corresponde ao período corrente
 // Se mudou -> reseta days para 0 e atualiza periodStart. Retorna true se atualizou.
 export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Promise<boolean> {
