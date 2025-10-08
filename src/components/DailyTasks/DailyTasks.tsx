@@ -207,9 +207,10 @@ function DailyTasks() {
                                         <Stack direction="row" alignItems="center">
                                             <Checkbox
                                                 icon={<StarBorderIcon />}
-                                                checkedIcon={<StarIcon />}
+                                                checkedIcon={<StarIcon color='warning' />}
                                                 checked={!!task.priority}
                                                 onChange={() => handleTogglePriority(task)}
+                                                sx={{ alignSelf: 'self-start' }}
                                             />
                                             <ListItemText
                                                 primary={
@@ -219,34 +220,34 @@ function DailyTasks() {
                                                             : `${task.schedule} - ${task.name}`}
                                                     </Typography>
                                                 }
-                                            secondary={
-                                                <Typography variant="body2" color="text.secondary">
-                                                    {task.dailyGoal > 0 && (
-                                                        <>
-                                                            {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
-                                                        </>
-                                                    )}
-                                                    {task.dailyGoal != 0 ? (
-                                                        <>
-                                                            <br />
-                                                            Total no mês: {(task.totalMonth ?? 0)} {formatMeasure(task.measure || '')} ({(task.days ?? 0)} / {daysInMonthFor(new Date())} dias)
-                                                            <br />
-                                                            Total no ano: {(task.totalYear ?? 0)} {formatMeasure(task.measure || '')} ({(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias)
+                                                secondary={
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        {task.dailyGoal > 0 && (
+                                                            <>
+                                                                {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
+                                                            </>
+                                                        )}
+                                                        {task.dailyGoal != 0 ? (
+                                                            <>
+                                                                <br />
+                                                                Total no mês: {(task.totalMonth ?? 0)} {formatMeasure(task.measure || '')} ({(task.days ?? 0)} / {daysInMonthFor(new Date())} dias)
+                                                                <br />
+                                                                Total no ano: {(task.totalYear ?? 0)} {formatMeasure(task.measure || '')} ({(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias)
 
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <br />
-                                                            Feitos no mês: {(task.days ?? 0)} / {daysInMonthFor(new Date())}
-                                                            <br />
-                                                            Feitos no ano: {(task.daysYear ?? 0)} / {daysInYearFor(new Date())}
-                                                        </>
-                                                    )}
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <br />
+                                                                Feitos no mês: {(task.days ?? 0)} / {daysInMonthFor(new Date())}
+                                                                <br />
+                                                                Feitos no ano: {(task.daysYear ?? 0)} / {daysInYearFor(new Date())}
+                                                            </>
+                                                        )}
 
-                                                </Typography>
-                                            }
-                                        />
-                                    </Stack>
+                                                    </Typography>
+                                                }
+                                            />
+                                        </Stack>
 
                                         {/* Botões */}
                                         <Stack
