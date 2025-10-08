@@ -1,6 +1,8 @@
 import ArchiveOutlinedIcon from '@mui/icons-material/ArchiveOutlined';
 import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 import {
     Container,
     Typography,
@@ -15,7 +17,8 @@ import {
     Paper,
     TextField,
     Pagination,
-    Stack
+    Stack,
+    Checkbox
 } from "@mui/material";
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -27,6 +30,7 @@ import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 
 function DailyTasks() {
     const {
+        handleTogglePriority,
         addCounter,
         setConfirmModalOpen,
         setGoalValue,
@@ -200,15 +204,21 @@ function DailyTasks() {
                                         justifyContent="space-between"
                                         sx={{ width: "100%" }}
                                     >
-                                        {/* Nome da tarefa */}
-                                        <ListItemText
-                                            primary={
-                                                <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
-                                                    {task.schedule === ""
-                                                        ? task.name
-                                                        : `${task.schedule} - ${task.name}`}
-                                                </Typography>
-                                            }
+                                        <Stack direction="row" alignItems="center">
+                                            <Checkbox
+                                                icon={<StarBorderIcon />}
+                                                checkedIcon={<StarIcon />}
+                                                checked={!!task.priority}
+                                                onChange={() => handleTogglePriority(task)}
+                                            />
+                                            <ListItemText
+                                                primary={
+                                                    <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
+                                                        {task.schedule === ""
+                                                            ? task.name
+                                                            : `${task.schedule} - ${task.name}`}
+                                                    </Typography>
+                                                }
                                             secondary={
                                                 <Typography variant="body2" color="text.secondary">
                                                     {task.dailyGoal > 0 && (
@@ -236,6 +246,7 @@ function DailyTasks() {
                                                 </Typography>
                                             }
                                         />
+                                    </Stack>
 
                                         {/* Botões */}
                                         <Stack

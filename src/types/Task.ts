@@ -19,5 +19,7 @@ export type Task = {
 
     totalMonth?: number;  //  novo: medida acumulada do mês
     totalYear?: number;   // novo: medida acumulada do ano
+
+    priority?: any; // Timestamp do Firestore
 };
 
