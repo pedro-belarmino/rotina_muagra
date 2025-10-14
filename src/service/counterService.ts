@@ -16,21 +16,21 @@ const getTodayKey = () => {
 };
 
 //  Pegar valor de um dia específico
-export async function getDailyCounter(userId: string, dateKey?: string): Promise<number> {
+export async function getDailyCounter(userId: string, dateKey?: string): Promise<{ value: number, comment: string }> {
     const key = dateKey ?? getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", key);
     const snap = await getDoc(counterRef);
 
     if (!snap.exists()) {
-        return 0;
+        return { value: 0, comment: "" };
     }
 
-    const data = snap.data() as { value: number };
-    return data.value;
+    const data = snap.data() as { value: number, comment: string };
+    return { value: data.value, comment: data.comment || "" };
 }
 
 //  Incrementar o contador do dia atual
-export async function incrementDailyCounter(userId: string): Promise<number> {
+export async function incrementDailyCounter(userId: string, comment: string): Promise<number> {
     const todayKey = getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
     const snap = await getDoc(counterRef);
@@ -41,6 +41,7 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
             value: 1,
             dateKey: todayKey,
             updatedAt: Timestamp.now(),
+            comment: comment,
         });
         return 1;
     }
@@ -50,20 +51,21 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
     await updateDoc(counterRef, {
         value: increment(1),
         updatedAt: Timestamp.now(),
+        comment: comment,
     });
 
     return data.value + 1;
 }
 
 //  Buscar todos os dias (histórico)
-export async function getAllDailyCounters(userId: string): Promise<{ dateKey: string; value: number }[]> {
+export async function getAllDailyCounters(userId: string): Promise<{ dateKey: string; value: number; comment: string }[]> {
     const countersRef = collection(db, "users", userId, "dailyCounters");
     const snap = await getDocs(countersRef);
 
-    const result: { dateKey: string; value: number }[] = [];
+    const result: { dateKey: string; value: number; comment: string }[] = [];
     snap.forEach(docSnap => {
-        const data = docSnap.data() as { value: number; dateKey: string };
-        result.push({ dateKey: data.dateKey, value: data.value });
+        const data = docSnap.data() as { value: number; dateKey: string; comment: string };
+        result.push({ dateKey: data.dateKey, value: data.value, comment: data.comment || "" });
     });
 
     return result;

@@ -48,6 +48,8 @@ function DailyTasks() {
         goalValue,
         goalType,
         counter,
+        comment,
+        setComment,
         selectedTask,
         doneToday,
         tasks,
@@ -103,6 +105,14 @@ function DailyTasks() {
                         >
                             {counter}
                         </Typography>
+                        <TextField
+                            fullWidth
+                            label="Comentário do dia"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            margin="normal"
+                            variant="outlined"
+                        />
                         <Button
                             size="small"
                             variant="outlined"
@@ -171,6 +181,14 @@ function DailyTasks() {
                         >
                             {counter}
                         </Typography>
+                        <TextField
+                            fullWidth
+                            label="Comentário do dia"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            margin="normal"
+                            variant="outlined"
+                        />
                         <Button
                             size="small"
                             variant="outlined"

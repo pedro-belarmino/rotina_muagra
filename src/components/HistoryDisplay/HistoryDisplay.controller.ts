@@ -20,7 +20,7 @@ export const useHistoryDisplayController = () => {
     const [tasks, setTasks] = useState<Record<string, Task>>({});
     const [expanded, setExpanded] = useState<string | false>(false);
 
-    const [counterAll, setCounterAll] = useState<{ dateKey: string; value: number }[] | undefined>()
+    const [counterAll, setCounterAll] = useState<{ dateKey: string; value: number; comment: string }[] | undefined>()
     const [counterTotal, setCounterTotal] = useState<number>(0)
 
     const handleChange =

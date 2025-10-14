@@ -21,6 +21,7 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
+    const [comment, setComment] = useState("");
 
     const [snackbar, setSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -147,7 +148,9 @@ export const useDailyTasksController = () => {
     useEffect(() => {
         const fetchCounter = async () => {
             if (user) {
-                setCounter(await getDailyCounter(user.uid));
+                const { value, comment } = await getDailyCounter(user.uid);
+                setCounter(value);
+                setComment(comment);
             }
         };
         fetchCounter();
@@ -158,7 +161,7 @@ export const useDailyTasksController = () => {
 
     async function addCounter() {
         if (user) {
-            const newValue = await incrementDailyCounter(user.uid);
+            const newValue = await incrementDailyCounter(user.uid, comment);
             setCounter(newValue);
             setSnackbarMessage(getRandomString)
             setSeverity('success')
@@ -237,6 +240,8 @@ export const useDailyTasksController = () => {
         snackbarMessage,
         severity,
         counter,
+        comment,
+        setComment,
         goalType,
         confirmModalOpen,
         goalValue,

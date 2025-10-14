@@ -92,6 +92,9 @@ export default function HistoryDisplay() {
                                         <Typography variant="body2" color="textSecondary">
                                             <strong>Valor:</strong> {item.value}
                                         </Typography>
+                                        <Typography variant="body2" color="textSecondary">
+                                            <strong>Comentário:</strong> {item.comment}
+                                        </Typography>
                                     </Box>
                                     <Divider sx={{ mt: 2 }} />
                                 </AccordionDetails>
