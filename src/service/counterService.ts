@@ -30,7 +30,7 @@ export async function getDailyCounter(userId: string, dateKey?: string): Promise
 }
 
 //  Incrementar o contador do dia atual
-export async function incrementDailyCounter(userId: string, comment: string): Promise<number> {
+export async function incrementDailyCounter(userId: string): Promise<number> {
     const todayKey = getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
     const snap = await getDoc(counterRef);
@@ -41,7 +41,7 @@ export async function incrementDailyCounter(userId: string, comment: string): Pr
             value: 1,
             dateKey: todayKey,
             updatedAt: Timestamp.now(),
-            comment: comment,
+            comment: "",
         });
         return 1;
     }
@@ -51,10 +51,30 @@ export async function incrementDailyCounter(userId: string, comment: string): Pr
     await updateDoc(counterRef, {
         value: increment(1),
         updatedAt: Timestamp.now(),
-        comment: comment,
     });
 
     return data.value + 1;
+}
+
+// Salvar o comentário do dia
+export async function updateDailyComment(userId: string, comment: string): Promise<void> {
+    const todayKey = getTodayKey();
+    const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
+    const snap = await getDoc(counterRef);
+
+    if (!snap.exists()) {
+        await setDoc(counterRef, {
+            value: 0,
+            dateKey: todayKey,
+            updatedAt: Timestamp.now(),
+            comment: comment,
+        });
+    } else {
+        await updateDoc(counterRef, {
+            comment: comment,
+            updatedAt: Timestamp.now(),
+        });
+    }
 }
 
 //  Buscar todos os dias (histórico)

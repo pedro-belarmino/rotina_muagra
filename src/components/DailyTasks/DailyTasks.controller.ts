@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
-import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
+import { getDailyCounter, incrementDailyCounter, updateDailyComment } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 
 
@@ -161,11 +161,20 @@ export const useDailyTasksController = () => {
 
     async function addCounter() {
         if (user) {
-            const newValue = await incrementDailyCounter(user.uid, comment);
+            const newValue = await incrementDailyCounter(user.uid);
             setCounter(newValue);
-            setSnackbarMessage(getRandomString)
+            setSnackbarMessage(getRandomString())
             setSeverity('success')
             setSnackbar(true)
+        }
+    }
+
+    async function saveComment() {
+        if (user) {
+            await updateDailyComment(user.uid, comment);
+            setSnackbarMessage("Comentário salvo com sucesso!");
+            setSeverity('success');
+            setSnackbar(true);
         }
     }
 
@@ -235,6 +244,7 @@ export const useDailyTasksController = () => {
         openConfirmModal,
         confirmToggleTask,
         addCounter,
+        saveComment,
         snackbar,
         setSnackbar,
         snackbarMessage,

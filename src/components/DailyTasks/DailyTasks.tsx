@@ -32,6 +32,7 @@ function DailyTasks() {
     const {
         handleTogglePriority,
         addCounter,
+        saveComment,
         setConfirmModalOpen,
         setGoalValue,
         openConfirmModal,
@@ -112,16 +113,28 @@ function DailyTasks() {
                             onChange={(e) => setComment(e.target.value)}
                             margin="normal"
                             variant="outlined"
+                            inputProps={{ maxLength: 200 }}
                         />
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            color="warning"
-                            onClick={addCounter}
-                            sx={{ textTransform: "none", fontWeight: "bold" }}
-                        >
-                            + Lembrei de Agradecer
-                        </Button>
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                                onClick={saveComment}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                Salvar Comentário
+                            </Button>
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                onClick={addCounter}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                + Lembrei de Agradecer
+                            </Button>
+                        </Stack>
                     </CardContent>
                 </Card>
 
@@ -188,16 +201,28 @@ function DailyTasks() {
                             onChange={(e) => setComment(e.target.value)}
                             margin="normal"
                             variant="outlined"
+                            inputProps={{ maxLength: 200 }}
                         />
-                        <Button
-                            size="small"
-                            variant="outlined"
-                            color="warning"
-                            onClick={addCounter}
-                            sx={{ textTransform: "none", fontWeight: "bold" }}
-                        >
-                            + Lembrei de Agradecer
-                        </Button>
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                                onClick={saveComment}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                Salvar Comentário
+                            </Button>
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                onClick={addCounter}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                + Lembrei de Agradecer
+                            </Button>
+                        </Stack>
                     </CardContent>
                 </Card>
 
