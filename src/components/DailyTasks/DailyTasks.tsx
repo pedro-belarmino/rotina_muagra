@@ -32,6 +32,7 @@ function DailyTasks() {
     const {
         handleTogglePriority,
         addCounter,
+        saveComment,
         setConfirmModalOpen,
         setGoalValue,
         openConfirmModal,
@@ -48,6 +49,8 @@ function DailyTasks() {
         goalValue,
         goalType,
         counter,
+        comment,
+        setComment,
         selectedTask,
         doneToday,
         tasks,
@@ -103,15 +106,35 @@ function DailyTasks() {
                         >
                             {counter}
                         </Typography>
-                        <Button
-                            size="small"
+                        <TextField
+                            fullWidth
+                            label="Comentário do dia"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            margin="normal"
                             variant="outlined"
-                            color="warning"
-                            onClick={addCounter}
-                            sx={{ textTransform: "none", fontWeight: "bold" }}
-                        >
-                            + Lembrei de Agradecer
-                        </Button>
+                            inputProps={{ maxLength: 200 }}
+                        />
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                                onClick={saveComment}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                Salvar Comentário
+                            </Button>
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                onClick={addCounter}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                + Lembrei de Agradecer
+                            </Button>
+                        </Stack>
                     </CardContent>
                 </Card>
 
@@ -171,15 +194,35 @@ function DailyTasks() {
                         >
                             {counter}
                         </Typography>
-                        <Button
-                            size="small"
+                        <TextField
+                            fullWidth
+                            label="Comentário do dia"
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            margin="normal"
                             variant="outlined"
-                            color="warning"
-                            onClick={addCounter}
-                            sx={{ textTransform: "none", fontWeight: "bold" }}
-                        >
-                            + Lembrei de Agradecer
-                        </Button>
+                            inputProps={{ maxLength: 200 }}
+                        />
+                        <Stack direction="row" spacing={1} justifyContent="center">
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="primary"
+                                onClick={saveComment}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                Salvar Comentário
+                            </Button>
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                onClick={addCounter}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                + Lembrei de Agradecer
+                            </Button>
+                        </Stack>
                     </CardContent>
                 </Card>
 

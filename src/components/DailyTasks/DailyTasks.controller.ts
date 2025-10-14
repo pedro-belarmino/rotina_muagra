@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
-import { getDailyCounter, incrementDailyCounter } from "../../service/counterService";
+import { getDailyCounter, incrementDailyCounter, updateDailyComment } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 
 
@@ -21,6 +21,7 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
+    const [comment, setComment] = useState("");
 
     const [snackbar, setSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -147,7 +148,9 @@ export const useDailyTasksController = () => {
     useEffect(() => {
         const fetchCounter = async () => {
             if (user) {
-                setCounter(await getDailyCounter(user.uid));
+                const { value, comment } = await getDailyCounter(user.uid);
+                setCounter(value);
+                setComment(comment);
             }
         };
         fetchCounter();
@@ -160,9 +163,18 @@ export const useDailyTasksController = () => {
         if (user) {
             const newValue = await incrementDailyCounter(user.uid);
             setCounter(newValue);
-            setSnackbarMessage(getRandomString)
+            setSnackbarMessage(getRandomString())
             setSeverity('success')
             setSnackbar(true)
+        }
+    }
+
+    async function saveComment() {
+        if (user) {
+            await updateDailyComment(user.uid, comment);
+            setSnackbarMessage("Comentário salvo com sucesso!");
+            setSeverity('success');
+            setSnackbar(true);
         }
     }
 
@@ -232,11 +244,14 @@ export const useDailyTasksController = () => {
         openConfirmModal,
         confirmToggleTask,
         addCounter,
+        saveComment,
         snackbar,
         setSnackbar,
         snackbarMessage,
         severity,
         counter,
+        comment,
+        setComment,
         goalType,
         confirmModalOpen,
         goalValue,
