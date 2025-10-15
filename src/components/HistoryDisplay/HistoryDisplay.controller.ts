@@ -34,7 +34,7 @@ export const useHistoryDisplayController = () => {
         const fetchData = async () => {
             const [allLogs, allTasks] = await Promise.all([
                 getAllTaskLogs(user.uid),
-                getTasks(user.uid, true), // 🔑 agora inclui arquivadas
+                getTasks(user.uid, true), //  agora inclui arquivadas
             ]);
 
 

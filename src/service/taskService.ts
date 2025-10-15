@@ -49,8 +49,8 @@ export async function getTasks(userId: string, includeArchived = false): Promise
                 periodStart: data.periodStart ?? null,
                 daysYear: data.daysYear ?? 0,      // garante que vem do Firestore
                 yearStart: data.yearStart ?? null,
-                totalMonth: data.totalMonth ?? 0,   // 👈 garante que vem
-                totalYear: data.totalYear ?? 0,     // 👈 garante que vem
+                totalMonth: data.totalMonth ?? 0,   //  garante que vem
+                totalYear: data.totalYear ?? 0,     //  garante que vem
             } as Task;
         })
         .filter((task) => includeArchived || !task.archived);

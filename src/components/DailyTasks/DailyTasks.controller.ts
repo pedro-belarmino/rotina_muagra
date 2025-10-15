@@ -195,8 +195,8 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) - 1,
                 daysYear: (task.daysYear ?? 0) - 1,
-                totalMonth: (task.totalMonth ?? 0) - value,   // 👈 decrementa
-                totalYear: (task.totalYear ?? 0) - value,     // 👈 decrementa
+                totalMonth: (task.totalMonth ?? 0) - value,   // decrementa
+                totalYear: (task.totalYear ?? 0) - value,     // decrementa
             });
         } else {
             // Marcar como feito
@@ -211,8 +211,8 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) + 1,
                 daysYear: (task.daysYear ?? 0) + 1,
-                totalMonth: (task.totalMonth ?? 0) + value,   // 👈 incrementa
-                totalYear: (task.totalYear ?? 0) + value,     // 👈 incrementa
+                totalMonth: (task.totalMonth ?? 0) + value,   // incrementa
+                totalYear: (task.totalYear ?? 0) + value,     // incrementa
             });
         }
 
