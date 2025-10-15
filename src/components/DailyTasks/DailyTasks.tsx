@@ -108,7 +108,7 @@ function DailyTasks() {
                         </Typography>
                         <TextField
                             fullWidth
-                            label="A quem ou a o que lembrou de agradecer? "
+                            label="A quem ou a o que lembrou de agradecer?"
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
                             margin="normal"

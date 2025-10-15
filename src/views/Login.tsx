@@ -41,13 +41,17 @@ function App() {
                 textAlign: "center",
             }}
         >
-            <Typography variant="h5" fontWeight={'bold'} fontFamily={"Segoe UI Emoji"}>MUAGRA ROTINA</Typography>
-            <br />
             <img
                 src="/logo_semfundo.png"
                 alt="Logo"
                 style={{ width: 80, maxWidth: "100%" }}
             />
+            <img
+                src="/trilhaDoAgradecedor.png"
+                alt="LogoTrilhaDoAgradecedor"
+                style={{ width: 400, maxWidth: "100%" }}
+            />
+
             <CardContent>
                 {user ? (
                     <>
@@ -107,14 +111,21 @@ function App() {
                         </Button>
                     </>
                 ) : (
-                    <Button
-                        variant="contained"
-                        onClick={handleLogin}
-                        startIcon={<GoogleIcon />}
-                        fullWidth
-                    >
-                        Login com Google
-                    </Button>
+                    <div>
+                        <Button
+                            variant="contained"
+                            onClick={handleLogin}
+                            startIcon={<GoogleIcon />}
+                            fullWidth
+                        >
+                            Login com Google (*Somente)
+                        </Button>
+                        <br />
+                        <br />
+                        <Typography fontSize={"small"}>
+                            (*) É necessário ter uma conta de e-mail do Google. Muagra 🙌🏻
+                        </Typography>
+                    </div>
                 )}
             </CardActions>
             <p style={{ fontSize: 'small', }}>{version}</p>
