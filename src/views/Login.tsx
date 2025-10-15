@@ -42,14 +42,14 @@ function App() {
             }}
         >
             <img
-                src="/logo_semfundo.png"
-                alt="Logo"
-                style={{ width: 80, maxWidth: "100%" }}
-            />
-            <img
                 src="/trilhaDoAgradecedor.png"
                 alt="LogoTrilhaDoAgradecedor"
                 style={{ width: 400, maxWidth: "100%" }}
+            />
+            <img
+                src="/logo_semfundo.png"
+                alt="Logo"
+                style={{ width: 80, maxWidth: "100%" }}
             />
 
             <CardContent>
