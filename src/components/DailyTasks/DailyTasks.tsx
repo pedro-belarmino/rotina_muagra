@@ -27,7 +27,7 @@ import { formatMeasure } from '../../utils/formatting';
 import { useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
 import { daysInMonthFor, daysInYearFor } from '../../utils/period';
-
+import { useTheme } from '@mui/material/styles';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -58,6 +58,9 @@ function DailyTasks() {
         openModal,
     } = useDailyTasksController()
     const navigate = useNavigate()
+
+    const theme = useTheme();
+    const isDarkMode = theme.palette.mode === 'dark'; // detecta o modo atual
 
     // Estado da paginação
     const [page, setPage] = useState(1);
@@ -95,9 +98,19 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'underline' }}>
-                            Muagrômetro
-                        </Typography>
+                        {isDarkMode ? (
+                            <img
+                                src="/Logo Muagrômetro Final Colorida para fundo escuro .png"
+                                style={{ width: 200 }}
+                                alt="Logo para fundo escuro"
+                            />
+                        ) : (
+                            <img
+                                src="/Logo Muagrômetro Final Colorido.png"
+                                style={{ width: 200 }}
+                                alt="Logo para fundo claro"
+                            />
+                        )}
                         <Typography
                             variant="h5"
                             fontWeight="bold"
@@ -198,9 +211,19 @@ function DailyTasks() {
                     }}
                 >
                     <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'underline' }}>
-                            Muagrômetro
-                        </Typography>
+                        {isDarkMode ? (
+                            <img
+                                src="/Logo Muagrômetro Final Colorida para fundo escuro .png"
+                                style={{ width: 200 }}
+                                alt="Logo para fundo escuro"
+                            />
+                        ) : (
+                            <img
+                                src="/Logo Muagrômetro Final Colorido.png"
+                                style={{ width: 200 }}
+                                alt="Logo para fundo claro"
+                            />
+                        )}
                         <Typography
                             variant="h5"
                             fontWeight="bold"
