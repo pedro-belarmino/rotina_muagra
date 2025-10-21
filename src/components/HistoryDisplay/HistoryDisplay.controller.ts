@@ -34,11 +34,11 @@ export const useHistoryDisplayController = () => {
         const fetchData = async () => {
             const [allLogs, allTasks] = await Promise.all([
                 getAllTaskLogs(user.uid),
-                getTasks(user.uid, true), //  agora inclui arquivadas
+                getTasks(user.uid, true),
             ]);
 
 
-            // Map taskId -> task
+
             const taskMap: Record<string, Task> = {};
             allTasks.forEach((t: Task) => {
                 if (t.id) {
@@ -47,7 +47,7 @@ export const useHistoryDisplayController = () => {
             });
             setTasks(taskMap);
 
-            // Group logs by task
+
             const statsByTask: Record<string, TaskStats> = {};
 
             allLogs.forEach((log: TaskLog) => {
@@ -63,9 +63,9 @@ export const useHistoryDisplayController = () => {
                 statsByTask[log.taskId].logs.push(log);
             });
 
-            // Calculate stats for each task
+
             Object.entries(statsByTask).forEach(([_taskId, stats]) => {
-                // Unique days
+
                 const dates = new Set(
                     stats.logs.map((l) =>
                         new Date(l.doneAt).toDateString()
@@ -73,7 +73,7 @@ export const useHistoryDisplayController = () => {
                 );
                 stats.totalDays = dates.size;
 
-                // Streak calculation
+
                 const sortedDates = [...dates]
                     .map((d) => {
                         const date = new Date(d);
@@ -96,7 +96,7 @@ export const useHistoryDisplayController = () => {
                 }
                 stats.streak = streak;
 
-                // Total measure
+
                 stats.totalMeasure = stats.logs.reduce(
                     (sum, l) => sum + l.value,
                     0

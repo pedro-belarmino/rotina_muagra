@@ -60,13 +60,13 @@ function DailyTasks() {
     const navigate = useNavigate()
 
     const theme = useTheme();
-    const isDarkMode = theme.palette.mode === 'dark'; // detecta o modo atual
+    const isDarkMode = theme.palette.mode === 'dark';
 
-    // Estado da paginação
+
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
 
-    // Cálculo da paginação
+
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const paginatedTasks = tasks.slice(startIndex, endIndex);

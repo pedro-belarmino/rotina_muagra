@@ -9,16 +9,16 @@ import {
     deleteDoc,
     query,
     where,
-    // orderBy,
-    // limit,
+
+
 } from "firebase/firestore";
 import type { Task } from "../types/Task";
 import { getNowInBrasilia, getPeriodStartForType } from "../utils/period";
 
-// Adicionar tarefa
+
 export async function addTask(userId: string, task: Task) {
     const tasksRef = collection(db, "users", userId, "tasks");
-    const now = getNowInBrasilia(); // Usar horário de Brasília
+    const now = getNowInBrasilia();
     const periodStart = getPeriodStartForType(now, task.totalGoalType as any);
     await addDoc(tasksRef, {
         ...task,
@@ -26,14 +26,14 @@ export async function addTask(userId: string, task: Task) {
         archived: false,
         days: 0,
         periodStart: periodStart ?? null,
-        daysYear: 0, //  inicializa contador anual
-        yearStart: String(now.getUTCFullYear()), //  marca ano atual (em UTC)
+        daysYear: 0,
+        yearStart: String(now.getUTCFullYear()),
         totalMonth: 0,
         totalYear: 0,
     });
 }
 
-// Listar tarefas
+
 export async function getTasks(userId: string, includeArchived = false): Promise<Task[]> {
     const tasksRef = collection(db, "users", userId, "tasks");
     const snapshot = await getDocs(tasksRef);
@@ -47,38 +47,38 @@ export async function getTasks(userId: string, includeArchived = false): Promise
                 createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
                 days: data.days ?? 0,
                 periodStart: data.periodStart ?? null,
-                daysYear: data.daysYear ?? 0,      // garante que vem do Firestore
+                daysYear: data.daysYear ?? 0,
                 yearStart: data.yearStart ?? null,
-                totalMonth: data.totalMonth ?? 0,   //  garante que vem
-                totalYear: data.totalYear ?? 0,     //  garante que vem
+                totalMonth: data.totalMonth ?? 0,
+                totalYear: data.totalYear ?? 0,
             } as Task;
         })
         .filter((task) => includeArchived || !task.archived);
 }
 
 
-// Atualizar tarefa
+
 export async function updateTask(userId: string, taskId: string, updates: Partial<Task>) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, updates);
 }
 
-// Atualizar a prioridade de uma tarefa
+
 export async function updateTaskPriority(userId: string, taskId: string, isPriority: boolean) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     const priorityValue = isPriority ? Timestamp.now() : null;
     await updateDoc(taskRef, { priority: priorityValue });
 }
 
-// Função util: verifica se o período da tarefa ainda corresponde ao período corrente
-// Se mudou -> reseta days para 0 e atualiza periodStart. Retorna true se atualizou.
+
+
 export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Promise<boolean> {
     if (!task || !task.id) return false;
-    const now = getNowInBrasilia(); // Usar horário de Brasília
+    const now = getNowInBrasilia();
     const currentPeriodStart = getPeriodStartForType(now, task.totalGoalType as any);
-    // se tarefa não tem tipo de período (general, etc.), nada a fazer
+
     if (!currentPeriodStart) {
-        // ainda podemos normalizar periodStart para null
+
         if (task.periodStart) {
             await updateTask(userId, task.id, { periodStart: null, days: task.days ?? 0, totalMonth: 0, });
             return true;
@@ -87,7 +87,7 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
     }
 
     if (task.periodStart !== currentPeriodStart) {
-        // período mudou: resetar days para 0 e atualizar periodStart
+
         await updateTask(userId, task.id, { days: 0, periodStart: currentPeriodStart });
         return true;
     }
@@ -96,11 +96,11 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
 
 export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promise<boolean> {
     if (!task || !task.id) return false;
-    const now = getNowInBrasilia(); // Usar horário de Brasília
-    const currentYear = String(now.getUTCFullYear()); // Usar ano UTC do horário de Brasília
+    const now = getNowInBrasilia();
+    const currentYear = String(now.getUTCFullYear());
 
     if (task.yearStart !== currentYear) {
-        // mudou o ano → resetar diasYear
+
         await updateTask(userId, task.id, { daysYear: 0, yearStart: currentYear, totalYear: 0, });
         return true;
     }
@@ -108,19 +108,19 @@ export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promi
 }
 
 
-// Arquivar tarefa (em vez de deletar)
+
 export async function archiveTask(userId: string, taskId: string) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, { archived: true });
 }
 
-//  Se quiser realmente apagar do Firestore
+
 export async function deleteTaskPermanently(userId: string, taskId: string) {
-    // 1. Apagar a própria tarefa
+
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await deleteDoc(taskRef);
 
-    // 2. Buscar e apagar todos os logs daquela tarefa
+
     const logsRef = collection(db, "users", userId, "taskLogs");
     const q = query(logsRef, where("taskId", "==", taskId));
     const snapshot = await getDocs(q);

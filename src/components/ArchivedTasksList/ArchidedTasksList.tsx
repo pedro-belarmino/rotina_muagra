@@ -36,7 +36,6 @@ export default function ArchivedTasksList() {
         loading,
     } = useArchivedTasksListController();
 
-    // paginação
     const [page, setPage] = useState(1);
     const itemsPerPage = 6;
 

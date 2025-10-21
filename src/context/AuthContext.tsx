@@ -21,11 +21,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
-                // Referência ao documento do usuário
+
                 const userRef = doc(db, "users", currentUser.uid);
                 const snapshot = await getDoc(userRef);
 
-                // Se ainda não existe, cria
+
                 if (!snapshot.exists()) {
                     await setDoc(userRef, {
                         uid: currentUser.uid,

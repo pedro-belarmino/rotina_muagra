@@ -10,10 +10,10 @@ export default function PrivateWrapper() {
         return <LoadingScreen />;
     }
 
-    // se não estiver logado e não estiver tentando ir para /login
+
     if (!user && location.pathname !== "/") {
         return <Navigate to="/" replace />;
     }
 
-    return <Outlet />; // renderiza as rotas internas normalmente
+    return <Outlet />;
 }

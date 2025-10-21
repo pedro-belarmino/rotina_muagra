@@ -12,10 +12,10 @@ import {
 
 const getTodayKey = () => {
     const today = new Date();
-    return today.toISOString().split("T")[0]; // yyyy-mm-dd
+    return today.toISOString().split("T")[0];
 };
 
-//  Pegar valor de um dia específico
+
 export async function getDailyCounter(userId: string, dateKey?: string): Promise<{ value: number, comment: string }> {
     const key = dateKey ?? getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", key);
@@ -29,14 +29,14 @@ export async function getDailyCounter(userId: string, dateKey?: string): Promise
     return { value: data.value, comment: data.comment || "" };
 }
 
-//  Incrementar o contador do dia atual
+
 export async function incrementDailyCounter(userId: string): Promise<number> {
     const todayKey = getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
     const snap = await getDoc(counterRef);
 
     if (!snap.exists()) {
-        // cria já com valor 1
+
         await setDoc(counterRef, {
             value: 1,
             dateKey: todayKey,
@@ -56,7 +56,7 @@ export async function incrementDailyCounter(userId: string): Promise<number> {
     return data.value + 1;
 }
 
-// Salvar o comentário do dia
+
 export async function updateDailyComment(userId: string, comment: string): Promise<void> {
     const todayKey = getTodayKey();
     const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
@@ -77,7 +77,7 @@ export async function updateDailyComment(userId: string, comment: string): Promi
     }
 }
 
-//  Buscar todos os dias (histórico)
+
 export async function getAllDailyCounters(userId: string): Promise<{ dateKey: string; value: number; comment: string }[]> {
     const countersRef = collection(db, "users", userId, "dailyCounters");
     const snap = await getDocs(countersRef);
@@ -91,7 +91,7 @@ export async function getAllDailyCounters(userId: string): Promise<{ dateKey: st
     return result;
 }
 
-//  Somar valor total de todos os dias
+
 export async function getTotalCounter(userId: string): Promise<number> {
     const all = await getAllDailyCounters(userId);
     return all.reduce((acc, cur) => acc + cur.value, 0);

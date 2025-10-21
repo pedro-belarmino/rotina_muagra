@@ -15,7 +15,7 @@ export const useDailyTasksController = () => {
     const [loading, setLoading] = useState(false);
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
     const [openModal, setOpenModal] = useState(false);
-    const [selectedTask, setSelectedTask] = useState<Task | null>(null); // tarefa selecionada
+    const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
@@ -29,7 +29,7 @@ export const useDailyTasksController = () => {
 
     const openConfirmModal = (task: Task) => {
         setSelectedTask(task);
-        setGoalValue(task.dailyGoal); // valor inicial
+        setGoalValue(task.dailyGoal);
         setGoalType(task.measure || '')
         setConfirmModalOpen(true);
     };
@@ -79,27 +79,27 @@ export const useDailyTasksController = () => {
 
         let userTasks = await getTasks(user.uid, false);
 
-        // garante período atual (reseta days se necessário)
+
         for (const t of userTasks) {
             await ensureTaskPeriodIsCurrent(user.uid, t);
             await ensureTaskYearIsCurrent(user.uid, t);
         }
 
-        // refetch after potential updates
+
         userTasks = await getTasks(user.uid, false);
 
-        // Ordenar: prioridade primeiro, depois por horário
+
         userTasks.sort((a, b) => {
-            // 1. Prioridade
+
             if (a.priority && !b.priority) return -1;
             if (!a.priority && b.priority) return 1;
 
-            // 2. Se ambos têm prioridade, o mais recente primeiro
+
             if (a.priority && b.priority) {
                 return b.priority.toMillis() - a.priority.toMillis();
             }
 
-            // 3. Se nenhum tem prioridade, ordenar por horário
+
             const [ah, am] = a.schedule.split(":").map(Number);
             const [bh, bm] = b.schedule.split(":").map(Number);
             return ah * 60 + am - (bh * 60 + bm);
@@ -107,7 +107,7 @@ export const useDailyTasksController = () => {
 
         setTasks(userTasks);
 
-        // também buscar se já foi concluída hoje
+
         const today = new Date().toISOString().split("T")[0];
         const status: Record<string, string | null> = {};
 
@@ -128,7 +128,7 @@ export const useDailyTasksController = () => {
         const updateTimer = () => {
             const now = new Date();
             const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0); // próxima meia-noite
+            midnight.setHours(24, 0, 0, 0);
 
             const diff = midnight.getTime() - now.getTime();
 
@@ -139,10 +139,10 @@ export const useDailyTasksController = () => {
             setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
         };
 
-        updateTimer(); // inicializa já com o valor
+        updateTimer();
         const interval = setInterval(updateTimer, 1000);
 
-        return () => clearInterval(interval); // limpa quando desmonta
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -188,18 +188,18 @@ export const useDailyTasksController = () => {
 
 
         if (logId) {
-            // Desmarcar
+
             await deleteTaskLog(user.uid, logId);
             setDoneToday((prev) => ({ ...prev, [task.id!]: null }));
 
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) - 1,
                 daysYear: (task.daysYear ?? 0) - 1,
-                totalMonth: (task.totalMonth ?? 0) - value,   // decrementa
-                totalYear: (task.totalYear ?? 0) - value,     // decrementa
+                totalMonth: (task.totalMonth ?? 0) - value,
+                totalYear: (task.totalYear ?? 0) - value,
             });
         } else {
-            // Marcar como feito
+
             const newLogId = await addTaskLog(
                 user.uid,
                 { taskId: task.id!, userId: user.uid, doneAt: new Date(), value, measure: task.measure || '', taskName: task.name },
@@ -211,8 +211,8 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) + 1,
                 daysYear: (task.daysYear ?? 0) + 1,
-                totalMonth: (task.totalMonth ?? 0) + value,   // incrementa
-                totalYear: (task.totalYear ?? 0) + value,     // incrementa
+                totalMonth: (task.totalMonth ?? 0) + value,
+                totalYear: (task.totalYear ?? 0) + value,
             });
         }
 
