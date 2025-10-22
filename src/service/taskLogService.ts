@@ -235,8 +235,17 @@ export const getTaskLogByDate = async (
     const snapshot = await getDocs(qAll);
     for (const docSnap of snapshot.docs) {
         const data = docSnap.data();
+
+
+
+        // const logDate = (data.doneAt as Timestamp).toDate();
+        // const logKey = logDate.toISOString().split("T")[0];
+
         const logDate = (data.doneAt as Timestamp).toDate();
-        const logKey = logDate.toISOString().split("T")[0];
+        const yyyy = logDate.getFullYear();
+        const mm = String(logDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(logDate.getDate()).padStart(2, '0');
+        const logKey = `${yyyy}-${mm}-${dd}`;
 
         if (logKey === dateKey) {
             return {
