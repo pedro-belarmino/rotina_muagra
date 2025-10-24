@@ -20,9 +20,10 @@ export async function addTask(userId: string, task: Task) {
     const tasksRef = collection(db, "users", userId, "tasks");
     const now = getNowInBrasilia();
     const periodStart = getPeriodStartForType(now, task.totalGoalType as any);
+    let now2 = new Date()
     await addDoc(tasksRef, {
         ...task,
-        createdAt: Timestamp.now(),
+        createdAt: now2,
         archived: false,
         days: 0,
         periodStart: periodStart ?? null,
