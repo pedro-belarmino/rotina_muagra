@@ -148,7 +148,7 @@ function DailyTasks() {
                                 <Box
                                     onClick={() => navigate("/muagrometro")}
                                     component="img"
-                                    src="public/Globo.png"
+                                    src="/Globo.png"
                                     alt=""
                                     sx={{
                                         cursor: "pointer",
@@ -211,7 +211,7 @@ function DailyTasks() {
                         </Typography>
                     </Container>
                 </> : <>
-                    
+
 
                     <List>
                         {paginatedTasks.map((task) => (
