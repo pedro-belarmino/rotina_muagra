@@ -8,6 +8,7 @@ import {
     Timestamp,
     collection,
     getDocs,
+    runTransaction,
 } from "firebase/firestore";
 
 // const getTodayKey = () => {
@@ -41,28 +42,43 @@ export async function getDailyCounter(userId: string, dateKey?: string): Promise
 
 export async function incrementDailyCounter(userId: string): Promise<number> {
     const todayKey = getTodayKey();
-    const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
-    const snap = await getDoc(counterRef);
+    const userCounterRef = doc(db, "users", userId, "dailyCounters", todayKey);
+    const globalCounterRef = doc(db, "GlobalCounter", "global_counter");
 
-    if (!snap.exists()) {
+    return await runTransaction(db, async (transaction) => {
+        const userCounterSnap = await transaction.get(userCounterRef);
+        const globalCounterSnap = await transaction.get(globalCounterRef);
 
-        await setDoc(counterRef, {
-            value: 1,
-            dateKey: todayKey,
+        if (!userCounterSnap.exists()) {
+            transaction.set(userCounterRef, {
+                value: 1,
+                dateKey: todayKey,
+                updatedAt: Timestamp.now(),
+                comment: "",
+            });
+
+            if (!globalCounterSnap.exists()) {
+                transaction.set(globalCounterRef, { value: 1 });
+            } else {
+                transaction.update(globalCounterRef, { value: increment(1) });
+            }
+            return 1;
+        }
+
+        const data = userCounterSnap.data() as { value: number };
+        transaction.update(userCounterRef, {
+            value: increment(1),
             updatedAt: Timestamp.now(),
-            comment: "",
         });
-        return 1;
-    }
 
-    const data = snap.data() as { value: number };
+        if (!globalCounterSnap.exists()) {
+            transaction.set(globalCounterRef, { value: 1 });
+        } else {
+            transaction.update(globalCounterRef, { value: increment(1) });
+        }
 
-    await updateDoc(counterRef, {
-        value: increment(1),
-        updatedAt: Timestamp.now(),
+        return data.value + 1;
     });
-
-    return data.value + 1;
 }
 
 
