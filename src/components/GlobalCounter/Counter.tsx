@@ -1,16 +1,17 @@
-import { Container, Paper, Typography, useTheme } from "@mui/material";
+import { Container, Divider, Paper, Typography, useTheme } from "@mui/material";
 import { useConterController } from "./Counter.controller";
 
 export default function Counter() {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
-    const { globalCount } = useConterController()
+    const { globalCount, phrases } = useConterController()
+    const phraseList = typeof phrases === "function" ? phrases() : phrases || []
+    const random = Math.floor(Math.random() * Math.max(1, phraseList.length))
+    const { title, text } = phraseList[random] ?? { title: "", text: "" }
 
-    // Função para aplicar a máscara 000.000.000.000.000
+
     const formatGlobalCount = (num: number): string => {
-        // Garante que o número tenha 15 dígitos com zeros à esquerda
         const padded = num.toString().padStart(15, "0");
-        // Adiciona pontos a cada 3 dígitos
         return padded.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
@@ -23,6 +24,7 @@ export default function Counter() {
                     <img
                         src="/Muagrômetro Global Branco Sem Número.png"
                         style={{ width: "100%" }}
+
 
                     />
                 ) : (
@@ -38,6 +40,22 @@ export default function Counter() {
                     {formatGlobalCount(globalCount)}
                 </Typography>
             </Paper>
+
+
+
+            <Paper variant="outlined" sx={{ p: 2, m: 2 }}>
+
+                <Typography variant="h5" fontWeight="bold" textAlign="center">
+                    {title}
+                </Typography>
+                <Divider sx={{ my: 1 }} />
+                <Typography textAlign="center" sx={{ mt: 2 }}>
+                    {text}
+                </Typography>
+
+            </Paper>
+
         </Container>
     )
 }
+
