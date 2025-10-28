@@ -45,7 +45,7 @@ export default function Counter() {
 
             <Paper variant="outlined" sx={{ p: 2, m: 2 }}>
 
-                <Typography variant="h5" fontWeight="bold" textAlign="center">
+                <Typography fontWeight="bold" textAlign="center">
                     {title}
                 </Typography>
                 <Divider sx={{ my: 1 }} />
@@ -55,7 +55,7 @@ export default function Counter() {
 
             </Paper>
 
-        </Container>
+        </Container >
     )
 }
 
