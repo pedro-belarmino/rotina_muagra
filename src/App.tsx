@@ -34,9 +34,9 @@ function App() {
                             <Route path='/home' element={<Home />} />
                             <Route path='/historico' element={<History />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
+                            <Route path='muagrometro' element={<GlobalCouter />} />
                         </Route>
 
-                        <Route path='muagrometro' element={<GlobalCouter />} />
 
 
                     </Route>

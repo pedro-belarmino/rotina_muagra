@@ -146,9 +146,9 @@ function DailyTasks() {
                             <Tooltip title={'Muagrometro global'}>
 
                                 <Box
-                                    onClick={() => console.log('aaa que não sei o que')}
+                                    onClick={() => navigate("/muagrometro")}
                                     component="img"
-                                    src="public/Muagrômetro Global v2.png"
+                                    src="public/Globo.png"
                                     alt=""
                                     sx={{
                                         cursor: "pointer",
@@ -156,8 +156,8 @@ function DailyTasks() {
                                         right: 0,
                                         top: "50%",
                                         transform: "translateY(-50%)",
-                                        height: "150%", // 👈 mesma altura do Stack
-                                        objectFit: "contain", // mantém proporção sem distorcer
+                                        height: "150%",
+                                        objectFit: "contain",
                                     }}
                                 />
                             </Tooltip>
