@@ -11,7 +11,7 @@ export default function Counter() {
 
 
     const formatGlobalCount = (num: number): string => {
-        const padded = num.toString().padStart(15, "0");
+        const padded = num.toString().padStart(18, "0");
         return padded.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
@@ -35,8 +35,8 @@ export default function Counter() {
                 )}
             </div>
 
-            <Paper sx={{ p: 2, m: 2, textAlign: "center" }}>
-                <Typography fontWeight={"bold"} fontSize={"big"}>
+            <Paper sx={{ p: 1, m: 2, textAlign: "center" }}>
+                <Typography fontWeight={"bold"} fontSize={"x-large"} >
                     {formatGlobalCount(globalCount)}
                 </Typography>
             </Paper>
