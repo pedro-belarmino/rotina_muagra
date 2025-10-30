@@ -22,10 +22,17 @@ export const useDailyTasksController = () => {
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
     const [comment, setComment] = useState("");
+    const [commentLenght, setCommentLenght] = useState(0)
 
     const [snackbar, setSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [severity, setSeverity] = useState<SeverityType>('info');
+
+    const [diarModal, setDiaryModal] = useState(false)
+
+    useEffect(() => {
+        setCommentLenght(comment.length);
+    }, [comment])
 
     const openConfirmModal = (task: Task) => {
         setSelectedTask(task);
@@ -251,13 +258,16 @@ export const useDailyTasksController = () => {
         confirmToggleTask,
         addCounter,
         saveComment,
-        snackbar,
         setSnackbar,
+        setComment,
+        setDiaryModal,
+        commentLenght,
+        diarModal,
         snackbarMessage,
+        snackbar,
         severity,
         counter,
         comment,
-        setComment,
         goalType,
         confirmModalOpen,
         goalValue,

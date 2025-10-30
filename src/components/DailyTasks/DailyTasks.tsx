@@ -18,8 +18,11 @@ import {
     TextField,
     Pagination,
     Stack,
-    Checkbox
+    Checkbox,
+    IconButton
 } from "@mui/material";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+
 import Tooltip from '@mui/material/Tooltip';
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -42,6 +45,10 @@ function DailyTasks() {
         setOpenModal,
         setSelectedTask,
         setSnackbar,
+        setDiaryModal,
+        setComment,
+        commentLenght,
+        diarModal,
         snackbarMessage,
         severity,
         snackbar,
@@ -51,7 +58,6 @@ function DailyTasks() {
         goalType,
         counter,
         comment,
-        setComment,
         selectedTask,
         doneToday,
         tasks,
@@ -161,12 +167,26 @@ function DailyTasks() {
                                     }}
                                 />
                             </Tooltip>
+                            <Tooltip title='Seu diario de agradecimento' onClick={() => setDiaryModal(true)}>
+                                <IconButton
+                                    size='large'
+                                    sx={{
+                                        cursor: "pointer",
+                                        position: "absolute",
+                                        left: 0,
+                                        top: "50%",
+                                        transform: "translateY(-50%)",
+                                    }}
+                                >
+                                    <MenuBookIcon />
+                                </IconButton>
+                            </Tooltip>
                         </Stack>
                     </CardContent>
                 </Card>
 
 
-                <Card
+                {/* <Card
                     sx={{
                         mb: 2,
                         borderRadius: 3,
@@ -197,7 +217,7 @@ function DailyTasks() {
                             </Button>
                         </Stack>
                     </CardContent>
-                </Card>
+                </Card> */}
 
                 {tasks.length === 0 ? <>
 
@@ -410,6 +430,92 @@ function DailyTasks() {
                 variant="filled"
                 onClose={() => setSnackbar(false)}
             />
+
+            <Modal
+                open={diarModal}
+                onClose={() => setDiaryModal(false)}
+                aria-labelledby="diary-modal-title"
+                aria-describedby="diary-modal-description"
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        minHeight: "100vh",
+                        p: 2,
+                    }}
+                >
+                    <Paper
+                        sx={{
+                            width: "100%",
+                            maxWidth: { xs: 350, sm: 500, md: 600 },
+                            p: 3,
+                            borderRadius: 3,
+                            boxShadow: 6,
+                        }}
+                    >
+                        <Container
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                mb: 2,
+                            }}
+                        >
+                            <Typography
+                                id="diary-modal-title"
+                                variant="h6"
+                                fontWeight="bold"
+                                sx={{ fontSize: { xs: "1rem", sm: "1.25rem" } }}
+                            >
+                                A quem ou a que lembrou de agradecer?
+                            </Typography>
+
+                            <Button
+                                color="warning"
+                                onClick={() => setDiaryModal(false)}
+                                sx={{ minWidth: 0 }}
+                            >
+                                <CancelPresentationIcon />
+                            </Button>
+                        </Container>
+
+                        <Typography
+                            variant="body2"
+                            textAlign="right"
+                            color={commentLenght >= 200 ? "error" : "text.secondary"}
+                        >
+                            {commentLenght} / 200
+                        </Typography>
+
+                        <TextField
+                            fullWidth
+                            multiline
+                            minRows={3}
+                            maxRows={6}
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
+                            margin="normal"
+                            variant="outlined"
+                            inputProps={{ maxLength: 200 }}
+                        />
+
+                        <Container sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+                            <Button
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                onClick={() => { saveComment(); setDiaryModal(false) }}
+                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                            >
+                                Salvar Comentário
+                            </Button>
+                        </Container>
+                    </Paper>
+                </Box>
+            </Modal>
+
         </>
     );
 }
