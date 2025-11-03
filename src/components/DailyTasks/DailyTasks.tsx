@@ -71,8 +71,15 @@ function DailyTasks() {
 
 
     const [page, setPage] = useState(1);
+
     const itemsPerPage = 8;
 
+    const date = new Date();
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const year = date.getUTCFullYear();
+
+    const fullDateDisplay = `${day} / ${month} / ${year}`;
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -95,14 +102,14 @@ function DailyTasks() {
                     sx={{ mb: 2, textAlign: { xs: "center", sm: "left" } }}
                 >
                     <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
-                        <Typography variant="h5" fontWeight="bold" noWrap>
-                            Minhas Rotinas Diárias
+                        <Typography variant="h6" fontWeight="bold" noWrap>
+                            Minhas Rotinas de Hoje {fullDateDisplay}
                         </Typography>
                     </Box>
 
                     <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
                         <Typography variant="body2" color="text.secondary" sx={{ textDecoration: "underline" }}>
-                            {timeLeft}
+                            Ainda da tempo: {timeLeft}
                         </Typography>
                     </Box>
                 </Stack>
@@ -169,7 +176,6 @@ function DailyTasks() {
                             </Tooltip>
                             <Tooltip title='Seu diario de agradecimento' onClick={() => setDiaryModal(true)}>
                                 <IconButton
-                                    size='large'
                                     sx={{
                                         cursor: "pointer",
                                         position: "absolute",
@@ -178,7 +184,7 @@ function DailyTasks() {
                                         transform: "translateY(-50%)",
                                     }}
                                 >
-                                    <MenuBookIcon />
+                                    <MenuBookIcon sx={{ fontSize: 30 }} />
                                 </IconButton>
                             </Tooltip>
                         </Stack>
