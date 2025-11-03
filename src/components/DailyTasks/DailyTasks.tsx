@@ -79,7 +79,7 @@ function DailyTasks() {
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const year = date.getUTCFullYear();
 
-    const fullDateDisplay = `${day} / ${month} / ${year}`;
+    const fullDateDisplay = `${day}/${month}/${year}`;
 
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -103,7 +103,7 @@ function DailyTasks() {
                 >
                     <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
                         <Typography variant="h6" fontWeight="bold" noWrap>
-                            Minhas Rotinas de Hoje {fullDateDisplay}
+                            Minhas Rotinas de Hoje - {fullDateDisplay}
                         </Typography>
                     </Box>
 
