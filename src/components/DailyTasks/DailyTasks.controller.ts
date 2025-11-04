@@ -3,7 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
-import { getDailyCounter, incrementDailyCounter, updateDailyComment } from "../../service/counterService";
+import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyCounters, getYearlyCounters } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 
 
@@ -21,6 +21,8 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
+    const [monthlyCounter, setMonthlyCounter] = useState<number>(0);
+    const [yearlyCounter, setYearlyCounter] = useState<number>(0);
     const [comment, setComment] = useState("");
     const [commentLenght, setCommentLenght] = useState(0)
 
@@ -159,14 +161,20 @@ export const useDailyTasksController = () => {
     }, []);
 
     useEffect(() => {
-        const fetchCounter = async () => {
+        const fetchCounters = async () => {
             if (user) {
+                const now = new Date();
                 const { value, comment } = await getDailyCounter(user.uid);
+                const monthly = await getMonthlyCounters(user.uid, now);
+                const yearly = await getYearlyCounters(user.uid, now);
+
                 setCounter(value);
                 setComment(comment);
+                setMonthlyCounter(monthly);
+                setYearlyCounter(yearly);
             }
         };
-        fetchCounter();
+        fetchCounters();
     }, [user]);
 
 
@@ -176,6 +184,8 @@ export const useDailyTasksController = () => {
         if (user) {
             const newValue = await incrementDailyCounter(user.uid);
             setCounter(newValue);
+            setMonthlyCounter(prev => prev + 1);
+            setYearlyCounter(prev => prev + 1);
             setSnackbarMessage(getRandomString())
             setSeverity('success')
             setSnackbar(true)
@@ -267,6 +277,8 @@ export const useDailyTasksController = () => {
         snackbar,
         severity,
         counter,
+        monthlyCounter,
+        yearlyCounter,
         comment,
         goalType,
         confirmModalOpen,
