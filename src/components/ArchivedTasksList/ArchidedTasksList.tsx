@@ -15,7 +15,7 @@ import {
 import LoadingScreen from "../../views/LoadingScreen";
 import { useArchivedTasksListController } from "./ArchivedTasksList.controller";
 import CancelPresentationRoundedIcon from "@mui/icons-material/CancelPresentationRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+// import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import AssignmentReturnOutlinedIcon from "@mui/icons-material/AssignmentReturnOutlined";
 import { formatMeasure } from "../../utils/formatting";
 import { useState } from "react";
@@ -28,7 +28,7 @@ export default function ArchivedTasksList() {
         setSelectedTask,
         setUnarchiveModal,
         handleCloseModal,
-        setDeleteModal,
+        // setDeleteModal,
         selectedTask,
         deleteModal,
         unarchiveModal,
@@ -113,7 +113,7 @@ export default function ArchivedTasksList() {
                                             >
                                                 <AssignmentReturnOutlinedIcon />
                                             </Button>
-                                            <Button
+                                            {/* <Button
                                                 color="error"
                                                 onClick={() => {
                                                     setSelectedTask(task);
@@ -121,7 +121,7 @@ export default function ArchivedTasksList() {
                                                 }}
                                             >
                                                 <DeleteOutlineRoundedIcon />
-                                            </Button>
+                                            </Button> */}
                                         </>
                                     }
                                 >
