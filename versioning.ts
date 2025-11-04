@@ -1,1 +1,1 @@
-export const version = 'v-0.9.4'
+export const version = 'v-0.9.5 HOMOLOGACAO'
