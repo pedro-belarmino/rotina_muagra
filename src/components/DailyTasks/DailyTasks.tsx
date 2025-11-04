@@ -197,7 +197,7 @@ function DailyTasks() {
                     <CardContent sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', py: 1, '&:last-child': { pb: 1 } }}>
                         <Box sx={{ textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
-                                Agradecimentos no Mês
+                                Seus Agradecimentos no Mês
                             </Typography>
                             <Typography variant="h6" fontWeight="bold">
                                 {monthlyCounter}
@@ -205,7 +205,7 @@ function DailyTasks() {
                         </Box>
                         <Box sx={{ textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
-                                Agradecimentos no Ano
+                                Seus Agradecimentos no Ano
                             </Typography>
                             <Typography variant="h6" fontWeight="bold">
                                 {yearlyCounter}
