@@ -57,6 +57,8 @@ function DailyTasks() {
         goalValue,
         goalType,
         counter,
+        monthlyCounter,
+        yearlyCounter,
         comment,
         selectedTask,
         doneToday,
@@ -156,7 +158,7 @@ function DailyTasks() {
                             >
                                 + Lembrei de Agradecer
                             </Button>
-                            <Tooltip title={'Muagrometro global'}>
+                            <Tooltip title={'Muagrômetro Global'}>
 
                                 <Box
                                     onClick={() => navigate("/muagrometro")}
@@ -188,6 +190,27 @@ function DailyTasks() {
                                 </IconButton>
                             </Tooltip>
                         </Stack>
+                    </CardContent>
+                </Card>
+
+                <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5, }}>
+                    <CardContent sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', py: 1, '&:last-child': { pb: 1 } }}>
+                        <Box sx={{ textAlign: 'center' }}>
+                            <Typography variant="body2" color="text.secondary">
+                                Seus Agradecimentos no Mês
+                            </Typography>
+                            <Typography variant="h6" fontWeight="bold">
+                                {monthlyCounter}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ textAlign: 'center' }}>
+                            <Typography variant="body2" color="text.secondary">
+                                Seus Agradecimentos no Ano
+                            </Typography>
+                            <Typography variant="h6" fontWeight="bold">
+                                {yearlyCounter}
+                            </Typography>
+                        </Box>
                     </CardContent>
                 </Card>
 

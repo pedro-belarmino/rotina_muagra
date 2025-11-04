@@ -45,11 +45,11 @@ export default function Counter() {
 
             <Paper variant="outlined" sx={{ p: 2, m: 2 }}>
 
-                <Typography fontWeight="bold" textAlign="center">
+                <Typography variant="subtitle2" color="text.secondary" fontWeight="bold" textAlign="center">
                     {title}
                 </Typography>
                 <Divider sx={{ my: 1 }} />
-                <Typography textAlign="center" sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" color="text.secondary" textAlign="center" sx={{ mt: 2 }}>
                     {text}
                 </Typography>
 

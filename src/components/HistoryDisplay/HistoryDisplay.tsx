@@ -117,16 +117,6 @@ export default function HistoryDisplay() {
                                         ? new Date(task.createdAt).toLocaleDateString()
                                         : "-"}
                                 </Typography>
-
-                                <Typography><b>Dias totais:</b> {stats.totalDays}</Typography>
-                                <Typography><b>Dias seguidos:</b> {stats.streak}</Typography>
-                                {task.measure != '' && (
-
-                                    <Typography>
-                                        <b>Meta total alcançada:</b> {stats.totalMeasure} {task?.measure}
-                                    </Typography>
-                                )}
-                                <Divider sx={{ my: 2 }} />
                                 <Accordion
                                     component={Paper}
                                     elevation={5}
