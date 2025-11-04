@@ -9,6 +9,8 @@ import {
     collection,
     getDocs,
     runTransaction,
+    query,
+    where,
 } from "firebase/firestore";
 
 // const getTodayKey = () => {
@@ -120,4 +122,41 @@ export async function getAllDailyCounters(userId: string): Promise<{ dateKey: st
 export async function getTotalCounter(userId: string): Promise<number> {
     const all = await getAllDailyCounters(userId);
     return all.reduce((acc, cur) => acc + cur.value, 0);
+}
+
+export async function getMonthlyCounters(userId: string, date: Date): Promise<number> {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const startDate = `${year}-${month}-01`;
+    const endDate = `${year}-${month}-31`;
+
+    const countersRef = collection(db, "users", userId, "dailyCounters");
+    const q = query(countersRef, where("dateKey", ">=", startDate), where("dateKey", "<=", endDate));
+
+    const snap = await getDocs(q);
+
+    let total = 0;
+    snap.forEach(docSnap => {
+        total += (docSnap.data().value || 0);
+    });
+
+    return total;
+}
+
+export async function getYearlyCounters(userId: string, date: Date): Promise<number> {
+    const year = date.getFullYear();
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+
+    const countersRef = collection(db, "users", userId, "dailyCounters");
+    const q = query(countersRef, where("dateKey", ">=", startDate), where("dateKey", "<=", endDate));
+
+    const snap = await getDocs(q);
+
+    let total = 0;
+    snap.forEach(docSnap => {
+        total += (docSnap.data().value || 0);
+    });
+
+    return total;
 }
