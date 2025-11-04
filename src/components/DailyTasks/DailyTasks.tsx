@@ -156,7 +156,7 @@ function DailyTasks() {
                             >
                                 + Lembrei de Agradecer
                             </Button>
-                            <Tooltip title={'Muagrometro global'}>
+                            <Tooltip title={'Muagrômetro Global'}>
 
                                 <Box
                                     onClick={() => navigate("/muagrometro")}
