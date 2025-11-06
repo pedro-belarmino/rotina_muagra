@@ -282,7 +282,13 @@ function DailyTasks() {
                                             sx={{ width: "100%" }}
                                         >
                                             <Stack direction="row" alignItems="center">
-                                                {/* aqui irá o ícone da trilha */}
+                                                {task.taskType === 'gratitude' && task.gratitudeTrack && (
+                                                    <img
+                                                        src={`/icons/${task.gratitudeTrack}/${task.gratitudeTrack}.png`}
+                                                        alt={task.gratitudeTrack}
+                                                        style={{ width: 32, height: 32, marginRight: 12 }}
+                                                    />
+                                                )}
                                                 <ListItemText
                                                     primary={
                                                         <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>

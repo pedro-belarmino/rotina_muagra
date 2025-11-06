@@ -19,6 +19,8 @@ export function useTaskController() {
         schedule: "",
         dailyTask: true,
         archived: false,
+        taskType: 'personal',
+        gratitudeTrack: undefined,
         // days: []
     });
 
@@ -34,6 +36,8 @@ export function useTaskController() {
             schedule: "",
             dailyTask: true,
             archived: false,
+            taskType: 'personal',
+            gratitudeTrack: undefined,
             // days: []
         });
     };
@@ -109,6 +113,12 @@ export function useTaskController() {
 
                 return updated;
             });
+        } else if (field === "taskType" && value === "personal") {
+            setTask((prev) => ({
+                ...prev,
+                taskType: value,
+                gratitudeTrack: undefined,
+            }));
         } else {
             setTask((prev) => ({ ...prev, [field]: value }));
         }
