@@ -73,8 +73,8 @@ export default function TaskCreationForm() {
                                 <MenuItem value="fruto">Fruto</MenuItem>
                                 <MenuItem value="arvore">Árvore</MenuItem>
                                 <MenuItem value="floresta">Floresta</MenuItem>
-                                <MenuItem value="guardiao">Guardião</MenuItem>
-                                <MenuItem value="infinito">Infinito</MenuItem>
+                                <MenuItem value="guardiao">Guardião da Floresta</MenuItem>
+                                <MenuItem value="infinito">Novo Cliclo</MenuItem>
                             </Select>
                         </FormControl>
                     )}

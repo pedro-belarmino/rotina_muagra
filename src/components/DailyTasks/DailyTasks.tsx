@@ -284,7 +284,7 @@ function DailyTasks() {
                                             <Stack direction="row" alignItems="center">
                                                 {task.taskType === 'gratitude' && task.gratitudeTrack && (
                                                     <img
-                                                        src={`/icons/${task.gratitudeTrack}/${task.gratitudeTrack}.png`}
+                                                        src={`/icons/${task.gratitudeTrack}.png`}
                                                         alt={task.gratitudeTrack}
                                                         style={{ width: 32, height: 32, marginRight: 12 }}
                                                     />
@@ -341,13 +341,6 @@ function DailyTasks() {
                                                 >
                                                     {doneToday[task.id!] ? "Concluída" : "Marcar"}
                                                 </Button>
-                                                <Checkbox
-                                                    icon={<StarBorderIcon />}
-                                                    checkedIcon={<StarIcon color='warning' />}
-                                                    checked={!!task.priority}
-                                                    onChange={() => handleTogglePriority(task)}
-                                                    sx={{ alignSelf: 'self-start' }}
-                                                />
                                                 <Button
                                                     color="warning"
                                                     onClick={() => {
@@ -357,6 +350,13 @@ function DailyTasks() {
                                                 >
                                                     <ArchiveOutlinedIcon />
                                                 </Button>
+                                                <Checkbox
+                                                    icon={<StarBorderIcon />}
+                                                    checkedIcon={<StarIcon color='warning' />}
+                                                    checked={!!task.priority}
+                                                    onChange={() => handleTogglePriority(task)}
+                                                    sx={{ alignSelf: 'self-start' }}
+                                                />
                                             </Stack>
                                         </Stack>
                                     </ListItem>
