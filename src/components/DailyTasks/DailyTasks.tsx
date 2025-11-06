@@ -282,13 +282,7 @@ function DailyTasks() {
                                             sx={{ width: "100%" }}
                                         >
                                             <Stack direction="row" alignItems="center">
-                                                <Checkbox
-                                                    icon={<StarBorderIcon />}
-                                                    checkedIcon={<StarIcon color='warning' />}
-                                                    checked={!!task.priority}
-                                                    onChange={() => handleTogglePriority(task)}
-                                                    sx={{ alignSelf: 'self-start' }}
-                                                />
+                                                {/* aqui irá o ícone da trilha */}
                                                 <ListItemText
                                                     primary={
                                                         <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
@@ -341,6 +335,13 @@ function DailyTasks() {
                                                 >
                                                     {doneToday[task.id!] ? "Concluída" : "Marcar"}
                                                 </Button>
+                                                <Checkbox
+                                                    icon={<StarBorderIcon />}
+                                                    checkedIcon={<StarIcon color='warning' />}
+                                                    checked={!!task.priority}
+                                                    onChange={() => handleTogglePriority(task)}
+                                                    sx={{ alignSelf: 'self-start' }}
+                                                />
                                                 <Button
                                                     color="warning"
                                                     onClick={() => {
