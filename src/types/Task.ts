@@ -21,5 +21,7 @@ export type Task = {
     totalYear?: number;   // novo: medida acumulada do ano
 
     priority?: any; // Timestamp do Firestore
+    taskType?: 'personal' | 'gratitude';
+    gratitudeTrack?: 'semente' | 'broto' | 'flor' | 'fruto' | 'arvore' | 'floresta' | 'guardião' | 'infinito';
 };
 
