@@ -45,6 +45,39 @@ export default function TaskCreationForm() {
                     noValidate
                     autoComplete="off"
                 >
+                    <FormControl fullWidth>
+                        <InputLabel id="task-type-label">Tipo da Tarefa</InputLabel>
+                        <Select
+                            labelId="task-type-label"
+                            value={task.taskType || 'personal'}
+                            onChange={(e) => handleChange("taskType", e.target.value)}
+                            label="Tipo da Tarefa"
+                        >
+                            <MenuItem value="personal">Pessoal</MenuItem>
+                            <MenuItem value="gratitude">Trilha do Agradecimento</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    {task.taskType === 'gratitude' && (
+                        <FormControl fullWidth>
+                            <InputLabel id="gratitude-track-label">Fase da Trilha</InputLabel>
+                            <Select
+                                labelId="gratitude-track-label"
+                                value={task.gratitudeTrack || ''}
+                                onChange={(e) => handleChange("gratitudeTrack", e.target.value)}
+                                label="Fase da Trilha"
+                            >
+                                <MenuItem value="semente">Semente</MenuItem>
+                                <MenuItem value="broto">Broto</MenuItem>
+                                <MenuItem value="flor">Flor</MenuItem>
+                                <MenuItem value="fruto">Fruto</MenuItem>
+                                <MenuItem value="arvore">Árvore</MenuItem>
+                                <MenuItem value="floresta">Floresta</MenuItem>
+                                <MenuItem value="guardiao">Guardião da Floresta</MenuItem>
+                                <MenuItem value="infinito">Novo Cliclo</MenuItem>
+                            </Select>
+                        </FormControl>
+                    )}
 
                     <TextField
                         label="Nome"

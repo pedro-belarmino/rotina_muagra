@@ -282,13 +282,13 @@ function DailyTasks() {
                                             sx={{ width: "100%" }}
                                         >
                                             <Stack direction="row" alignItems="center">
-                                                <Checkbox
-                                                    icon={<StarBorderIcon />}
-                                                    checkedIcon={<StarIcon color='warning' />}
-                                                    checked={!!task.priority}
-                                                    onChange={() => handleTogglePriority(task)}
-                                                    sx={{ alignSelf: 'self-start' }}
-                                                />
+                                                {task.taskType === 'gratitude' && task.gratitudeTrack && (
+                                                    <img
+                                                        src={`/icons/${task.gratitudeTrack}.png`}
+                                                        alt={task.gratitudeTrack}
+                                                        style={{ width: 32, height: 32, marginRight: 12 }}
+                                                    />
+                                                )}
                                                 <ListItemText
                                                     primary={
                                                         <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
@@ -350,6 +350,13 @@ function DailyTasks() {
                                                 >
                                                     <ArchiveOutlinedIcon />
                                                 </Button>
+                                                <Checkbox
+                                                    icon={<StarBorderIcon />}
+                                                    checkedIcon={<StarIcon color='warning' />}
+                                                    checked={!!task.priority}
+                                                    onChange={() => handleTogglePriority(task)}
+                                                    sx={{ alignSelf: 'self-start' }}
+                                                />
                                             </Stack>
                                         </Stack>
                                     </ListItem>
