@@ -20,7 +20,7 @@ export function useTaskController() {
         dailyTask: true,
         archived: false,
         taskType: 'personal',
-        gratitudeTrack: undefined,
+        gratitudeTrack: '',
         icon: "",
         // days: []
     });
@@ -38,7 +38,7 @@ export function useTaskController() {
             dailyTask: true,
             archived: false,
             taskType: 'personal',
-            gratitudeTrack: undefined,
+            gratitudeTrack: '',
             icon: "",
             // days: []
         });
@@ -119,7 +119,7 @@ export function useTaskController() {
             setTask((prev) => ({
                 ...prev,
                 taskType: value,
-                gratitudeTrack: undefined,
+                gratitudeTrack: '',
             }));
         } else {
             setTask((prev) => ({ ...prev, [field]: value }));
@@ -154,6 +154,21 @@ export function useTaskController() {
             setSeverity('error');
             return;
         }
+
+        if (task.taskType === 'personal' && !task.icon) {
+            setSnackbar(true);
+            setSnackbarMessage('Selecione um ícone para sua tarefa pessoal.');
+            setSeverity('error');
+            return;
+        }
+
+        if (task.taskType === 'gratitude' && !task.gratitudeTrack) {
+            setSnackbar(true);
+            setSnackbarMessage('Selecione a fase da trilha dessa tarefa.');
+            setSeverity('error');
+            return;
+        }
+
 
 
         try {
