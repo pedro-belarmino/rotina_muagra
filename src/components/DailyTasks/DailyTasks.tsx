@@ -30,6 +30,7 @@ import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
 import { useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
+import IconRenderer from '../shared/IconRenderer';
 import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 import { useTheme } from '@mui/material/styles';
 function DailyTasks() {
@@ -282,6 +283,9 @@ function DailyTasks() {
                                             sx={{ width: "100%" }}
                                         >
                                             <Stack direction="row" alignItems="center">
+                                                {task.taskType === 'personal' && task.icon && (
+                                                    <IconRenderer iconName={task.icon} />
+                                                )}
                                                 {task.taskType === 'gratitude' && task.gratitudeTrack && (
                                                     <img
                                                         src={`/icons/${task.gratitudeTrack}.png`}

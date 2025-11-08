@@ -21,6 +21,7 @@ export function useTaskController() {
         archived: false,
         taskType: 'personal',
         gratitudeTrack: undefined,
+        icon: "",
         // days: []
     });
 
@@ -38,6 +39,7 @@ export function useTaskController() {
             archived: false,
             taskType: 'personal',
             gratitudeTrack: undefined,
+            icon: "",
             // days: []
         });
     };
