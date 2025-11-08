@@ -1,8 +1,8 @@
 
 export function formatISODate(d: Date): string {
-    const year = d.getUTCFullYear();
-    const m = (d.getUTCMonth() + 1).toString().padStart(2, '0');
-    const day = d.getUTCDate().toString().padStart(2, '0');
+    const year = d.getFullYear();
+    const m = (d.getMonth() + 1).toString().padStart(2, '0');
+    const day = d.getDate().toString().padStart(2, '0');
     return `${year}-${m}-${day}`;
 }
 
@@ -10,14 +10,14 @@ export function formatISODate(d: Date): string {
 export function getPeriodStartForType(date: Date, type?: 'monthly' | 'weekly' | 'general' | ''): string | null {
     if (!type) return null;
     if (type === 'monthly') {
-        const start = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), 1));
+        const start = new Date(Date.UTC(date.getFullYear(), date.getMonth(), 1));
         return formatISODate(start);
     }
     if (type === 'weekly') {
 
         const d = new Date(date);
-        const day = d.getUTCDay();
-        const diff = d.getUTCDate() - day;
+        const day = d.getDay();
+        const diff = d.getDate() - day;
         const sunday = new Date(d.setUTCDate(diff));
         sunday.setUTCHours(0, 0, 0, 0);
         return formatISODate(sunday);
@@ -26,12 +26,12 @@ export function getPeriodStartForType(date: Date, type?: 'monthly' | 'weekly' | 
 }
 
 export function daysInMonthFor(date: Date): number {
-    const y = date.getUTCFullYear();
-    const m = date.getUTCMonth();
-    return new Date(y, m + 1, 0).getUTCDate();
+    const y = date.getFullYear();
+    const m = date.getMonth();
+    return new Date(y, m + 1, 0).getDate();
 }
 export function daysInYearFor(date: Date): number {
-    const y = date.getUTCFullYear();
+    const y = date.getFullYear();
 
     return ((y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0)) ? 366 : 365;
 }

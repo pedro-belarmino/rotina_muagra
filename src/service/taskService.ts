@@ -28,7 +28,7 @@ export async function addTask(userId: string, task: Task) {
         days: 0,
         periodStart: periodStart ?? null,
         daysYear: 0,
-        yearStart: String(now.getUTCFullYear()),
+        yearStart: String(now.getFullYear()),
         totalMonth: 0,
         totalYear: 0,
     });
@@ -98,7 +98,7 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
 export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promise<boolean> {
     if (!task || !task.id) return false;
     const now = getNowInBrasilia();
-    const currentYear = String(now.getUTCFullYear());
+    const currentYear = String(now.getFullYear());
 
     if (task.yearStart !== currentYear) {
 
