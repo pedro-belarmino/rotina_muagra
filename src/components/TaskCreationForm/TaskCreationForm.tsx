@@ -12,7 +12,19 @@ import {
     FormControl,
     InputLabel,
     Divider,
+    Grid,
 } from "@mui/material";
+import LocalDrinkIcon from '@mui/icons-material/LocalDrink';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import LaptopChromebookIcon from '@mui/icons-material/LaptopChromebook';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import PaidIcon from '@mui/icons-material/Paid';
+import SavingsIcon from '@mui/icons-material/Savings';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import EmojiFoodBeverageIcon from '@mui/icons-material/EmojiFoodBeverage';
+import TranslateIcon from '@mui/icons-material/Translate';
+import PersonIcon from '@mui/icons-material/Person';
 import SharedSnackbar from "../shared/SharedSnackbar";
 import { useTaskController } from "./TaskCreationForm.controller";
 
@@ -57,6 +69,30 @@ export default function TaskCreationForm() {
                             <MenuItem value="gratitude">Trilha do Agradecimento</MenuItem>
                         </Select>
                     </FormControl>
+
+                    {task.taskType === 'personal' && (
+                        <FormControl fullWidth>
+                            <InputLabel id="icon-label">Ícone</InputLabel>
+                            <Select
+                                labelId="icon-label"
+                                value={task.icon || ''}
+                                onChange={(e) => handleChange("icon", e.target.value)}
+                                label="Ícone"
+                            >
+                                <MenuItem value="LocalDrink"><LocalDrinkIcon /></MenuItem>
+                                <MenuItem value="FitnessCenter"><FitnessCenterIcon /></MenuItem>
+                                <MenuItem value="SelfImprovement"><SelfImprovementIcon /></MenuItem>
+                                <MenuItem value="LaptopChromebook"><LaptopChromebookIcon /></MenuItem>
+                                <MenuItem value="MenuBook"><MenuBookIcon /></MenuItem>
+                                <MenuItem value="Paid"><PaidIcon /></MenuItem>
+                                <MenuItem value="Savings"><SavingsIcon /></MenuItem>
+                                <MenuItem value="Restaurant"><RestaurantIcon /></MenuItem>
+                                <MenuItem value="EmojiFoodBeverage"><EmojiFoodBeverageIcon /></MenuItem>
+                                <MenuItem value="Translate"><TranslateIcon /></MenuItem>
+                                <MenuItem value="Person"><PersonIcon /></MenuItem>
+                            </Select>
+                        </FormControl>
+                    )}
 
                     {task.taskType === 'gratitude' && (
                         <FormControl fullWidth>

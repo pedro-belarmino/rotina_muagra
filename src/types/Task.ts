@@ -23,5 +23,6 @@ export type Task = {
     priority?: any; // Timestamp do Firestore
     taskType?: 'personal' | 'gratitude';
     gratitudeTrack?: 'semente' | 'broto' | 'flor' | 'fruto' | 'arvore' | 'floresta' | 'guardião' | 'infinito';
+    icon?: string;
 };
 
