@@ -19,10 +19,8 @@ import {
     Pagination,
     Stack,
     Checkbox,
-    IconButton,
     CircularProgress,
 } from "@mui/material";
-import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import Tooltip from '@mui/material/Tooltip';
 import LoadingScreen from "../../views/LoadingScreen";
