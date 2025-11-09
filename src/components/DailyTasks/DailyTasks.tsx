@@ -351,72 +351,64 @@ function DailyTasks() {
                                                                     {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
                                                                 </>
                                                             )}
-                                                            {task.dailyGoal != 0 ? (
-                                                                <>
-                                                                    <br />
-                                                                    Total no mês: {(task.totalMonth ?? 0)} {formatMeasure(task.measure || '')} ({(task.days ?? 0)} / {daysInMonthFor(new Date())} dias)
-                                                                    <br />
-                                                                    Total no ano: {(task.totalYear ?? 0)} {formatMeasure(task.measure || '')} ({(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias)
 
-                                                                </>
-                                                            ) : (
-                                                                <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-                                                                    <Box sx={{ textAlign: 'center' }}>
-                                                                        <Typography variant="body2" color="text.secondary" fontSize={10}>
-                                                                            Progresso no Mês
-                                                                        </Typography>
-                                                                        <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                            <CircularProgress variant="determinate" value={(((task.days ?? 0) / daysInMonthFor(new Date())) * 100)} color='warning' size={30} />
-                                                                            <Box
-                                                                                sx={{
-                                                                                    top: 0,
-                                                                                    left: 0,
-                                                                                    bottom: 0,
-                                                                                    right: 0,
-                                                                                    position: 'absolute',
-                                                                                    display: 'flex',
-                                                                                    alignItems: 'center',
-                                                                                    justifyContent: 'center',
-                                                                                }}
-                                                                            >
-                                                                                <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                    {`${Math.round((((task.days ?? 0) / daysInMonthFor(new Date())) * 100))}%`}
-                                                                                </Typography>
-                                                                            </Box>
+                                                            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                                                                <Box sx={{ textAlign: 'center' }}>
+                                                                    <Typography variant="body2" color="text.secondary" fontSize={10}>
+                                                                        Progresso no Mês
+                                                                    </Typography>
+                                                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                                                        <CircularProgress variant="determinate" value={(((task.days ?? 0) / daysInMonthFor(new Date())) * 100)} color='warning' size={30} />
+                                                                        <Box
+                                                                            sx={{
+                                                                                top: 0,
+                                                                                left: 0,
+                                                                                bottom: 0,
+                                                                                right: 0,
+                                                                                position: 'absolute',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'center',
+                                                                            }}
+                                                                        >
+                                                                            <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
+                                                                                {`${Math.round((((task.days ?? 0) / daysInMonthFor(new Date())) * 100))}%`}
+                                                                            </Typography>
                                                                         </Box>
-                                                                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                            {(task.days ?? 0)} / {daysInMonthFor(new Date())} dias
-                                                                        </Typography>
                                                                     </Box>
-                                                                    <Box sx={{ textAlign: 'center' }}>
-                                                                        <Typography variant="body2" color="text.secondary" fontSize={10}>
-                                                                            Progresso no Ano
-                                                                        </Typography>
-                                                                        <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                            <CircularProgress variant="determinate" value={(((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100)} color='warning' size={30} />
-                                                                            <Box
-                                                                                sx={{
-                                                                                    top: 0,
-                                                                                    left: 0,
-                                                                                    bottom: 0,
-                                                                                    right: 0,
-                                                                                    position: 'absolute',
-                                                                                    display: 'flex',
-                                                                                    alignItems: 'center',
-                                                                                    justifyContent: 'center',
-                                                                                }}
-                                                                            >
-                                                                                <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                    {`${Math.round((((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100))}%`}
-                                                                                </Typography>
-                                                                            </Box>
-                                                                        </Box>
-                                                                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                            {(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias
-                                                                        </Typography>
-                                                                    </Box>
+                                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                        {(task.days ?? 0)} / {daysInMonthFor(new Date())} dias
+                                                                    </Typography>
                                                                 </Box>
-                                                            )}
+                                                                <Box sx={{ textAlign: 'center' }}>
+                                                                    <Typography variant="body2" color="text.secondary" fontSize={10}>
+                                                                        Progresso no Ano
+                                                                    </Typography>
+                                                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                                                        <CircularProgress variant="determinate" value={(((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100)} color='warning' size={30} />
+                                                                        <Box
+                                                                            sx={{
+                                                                                top: 0,
+                                                                                left: 0,
+                                                                                bottom: 0,
+                                                                                right: 0,
+                                                                                position: 'absolute',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'center',
+                                                                            }}
+                                                                        >
+                                                                            <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
+                                                                                {`${Math.round((((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100))}%`}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    </Box>
+                                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                        {(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Box>
+
 
                                                         </Typography>
                                                     }
