@@ -83,7 +83,9 @@ export default function HistoryDisplay() {
                                     Ver todos os registros
                                 </Typography>
                             </AccordionSummary>
-                            {counterAll?.map((item, index) => (
+                            {counterAll?.sort(
+                                (a, b) => new Date(b.dateKey).getTime() - new Date(a.dateKey).getTime()
+                            ).map((item, index) => (
                                 <AccordionDetails key={index} sx={{ borderRadius: 2, px: 2 }}>
                                     <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                                         <Typography variant="body2" color="textSecondary">
