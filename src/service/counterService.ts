@@ -143,6 +143,31 @@ export async function getMonthlyCounters(userId: string, date: Date): Promise<nu
     return total;
 }
 
+export async function getYearlyDays(userId: string, date: Date): Promise<number> {
+    const year = date.getFullYear();
+    const startDate = `${year}-01-01`;
+    const endDate = `${year}-12-31`;
+
+    const countersRef = collection(db, "users", userId, "dailyCounters");
+    const q = query(countersRef, where("dateKey", ">=", startDate), where("dateKey", "<=", endDate));
+
+    const snap = await getDocs(q);
+    return snap.size;
+}
+
+export async function getMonthlyDays(userId: string, date: Date): Promise<number> {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const startDate = `${year}-${month}-01`;
+    const endDate = `${year}-${month}-31`;
+
+    const countersRef = collection(db, "users", userId, "dailyCounters");
+    const q = query(countersRef, where("dateKey", ">=", startDate), where("dateKey", "<=", endDate));
+
+    const snap = await getDocs(q);
+    return snap.size;
+}
+
 export async function getYearlyCounters(userId: string, date: Date): Promise<number> {
     const year = date.getFullYear();
     const startDate = `${year}-01-01`;

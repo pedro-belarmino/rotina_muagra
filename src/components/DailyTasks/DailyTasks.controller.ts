@@ -3,8 +3,9 @@ import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
-import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyCounters, getYearlyCounters } from "../../service/counterService";
+import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
+import { daysInMonth, daysInYear } from "../../utils/period";
 
 
 export const useDailyTasksController = () => {
@@ -21,8 +22,12 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
-    const [monthlyCounter, setMonthlyCounter] = useState<number>(0);
-    const [yearlyCounter, setYearlyCounter] = useState<number>(0);
+    const [monthlyProgress, setMonthlyProgress] = useState(0);
+    const [yearlyProgress, setYearlyProgress] = useState(0);
+    const [monthlyDays, setMonthlyDays] = useState(0);
+    const [yearlyDays, setYearlyDays] = useState(0);
+    const [totalDaysInMonth, setTotalDaysInMonth] = useState(0);
+    const [totalDaysInYear, setTotalDaysInYear] = useState(0);
     const [comment, setComment] = useState("");
     const [commentLenght, setCommentLenght] = useState(0)
 
@@ -160,32 +165,43 @@ export const useDailyTasksController = () => {
         return () => clearInterval(interval);
     }, []);
 
-    useEffect(() => {
-        const fetchCounters = async () => {
-            if (user) {
-                const now = new Date();
-                const { value, comment } = await getDailyCounter(user.uid);
-                const monthly = await getMonthlyCounters(user.uid, now);
-                const yearly = await getYearlyCounters(user.uid, now);
-
-                setCounter(value);
-                setComment(comment);
-                setMonthlyCounter(monthly);
-                setYearlyCounter(yearly);
-            }
-        };
-        fetchCounters();
-    }, [user]);
 
 
     const getRandomString = (): string => ['Parabéns 👏', 'Muagra 🙌'][Math.floor(Math.random() * 2)];
 
+    const fetchCounters = async () => {
+        if (user) {
+            const now = new Date();
+            const { value, comment } = await getDailyCounter(user.uid);
+            const monthly = await getMonthlyDays(user.uid, now);
+            const yearly = await getYearlyDays(user.uid, now);
+            const totalMonthDays = daysInMonth(now.getFullYear(), now.getMonth() + 1);
+            const totalYearDays = daysInYear(now.getFullYear());
+
+            setCounter(value);
+            setComment(comment);
+            setMonthlyDays(monthly);
+            setYearlyDays(yearly);
+            setTotalDaysInMonth(totalMonthDays);
+            setTotalDaysInYear(totalYearDays);
+
+            if (totalMonthDays > 0) {
+                setMonthlyProgress((monthly / totalMonthDays) * 100);
+            }
+            if (totalYearDays > 0) {
+                setYearlyProgress((yearly / totalYearDays) * 100);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchCounters();
+    }, [user]);
     async function addCounter() {
         if (user) {
             const newValue = await incrementDailyCounter(user.uid);
             setCounter(newValue);
-            setMonthlyCounter(prev => prev + 1);
-            setYearlyCounter(prev => prev + 1);
+            await fetchCounters();
             setSnackbarMessage(getRandomString())
             setSeverity('success')
             setSnackbar(true)
@@ -277,8 +293,12 @@ export const useDailyTasksController = () => {
         snackbar,
         severity,
         counter,
-        monthlyCounter,
-        yearlyCounter,
+        monthlyProgress,
+        yearlyProgress,
+        monthlyDays,
+        yearlyDays,
+        totalDaysInMonth,
+        totalDaysInYear,
         comment,
         goalType,
         confirmModalOpen,

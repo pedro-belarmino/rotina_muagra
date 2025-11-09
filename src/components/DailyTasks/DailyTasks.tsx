@@ -19,7 +19,8 @@ import {
     Pagination,
     Stack,
     Checkbox,
-    IconButton
+    IconButton,
+    CircularProgress,
 } from "@mui/material";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
@@ -58,8 +59,12 @@ function DailyTasks() {
         goalValue,
         goalType,
         counter,
-        monthlyCounter,
-        yearlyCounter,
+        monthlyProgress,
+        yearlyProgress,
+        monthlyDays,
+        yearlyDays,
+        totalDaysInMonth,
+        totalDaysInYear,
         comment,
         selectedTask,
         doneToday,
@@ -194,22 +199,60 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5, }}>
+                <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
                     <CardContent sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', py: 1, '&:last-child': { pb: 1 } }}>
                         <Box sx={{ textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
-                                Seus Agradecimentos no Mês
+                                Progresso no Mês
                             </Typography>
-                            <Typography variant="h6" fontWeight="bold">
-                                {monthlyCounter}
+                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                <CircularProgress variant="determinate" value={monthlyProgress} />
+                                <Box
+                                    sx={{
+                                        top: 0,
+                                        left: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        position: 'absolute',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Typography variant="caption" component="div" color="text.secondary">
+                                        {`${Math.round(monthlyProgress)}%`}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                {monthlyDays} / {totalDaysInMonth} dias
                             </Typography>
                         </Box>
                         <Box sx={{ textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
-                                Seus Agradecimentos no Ano
+                                Progresso no Ano
                             </Typography>
-                            <Typography variant="h6" fontWeight="bold">
-                                {yearlyCounter}
+                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                <CircularProgress variant="determinate" value={yearlyProgress} />
+                                <Box
+                                    sx={{
+                                        top: 0,
+                                        left: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        position: 'absolute',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Typography variant="caption" component="div" color="text.secondary">
+                                        {`${Math.round(yearlyProgress)}%`}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                {yearlyDays} / {totalDaysInYear} dias
                             </Typography>
                         </Box>
                     </CardContent>
