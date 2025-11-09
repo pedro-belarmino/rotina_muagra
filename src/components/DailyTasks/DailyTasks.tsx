@@ -206,7 +206,7 @@ function DailyTasks() {
                                 Progresso no Mês
                             </Typography>
                             <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={monthlyProgress} />
+                                <CircularProgress variant="determinate" value={monthlyProgress} color='warning' />
                                 <Box
                                     sx={{
                                         top: 0,
@@ -233,7 +233,7 @@ function DailyTasks() {
                                 Progresso no Ano
                             </Typography>
                             <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={yearlyProgress} />
+                                <CircularProgress variant="determinate" value={yearlyProgress} color='warning' />
                                 <Box
                                     sx={{
                                         top: 0,
