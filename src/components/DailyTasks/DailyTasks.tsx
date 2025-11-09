@@ -183,17 +183,39 @@ function DailyTasks() {
                                 />
                             </Tooltip>
                             <Tooltip title='Seu diario de agradecimento' onClick={() => setDiaryModal(true)}>
-                                <IconButton
-                                    sx={{
-                                        cursor: "pointer",
-                                        position: "absolute",
-                                        left: 0,
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                    }}
-                                >
-                                    <MenuBookIcon sx={{ fontSize: 30 }} />
-                                </IconButton>
+                                {isDarkMode ? (
+                                    <Box
+                                        onClick={() => navigate("/muagrometro")}
+                                        component="img"
+                                        src="/diario/Ícone Diário para fundo claro.png"
+                                        alt=""
+                                        sx={{
+                                            cursor: "pointer",
+                                            position: "absolute",
+                                            left: 0,
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            height: "150%",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                ) : (
+                                    <Box
+                                        onClick={() => navigate("/muagrometro")}
+                                        component="img"
+                                        src="/diario/ìcone Diário para fundo Escuro.png"
+                                        alt=""
+                                        sx={{
+                                            cursor: "pointer",
+                                            position: "absolute",
+                                            left: 0,
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            height: "150%",
+                                            objectFit: "contain",
+                                        }}
+                                    />
+                                )}
                             </Tooltip>
                         </Stack>
                     </CardContent>
