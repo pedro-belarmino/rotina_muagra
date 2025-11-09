@@ -183,7 +183,7 @@ function DailyTasks() {
                             <Tooltip title='Seu diario de agradecimento' onClick={() => setDiaryModal(true)}>
                                 {isDarkMode ? (
                                     <Box
-                                        onClick={() => navigate("/muagrometro")}
+                                        onClick={() => setDiaryModal(true)}
                                         component="img"
                                         src="/diario/Ícone Diário para fundo claro.png"
                                         alt=""
@@ -199,7 +199,7 @@ function DailyTasks() {
                                     />
                                 ) : (
                                     <Box
-                                        onClick={() => navigate("/muagrometro")}
+                                        onClick={() => setDiaryModal(true)}
                                         component="img"
                                         src="/diario/ìcone Diário para fundo Escuro.png"
                                         alt=""
