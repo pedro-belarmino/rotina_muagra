@@ -57,12 +57,7 @@ function DailyTasks() {
         goalValue,
         goalType,
         counter,
-        monthlyProgress,
-        yearlyProgress,
-        monthlyDays,
-        yearlyDays,
-        totalDaysInMonth,
-        totalDaysInYear,
+        tasksProgress,
         comment,
         selectedTask,
         doneToday,
@@ -218,65 +213,40 @@ function DailyTasks() {
                         </Stack>
                     </CardContent>
                 </Card>
-
-                <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
-                    <CardContent sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Progresso no Mês
+                {tasksProgress.length > 0 &&
+                    <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
+                        <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
+                            <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, textAlign: 'center' }}>
+                                Meu Progresso
                             </Typography>
-                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={monthlyProgress} color='warning' />
-                                <Box
-                                    sx={{
-                                        top: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        position: 'absolute',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Typography variant="caption" component="div" color="text.secondary">
-                                        {`${Math.round(monthlyProgress)}%`}
-                                    </Typography>
-                                </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap', gap: 2 }}>
+                                {tasksProgress.map((progress, index) => (
+                                    <Box key={index} sx={{ textAlign: 'center', flex: '1 1 45%', minWidth: '120px' }}>
+                                        <Typography variant="body2" fontWeight="bold" color="text.primary">
+                                            {formatMeasure(progress.measure)}
+                                        </Typography>
+                                        <Box sx={{ mt: 1 }}>
+                                            <Typography variant="caption" color="text.secondary">
+                                                Mês
+                                            </Typography>
+                                            <Typography variant="body2" color="text.primary">
+                                                {progress.totalMonth.toLocaleString()} / {progress.monthlyGoal.toLocaleString()}
+                                            </Typography>
+                                        </Box>
+                                        <Box sx={{ mt: 1 }}>
+                                            <Typography variant="caption" color="text.secondary">
+                                                Ano
+                                            </Typography>
+                                            <Typography variant="body2" color="text.primary">
+                                                {progress.totalYear.toLocaleString()} / {progress.yearlyGoal.toLocaleString()}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                ))}
                             </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {monthlyDays} / {totalDaysInMonth} dias
-                            </Typography>
-                        </Box>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Progresso no Ano
-                            </Typography>
-                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={yearlyProgress} color='warning' />
-                                <Box
-                                    sx={{
-                                        top: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        position: 'absolute',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Typography variant="caption" component="div" color="text.secondary">
-                                        {`${Math.round(yearlyProgress)}%`}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {yearlyDays} / {totalDaysInYear} dias
-                            </Typography>
-                        </Box>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                }
 
 
                 {/* <Card

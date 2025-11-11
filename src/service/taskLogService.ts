@@ -282,6 +282,31 @@ export async function getAllTaskLogs(uid: string): Promise<TaskLog[]> {
     });
 }
 
+export const getTaskLogsByPeriod = async (
+    uid: string,
+    taskId: string,
+    startDate: Date,
+    endDate: Date
+): Promise<number> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const q = query(
+        logsRef,
+        where("taskId", "==", taskId),
+        where("doneAt", ">=", startDate),
+        where("doneAt", "<=", endDate)
+    );
+
+    const snap = await getDocs(q);
+    let totalValue = 0;
+
+    snap.forEach((doc) => {
+        const data = doc.data();
+        totalValue += data.value || 0;
+    });
+
+    return totalValue;
+};
+
 async function getDocOrNull(ref: DocumentReference) {
     try {
         const snap = await getDoc(ref);

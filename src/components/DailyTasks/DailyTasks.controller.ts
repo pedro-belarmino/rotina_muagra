@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByPeriod } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
-import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
+import { getDailyCounter, incrementDailyCounter, updateDailyComment } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 import { daysInMonth, daysInYear } from "../../utils/period";
 
+export interface TaskProgress {
+    name: string;
+    measure: string;
+    totalMonth: number;
+    totalYear: number;
+    monthlyGoal: number;
+    yearlyGoal: number;
+}
 
 export const useDailyTasksController = () => {
 
@@ -22,13 +30,8 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
-    const [monthlyProgress, setMonthlyProgress] = useState(0);
-    const [yearlyProgress, setYearlyProgress] = useState(0);
-    const [monthlyDays, setMonthlyDays] = useState(0);
-    const [yearlyDays, setYearlyDays] = useState(0);
-    const [totalDaysInMonth, setTotalDaysInMonth] = useState(0);
-    const [totalDaysInYear, setTotalDaysInYear] = useState(0);
     const [comment, setComment] = useState("");
+    const [tasksProgress, setTasksProgress] = useState<TaskProgress[]>([]);
     const [commentLenght, setCommentLenght] = useState(0)
 
     const [snackbar, setSnackbar] = useState(false);
@@ -102,6 +105,33 @@ export const useDailyTasksController = () => {
 
         userTasks = await getTasks(user.uid, false);
 
+        const now = new Date();
+        const totalMonthDays = daysInMonth(now.getFullYear(), now.getMonth() + 1);
+        const totalYearDays = daysInYear(now.getFullYear());
+
+        const progressData: TaskProgress[] = await Promise.all(
+            userTasks
+                .filter(task => task.dailyGoal > 0)
+                .map(async task => {
+                    const monthStartDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    const yearStartDate = new Date(now.getFullYear(), 0, 1);
+
+                    const totalMonth = await getTaskLogsByPeriod(user.uid, task.id!, monthStartDate, now);
+                    const totalYear = await getTaskLogsByPeriod(user.uid, task.id!, yearStartDate, now);
+
+                    return {
+                        name: task.name,
+                        measure: task.measure || '',
+                        totalMonth,
+                        totalYear,
+                        monthlyGoal: task.dailyGoal * totalMonthDays,
+                        yearlyGoal: task.dailyGoal * totalYearDays,
+                    };
+                })
+        );
+
+        setTasksProgress(progressData);
+
 
         userTasks.sort((a, b) => {
 
@@ -125,7 +155,6 @@ export const useDailyTasksController = () => {
         // const today = new Date().toISOString().split("T")[0];
 
 
-        const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
 
@@ -171,26 +200,9 @@ export const useDailyTasksController = () => {
 
     const fetchCounters = async () => {
         if (user) {
-            const now = new Date();
             const { value, comment } = await getDailyCounter(user.uid);
-            const monthly = await getMonthlyDays(user.uid, now);
-            const yearly = await getYearlyDays(user.uid, now);
-            const totalMonthDays = daysInMonth(now.getFullYear(), now.getMonth() + 1);
-            const totalYearDays = daysInYear(now.getFullYear());
-
             setCounter(value);
             setComment(comment);
-            setMonthlyDays(monthly);
-            setYearlyDays(yearly);
-            setTotalDaysInMonth(totalMonthDays);
-            setTotalDaysInYear(totalYearDays);
-
-            if (totalMonthDays > 0) {
-                setMonthlyProgress((monthly / totalMonthDays) * 100);
-            }
-            if (totalYearDays > 0) {
-                setYearlyProgress((yearly / totalYearDays) * 100);
-            }
         }
     };
 
@@ -293,12 +305,6 @@ export const useDailyTasksController = () => {
         snackbar,
         severity,
         counter,
-        monthlyProgress,
-        yearlyProgress,
-        monthlyDays,
-        yearlyDays,
-        totalDaysInMonth,
-        totalDaysInYear,
         comment,
         goalType,
         confirmModalOpen,
@@ -309,6 +315,7 @@ export const useDailyTasksController = () => {
         tasks,
         loading,
         openModal,
+        tasksProgress,
     }
 
 }
