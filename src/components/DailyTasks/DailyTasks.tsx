@@ -244,9 +244,6 @@ function DailyTasks() {
                                     </Typography>
                                 </Box>
                             </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {monthlyDays} / {totalDaysInMonth} dias
-                            </Typography>
                         </Box>
                         <Box sx={{ textAlign: 'center' }}>
                             <Typography variant="body2" color="text.secondary">
@@ -271,9 +268,6 @@ function DailyTasks() {
                                     </Typography>
                                 </Box>
                             </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {yearlyDays} / {totalDaysInYear} dias
-                            </Typography>
                         </Box>
                     </CardContent>
                 </Card>
@@ -378,7 +372,7 @@ function DailyTasks() {
                                                                         Progresso no Mês
                                                                     </Typography>
                                                                     <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                        <CircularProgress variant="determinate" value={(((task.days ?? 0) / daysInMonthFor(new Date())) * 100)} color='warning' size={30} />
+                                                                        <CircularProgress variant="determinate" value={((task.totalMonth ?? 0) / (task.monthlyGoal || 1)) * 100} color='warning' size={30} />
                                                                         <Box
                                                                             sx={{
                                                                                 top: 0,
@@ -392,12 +386,12 @@ function DailyTasks() {
                                                                             }}
                                                                         >
                                                                             <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                {`${Math.round((((task.days ?? 0) / daysInMonthFor(new Date())) * 100))}%`}
+                                                                                {`${Math.round(((task.totalMonth ?? 0) / (task.monthlyGoal || 1)) * 100)}%`}
                                                                             </Typography>
                                                                         </Box>
                                                                     </Box>
                                                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                        {(task.days ?? 0)} / {daysInMonthFor(new Date())} dias
+                                                                        {(task.totalMonth ?? 0)} / {task.monthlyGoal} {formatMeasure(task.measure || '')}
                                                                     </Typography>
                                                                 </Box>
                                                                 <Box sx={{ textAlign: 'center' }}>
@@ -405,7 +399,7 @@ function DailyTasks() {
                                                                         Progresso no Ano
                                                                     </Typography>
                                                                     <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                        <CircularProgress variant="determinate" value={(((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100)} color='warning' size={30} />
+                                                                        <CircularProgress variant="determinate" value={((task.totalYear ?? 0) / (task.yearlyGoal || 1)) * 100} color='warning' size={30} />
                                                                         <Box
                                                                             sx={{
                                                                                 top: 0,
@@ -419,12 +413,12 @@ function DailyTasks() {
                                                                             }}
                                                                         >
                                                                             <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                {`${Math.round((((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100))}%`}
+                                                                                {`${Math.round(((task.totalYear ?? 0) / (task.yearlyGoal || 1)) * 100)}%`}
                                                                             </Typography>
                                                                         </Box>
                                                                     </Box>
                                                                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                        {(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias
+                                                                        {(task.totalYear ?? 0)} / {task.yearlyGoal} {formatMeasure(task.measure || '')}
                                                                     </Typography>
                                                                 </Box>
                                                             </Box>

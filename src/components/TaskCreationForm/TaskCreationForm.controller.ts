@@ -13,6 +13,8 @@ export function useTaskController() {
         description: "",
         measure: "",
         dailyGoal: 0,
+        monthlyGoal: 0,
+        yearlyGoal: 0,
         totalGoal: 0,
         totalGoalType: 'monthly',
         createdAt: null,
@@ -22,7 +24,6 @@ export function useTaskController() {
         taskType: 'personal',
         gratitudeTrack: '',
         icon: "",
-        // days: []
     });
 
     const resetForm = () => {
@@ -31,6 +32,8 @@ export function useTaskController() {
             description: "",
             measure: "",
             dailyGoal: 0,
+            monthlyGoal: 0,
+            yearlyGoal: 0,
             totalGoal: 0,
             totalGoalType: 'monthly',
             createdAt: null,
@@ -40,7 +43,6 @@ export function useTaskController() {
             taskType: 'personal',
             gratitudeTrack: '',
             icon: "",
-            // days: []
         });
     };
 
@@ -49,6 +51,8 @@ export function useTaskController() {
             ...prev,
             measure: '',
             dailyGoal: 0,
+            monthlyGoal: 0,
+            yearlyGoal: 0,
             totalGoal: 0,
         }))
         setDefineGeneralGoal(false)

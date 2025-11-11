@@ -25,12 +25,12 @@ export async function addTask(userId: string, task: Task) {
         ...task,
         createdAt: now2,
         archived: false,
-        days: 0,
         periodStart: periodStart ?? null,
-        daysYear: 0,
         yearStart: String(now.getFullYear()),
         totalMonth: 0,
         totalYear: 0,
+        monthlyGoal: task.monthlyGoal || 0,
+        yearlyGoal: task.yearlyGoal || 0,
     });
 }
 
@@ -46,12 +46,12 @@ export async function getTasks(userId: string, includeArchived = false): Promise
                 id: docSnap.id,
                 ...data,
                 createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : data.createdAt,
-                days: data.days ?? 0,
                 periodStart: data.periodStart ?? null,
-                daysYear: data.daysYear ?? 0,
                 yearStart: data.yearStart ?? null,
                 totalMonth: data.totalMonth ?? 0,
                 totalYear: data.totalYear ?? 0,
+                monthlyGoal: data.monthlyGoal ?? 0,
+                yearlyGoal: data.yearlyGoal ?? 0,
             } as Task;
         })
         .filter((task) => includeArchived || !task.archived);
@@ -81,7 +81,7 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
     if (!currentPeriodStart) {
 
         if (task.periodStart) {
-            await updateTask(userId, task.id, { periodStart: null, days: task.days ?? 0, totalMonth: 0, });
+            await updateTask(userId, task.id, { periodStart: null, totalMonth: 0, });
             return true;
         }
         return false;
@@ -89,7 +89,7 @@ export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Pro
 
     if (task.periodStart !== currentPeriodStart) {
 
-        await updateTask(userId, task.id, { days: 0, periodStart: currentPeriodStart });
+        await updateTask(userId, task.id, { totalMonth: 0, periodStart: currentPeriodStart });
         return true;
     }
     return false;
@@ -102,7 +102,7 @@ export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promi
 
     if (task.yearStart !== currentYear) {
 
-        await updateTask(userId, task.id, { daysYear: 0, yearStart: currentYear, totalYear: 0, });
+        await updateTask(userId, task.id, { yearStart: currentYear, totalYear: 0, });
         return true;
     }
     return false;

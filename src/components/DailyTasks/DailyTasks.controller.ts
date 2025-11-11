@@ -5,7 +5,6 @@ import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurre
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
-import { daysInMonth, daysInYear } from "../../utils/period";
 
 
 export const useDailyTasksController = () => {
@@ -22,12 +21,6 @@ export const useDailyTasksController = () => {
     const [goalValue, setGoalValue] = useState<number | string>("");
     const [goalType, setGoalType] = useState<string>("");
     const [counter, setCounter] = useState<number>(0)
-    const [monthlyProgress, setMonthlyProgress] = useState(0);
-    const [yearlyProgress, setYearlyProgress] = useState(0);
-    const [monthlyDays, setMonthlyDays] = useState(0);
-    const [yearlyDays, setYearlyDays] = useState(0);
-    const [totalDaysInMonth, setTotalDaysInMonth] = useState(0);
-    const [totalDaysInYear, setTotalDaysInYear] = useState(0);
     const [comment, setComment] = useState("");
     const [commentLenght, setCommentLenght] = useState(0)
 
@@ -59,8 +52,6 @@ export const useDailyTasksController = () => {
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: null }));
 
             await updateTask(user.uid, selectedTask.id, {
-                days: (selectedTask.days ?? 0) - 1,
-                daysYear: (selectedTask.daysYear ?? 0) - 1,
                 totalMonth: (selectedTask.totalMonth ?? 0) - value,
                 totalYear: (selectedTask.totalYear ?? 0) - value,
             });
@@ -74,8 +65,6 @@ export const useDailyTasksController = () => {
             setDoneToday((prev) => ({ ...prev, [selectedTask.id!]: newLogId }));
 
             await updateTask(user.uid, selectedTask.id, {
-                days: (selectedTask.days ?? 0) + 1,
-                daysYear: (selectedTask.daysYear ?? 0) + 1,
                 totalMonth: (selectedTask.totalMonth ?? 0) + value,
                 totalYear: (selectedTask.totalYear ?? 0) + value,
             });
@@ -171,26 +160,9 @@ export const useDailyTasksController = () => {
 
     const fetchCounters = async () => {
         if (user) {
-            const now = new Date();
             const { value, comment } = await getDailyCounter(user.uid);
-            const monthly = await getMonthlyDays(user.uid, now);
-            const yearly = await getYearlyDays(user.uid, now);
-            const totalMonthDays = daysInMonth(now.getFullYear(), now.getMonth() + 1);
-            const totalYearDays = daysInYear(now.getFullYear());
-
             setCounter(value);
             setComment(comment);
-            setMonthlyDays(monthly);
-            setYearlyDays(yearly);
-            setTotalDaysInMonth(totalMonthDays);
-            setTotalDaysInYear(totalYearDays);
-
-            if (totalMonthDays > 0) {
-                setMonthlyProgress((monthly / totalMonthDays) * 100);
-            }
-            if (totalYearDays > 0) {
-                setYearlyProgress((yearly / totalYearDays) * 100);
-            }
         }
     };
 
@@ -232,8 +204,6 @@ export const useDailyTasksController = () => {
             setDoneToday((prev) => ({ ...prev, [task.id!]: null }));
 
             await updateTask(user.uid, task.id, {
-                days: (task.days ?? 0) - 1,
-                daysYear: (task.daysYear ?? 0) - 1,
                 totalMonth: (task.totalMonth ?? 0) - value,
                 totalYear: (task.totalYear ?? 0) - value,
             });
@@ -248,8 +218,6 @@ export const useDailyTasksController = () => {
             setDoneToday((prev) => ({ ...prev, [task.id!]: newLogId }));
 
             await updateTask(user.uid, task.id, {
-                days: (task.days ?? 0) + 1,
-                daysYear: (task.daysYear ?? 0) + 1,
                 totalMonth: (task.totalMonth ?? 0) + value,
                 totalYear: (task.totalYear ?? 0) + value,
             });
@@ -293,12 +261,6 @@ export const useDailyTasksController = () => {
         snackbar,
         severity,
         counter,
-        monthlyProgress,
-        yearlyProgress,
-        monthlyDays,
-        yearlyDays,
-        totalDaysInMonth,
-        totalDaysInYear,
         comment,
         goalType,
         confirmModalOpen,

@@ -191,7 +191,40 @@ export default function TaskCreationForm() {
                                     </Select>
                                 </FormControl>
                             </Box>
-
+                            <TextField
+                                label="Meta Mensal"
+                                type="number"
+                                value={task.monthlyGoal === 0 ? "" : task.monthlyGoal}
+                                onChange={(e) => handleChange("monthlyGoal", e.target.value)}
+                                fullWidth
+                                InputProps={{
+                                    inputProps: { min: 0 },
+                                    sx: {
+                                        "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                            WebkitAppearance: "none",
+                                            margin: 0,
+                                        },
+                                        "& input[type=number]": { MozAppearance: "textfield" },
+                                    },
+                                }}
+                            />
+                            <TextField
+                                label="Meta Anual"
+                                type="number"
+                                value={task.yearlyGoal === 0 ? "" : task.yearlyGoal}
+                                onChange={(e) => handleChange("yearlyGoal", e.target.value)}
+                                fullWidth
+                                InputProps={{
+                                    inputProps: { min: 0 },
+                                    sx: {
+                                        "& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button": {
+                                            WebkitAppearance: "none",
+                                            margin: 0,
+                                        },
+                                        "& input[type=number]": { MozAppearance: "textfield" },
+                                    },
+                                }}
+                            />
                         </>
                     )}
                     <Divider />
