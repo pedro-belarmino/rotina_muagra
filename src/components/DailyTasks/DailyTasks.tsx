@@ -327,152 +327,193 @@ function DailyTasks() {
 
 
                     <List>
-                        {paginatedTasks.map((task) => (
-                            <Card
-                                key={task.id}
-                                sx={{
-                                    mb: 2,
-                                    borderRadius: 3,
-                                    boxShadow: 2,
-                                }}
-                            >
-                                <CardContent>
-                                    <ListItem disableGutters>
-                                        <Stack
-                                            direction={{ xs: "column", sm: "row" }}
-                                            spacing={1}
-                                            alignItems={{ xs: "flex-start", sm: "center" }}
-                                            justifyContent="space-between"
-                                            sx={{ width: "100%" }}
-                                        >
-                                            <Stack direction="row" alignItems="center">
-                                                {task.taskType === 'personal' && task.icon && (
-                                                    <IconRenderer iconName={task.icon} />
-                                                )}
-                                                {task.taskType === 'gratitude' && task.gratitudeTrack && (
-                                                    <img
-                                                        src={`/icons/${task.gratitudeTrack}.png`}
-                                                        alt={task.gratitudeTrack}
-                                                        style={{ width: 32, height: 32, marginRight: 12 }}
-                                                    />
-                                                )}
-                                                <ListItemText
-                                                    primary={
-                                                        <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
-                                                            {task.schedule === ""
-                                                                ? task.name
-                                                                : `${task.schedule} - ${task.name}`}
-                                                        </Typography>
-                                                    }
-                                                    secondary={
-                                                        <Typography variant="body2" color="text.secondary">
-                                                            {task.dailyGoal > 0 && (
-                                                                <>
-                                                                    {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
-                                                                </>
-                                                            )}
-
-                                                            <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-                                                                <Box sx={{ textAlign: 'center' }}>
-                                                                    <Typography variant="body2" color="text.secondary" fontSize={10}>
-                                                                        Progresso no Mês
-                                                                    </Typography>
-                                                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                        <CircularProgress variant="determinate" value={(((task.days ?? 0) / daysInMonthFor(new Date())) * 100)} color='warning' size={30} />
-                                                                        <Box
-                                                                            sx={{
-                                                                                top: 0,
-                                                                                left: 0,
-                                                                                bottom: 0,
-                                                                                right: 0,
-                                                                                position: 'absolute',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                justifyContent: 'center',
-                                                                            }}
-                                                                        >
-                                                                            <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                {`${Math.round((((task.days ?? 0) / daysInMonthFor(new Date())) * 100))}%`}
-                                                                            </Typography>
-                                                                        </Box>
-                                                                    </Box>
-                                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                        {(task.days ?? 0)} / {daysInMonthFor(new Date())} dias
-                                                                    </Typography>
-                                                                </Box>
-                                                                <Box sx={{ textAlign: 'center' }}>
-                                                                    <Typography variant="body2" color="text.secondary" fontSize={10}>
-                                                                        Progresso no Ano
-                                                                    </Typography>
-                                                                    <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                                                        <CircularProgress variant="determinate" value={(((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100)} color='warning' size={30} />
-                                                                        <Box
-                                                                            sx={{
-                                                                                top: 0,
-                                                                                left: 0,
-                                                                                bottom: 0,
-                                                                                right: 0,
-                                                                                position: 'absolute',
-                                                                                display: 'flex',
-                                                                                alignItems: 'center',
-                                                                                justifyContent: 'center',
-                                                                            }}
-                                                                        >
-                                                                            <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
-                                                                                {`${Math.round((((task.daysYear ?? 0) / daysInYearFor(new Date())) * 100))}%`}
-                                                                            </Typography>
-                                                                        </Box>
-                                                                    </Box>
-                                                                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
-                                                                        {(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias
-                                                                    </Typography>
-                                                                </Box>
-                                                            </Box>
 
 
-                                                        </Typography>
-                                                    }
-                                                />
-                                            </Stack>
+                        {paginatedTasks.map((task) => {
+                            const monthDays = daysInMonthFor(new Date());
+                            const yearDays = daysInYearFor(new Date());
+                            const dailyGoal = Number(task.dailyGoal ?? 0);
 
-                                            {/* Botões */}
+                            const monthGoalTotal = monthDays * dailyGoal;
+                            const yearGoalTotal = yearDays * dailyGoal;
+
+                            const monthTotal = Number(task.totalMonth ?? 0);
+                            const yearTotal = Number(task.totalYear ?? 0);
+
+                            const monthPercent = monthGoalTotal > 0 ? (monthTotal / monthGoalTotal) * 100 : 0;
+                            const yearPercent = yearGoalTotal > 0 ? (yearTotal / yearGoalTotal) * 100 : 0;
+
+                            return (
+                                <Card
+                                    key={task.id}
+                                    sx={{
+                                        mb: 2,
+                                        borderRadius: 3,
+                                        boxShadow: 2,
+                                    }}
+                                >
+                                    <CardContent>
+                                        <ListItem disableGutters>
                                             <Stack
-                                                direction="row"
+                                                direction={{ xs: "column", sm: "row" }}
                                                 spacing={1}
-                                                justifyContent={{ xs: "flex-end", sm: "flex-start" }}
-                                                sx={{ width: { xs: "100%", sm: "auto" } }}
+                                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                                justifyContent="space-between"
+                                                sx={{ width: "100%" }}
                                             >
-                                                <Button
-                                                    variant="contained"
-                                                    size="small"
-                                                    color={doneToday[task.id!] ? "success" : "primary"}
-                                                    onClick={() => openConfirmModal(task)}
-                                                >
-                                                    {doneToday[task.id!] ? "Concluída" : "Marcar"}
-                                                </Button>
-                                                <Button
-                                                    color="warning"
-                                                    onClick={() => {
-                                                        setSelectedTask(task);
-                                                        setOpenModal(true);
-                                                    }}
-                                                >
-                                                    <ArchiveOutlinedIcon />
-                                                </Button>
-                                                <Checkbox
-                                                    icon={<StarBorderIcon />}
-                                                    checkedIcon={<StarIcon color='warning' />}
-                                                    checked={!!task.priority}
-                                                    onChange={() => handleTogglePriority(task)}
-                                                    sx={{ alignSelf: 'self-start' }}
-                                                />
-                                            </Stack>
-                                        </Stack>
-                                    </ListItem>
+                                                <Stack direction="row" alignItems="center">
+                                                    {task.taskType === 'personal' && task.icon && (
+                                                        <IconRenderer iconName={task.icon} />
+                                                    )}
+                                                    {task.taskType === 'gratitude' && task.gratitudeTrack && (
+                                                        <img
+                                                            src={`/icons/${task.gratitudeTrack}.png`}
+                                                            alt={task.gratitudeTrack}
+                                                            style={{ width: 32, height: 32, marginRight: 12 }}
+                                                        />
+                                                    )}
+                                                    <ListItemText
+                                                        primary={
+                                                            <Typography variant="subtitle1" fontWeight="bold" noWrap={false}>
+                                                                {task.schedule === ""
+                                                                    ? task.name
+                                                                    : `${task.schedule} - ${task.name}`}
+                                                            </Typography>
+                                                        }
+                                                        secondary={
+                                                            <Typography variant="body2" color="text.secondary">
+                                                                {task.dailyGoal > 0 && (
+                                                                    <>
+                                                                        {task.dailyGoal} {formatMeasure(task.measure || '')} / dia
+                                                                    </>
+                                                                )}
 
-                                </CardContent>
-                            </Card>
-                        ))}
+                                                                <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+                                                                    <Box sx={{ textAlign: 'center' }}>
+                                                                        <Typography variant="body2" color="text.secondary" fontSize={10}>
+                                                                            Progresso no Mês
+                                                                        </Typography>
+                                                                        <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                                                            <CircularProgress
+                                                                                variant="determinate"
+                                                                                value={Math.min(100, monthPercent)}
+                                                                                color='warning'
+                                                                                size={30}
+                                                                            />
+                                                                            <Box
+                                                                                sx={{
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    bottom: 0,
+                                                                                    right: 0,
+                                                                                    position: 'absolute',
+                                                                                    display: 'flex',
+                                                                                    alignItems: 'center',
+                                                                                    justifyContent: 'center',
+                                                                                }}
+                                                                            >
+                                                                                <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
+                                                                                    {`${Math.round(monthPercent)}%`}
+                                                                                </Typography>
+                                                                            </Box>
+                                                                        </Box>
+
+                                                                        {/* If task has a dailyGoal show values; otherwise fallback to days count */}
+                                                                        {dailyGoal > 0 ? (
+                                                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                                {monthTotal} {formatMeasure(task.measure || '')} / {monthGoalTotal} {formatMeasure(task.measure || '')}
+                                                                            </Typography>
+                                                                        ) : (
+                                                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                                {(task.days ?? 0)} / {daysInMonthFor(new Date())} dias
+                                                                            </Typography>
+                                                                        )}
+                                                                    </Box>
+
+                                                                    <Box sx={{ textAlign: 'center' }}>
+                                                                        <Typography variant="body2" color="text.secondary" fontSize={10}>
+                                                                            Progresso no Ano
+                                                                        </Typography>
+                                                                        <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
+                                                                            <CircularProgress
+                                                                                variant="determinate"
+                                                                                value={Math.min(100, yearPercent)}
+                                                                                color='warning'
+                                                                                size={30}
+                                                                            />
+                                                                            <Box
+                                                                                sx={{
+                                                                                    top: 0,
+                                                                                    left: 0,
+                                                                                    bottom: 0,
+                                                                                    right: 0,
+                                                                                    position: 'absolute',
+                                                                                    display: 'flex',
+                                                                                    alignItems: 'center',
+                                                                                    justifyContent: 'center',
+                                                                                }}
+                                                                            >
+                                                                                <Typography variant="caption" component="div" color="text.secondary" fontSize={8}>
+                                                                                    {`${Math.round(yearPercent)}%`}
+                                                                                </Typography>
+                                                                            </Box>
+                                                                        </Box>
+
+                                                                        {dailyGoal > 0 ? (
+                                                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                                {yearTotal} {formatMeasure(task.measure || '')} / {yearGoalTotal} {formatMeasure(task.measure || '')}
+                                                                            </Typography>
+                                                                        ) : (
+                                                                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }} fontSize={10}>
+                                                                                {(task.daysYear ?? 0)} / {daysInYearFor(new Date())} dias
+                                                                            </Typography>
+                                                                        )}
+                                                                    </Box>
+                                                                </Box>
+                                                            </Typography>
+                                                        }
+                                                    />
+                                                </Stack>
+
+                                                {/* Buttons unchanged */}
+                                                <Stack
+                                                    direction="row"
+                                                    spacing={1}
+                                                    justifyContent={{ xs: "flex-end", sm: "flex-start" }}
+                                                    sx={{ width: { xs: "100%", sm: "auto" } }}
+                                                >
+                                                    <Button
+                                                        variant="contained"
+                                                        size="small"
+                                                        color={doneToday[task.id!] ? "success" : "primary"}
+                                                        onClick={() => openConfirmModal(task)}
+                                                    >
+                                                        {doneToday[task.id!] ? "Concluída" : "Marcar"}
+                                                    </Button>
+                                                    <Button
+                                                        color="warning"
+                                                        onClick={() => {
+                                                            setSelectedTask(task);
+                                                            setOpenModal(true);
+                                                        }}
+                                                    >
+                                                        <ArchiveOutlinedIcon />
+                                                    </Button>
+                                                    <Checkbox
+                                                        icon={<StarBorderIcon />}
+                                                        checkedIcon={<StarIcon color='warning' />}
+                                                        checked={!!task.priority}
+                                                        onChange={() => handleTogglePriority(task)}
+                                                        sx={{ alignSelf: 'self-start' }}
+                                                    />
+                                                </Stack>
+                                            </Stack>
+                                        </ListItem>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+
                     </List>
                 </>
                 }
