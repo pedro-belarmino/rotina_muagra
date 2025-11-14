@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog } from "../../service/taskLogService";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
@@ -17,6 +17,8 @@ export const useDailyTasksController = () => {
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
     const [openModal, setOpenModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+    const [monthlyTotals, setMonthlyTotals] = useState<Record<string, number>>({});
+    const [yearlyTotals, setYearlyTotals] = useState<Record<string, number>>({});
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
@@ -61,8 +63,6 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, selectedTask.id, {
                 days: (selectedTask.days ?? 0) - 1,
                 daysYear: (selectedTask.daysYear ?? 0) - 1,
-                totalMonth: (selectedTask.totalMonth ?? 0) - value,
-                totalYear: (selectedTask.totalYear ?? 0) - value,
             });
         } else {
             const newLogId = await addTaskLog(
@@ -76,14 +76,19 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, selectedTask.id, {
                 days: (selectedTask.days ?? 0) + 1,
                 daysYear: (selectedTask.daysYear ?? 0) + 1,
-                totalMonth: (selectedTask.totalMonth ?? 0) + value,
-                totalYear: (selectedTask.totalYear ?? 0) + value,
             });
         }
 
         setConfirmModalOpen(false);
         setSelectedTask(null);
-        fetchTasks()
+        fetchTasks();
+
+        const now = new Date();
+        const monthlyTotal = await getTaskLogsByMonth(user.uid, selectedTask.id, now);
+        const yearlyTotal = await getTaskLogsByYear(user.uid, selectedTask.id, now);
+
+        setMonthlyTotals((prev) => ({ ...prev, [selectedTask.id!]: monthlyTotal }));
+        setYearlyTotals((prev) => ({ ...prev, [selectedTask.id!]: yearlyTotal }));
     };
 
 
@@ -122,21 +127,27 @@ export const useDailyTasksController = () => {
         setTasks(userTasks);
 
 
-        // const today = new Date().toISOString().split("T")[0];
-
-
         const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
 
         const status: Record<string, string | null> = {};
+        const monthly: Record<string, number> = {};
+        const yearly: Record<string, number> = {};
 
         for (const task of userTasks) {
             const log = await getTaskLogByDate(user.uid, task.id!, today);
             status[task.id!] = log ? log.id! : null;
+
+            const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id!, now);
+            const yearlyTotal = await getTaskLogsByYear(user.uid, task.id!, now);
+            monthly[task.id!] = monthlyTotal;
+            yearly[task.id!] = yearlyTotal;
         }
 
         setDoneToday(status);
+        setMonthlyTotals(monthly);
+        setYearlyTotals(yearly);
         setLoading(false);
     };
 
@@ -234,8 +245,6 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) - 1,
                 daysYear: (task.daysYear ?? 0) - 1,
-                totalMonth: (task.totalMonth ?? 0) - value,
-                totalYear: (task.totalYear ?? 0) - value,
             });
         } else {
 
@@ -250,11 +259,15 @@ export const useDailyTasksController = () => {
             await updateTask(user.uid, task.id, {
                 days: (task.days ?? 0) + 1,
                 daysYear: (task.daysYear ?? 0) + 1,
-                totalMonth: (task.totalMonth ?? 0) + value,
-                totalYear: (task.totalYear ?? 0) + value,
             });
         }
 
+        const now = new Date();
+        const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id, now);
+        const yearlyTotal = await getTaskLogsByYear(user.uid, task.id, now);
+
+        setMonthlyTotals((prev) => ({ ...prev, [task.id!]: monthlyTotal }));
+        setYearlyTotals((prev) => ({ ...prev, [task.id!]: yearlyTotal }));
     };
 
     const confirmArchiveTask = async () => {
@@ -309,6 +322,8 @@ export const useDailyTasksController = () => {
         tasks,
         loading,
         openModal,
+        monthlyTotals,
+        yearlyTotals,
     }
 
 }
