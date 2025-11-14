@@ -69,6 +69,8 @@ function DailyTasks() {
         tasks,
         loading,
         openModal,
+        monthlyTotals,
+        yearlyTotals,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -337,8 +339,8 @@ function DailyTasks() {
                             const monthGoalTotal = monthDays * dailyGoal;
                             const yearGoalTotal = yearDays * dailyGoal;
 
-                            const monthTotal = Number(task.totalMonth ?? 0);
-                            const yearTotal = Number(task.totalYear ?? 0);
+                            const monthTotal = monthlyTotals[task.id!] ?? 0;
+                            const yearTotal = yearlyTotals[task.id!] ?? 0;
 
                             const monthPercent = monthGoalTotal > 0 ? (monthTotal / monthGoalTotal) * 100 : 0;
                             const yearPercent = yearGoalTotal > 0 ? (yearTotal / yearGoalTotal) * 100 : 0;

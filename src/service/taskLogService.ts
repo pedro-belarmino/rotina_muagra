@@ -292,3 +292,39 @@ async function getDocOrNull(ref: DocumentReference) {
         return null;
     }
 }
+
+
+export const getTaskLogsByMonth = async (uid: string, taskId: string, date: Date): Promise<number> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0);
+
+    const q = query(
+        logsRef,
+        where("taskId", "==", taskId),
+        where("doneAt", ">=", Timestamp.fromDate(startDate)),
+        where("doneAt", "<=", Timestamp.fromDate(endDate))
+    );
+
+    const snap = await getDocs(q);
+    return snap.docs.reduce((total, doc) => total + doc.data().value, 0);
+};
+
+export const getTaskLogsByYear = async (uid: string, taskId: string, date: Date): Promise<number> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const year = date.getFullYear();
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31);
+
+    const q = query(
+        logsRef,
+        where("taskId", "==", taskId),
+        where("doneAt", ">=", Timestamp.fromDate(startDate)),
+        where("doneAt", "<=", Timestamp.fromDate(endDate))
+    );
+
+    const snap = await getDocs(q);
+    return snap.docs.reduce((total, doc) => total + doc.data().value, 0);
+};
