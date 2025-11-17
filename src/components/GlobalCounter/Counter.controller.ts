@@ -16,7 +16,7 @@ export const useConterController = () => {
             if (snap.exists()) {
                 setGlobalCount(snap.data().value + templateValue)
             } else {
-                setGlobalCount(99999999999999999999999999999999999999999999999999999999999999999999)
+                setGlobalCount(999999999)
             }
         })
         return () => unsubcribe();
