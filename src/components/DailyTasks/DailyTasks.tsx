@@ -374,7 +374,7 @@ function DailyTasks() {
                                                         )}
 
                                                         {/* PROGRESS SECTION */}
-                                                        <Box mt={2}>
+                                                        <Box mt={0}>
 
                                                             {/* Month */}
                                                             <Typography fontSize={13} fontWeight="bold" color="warning.main">
@@ -412,7 +412,7 @@ function DailyTasks() {
                                                             </Typography>
 
                                                             {/* Year */}
-                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={2}>
+                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={0}>
                                                                 Progresso no Ano
                                                             </Typography>
 
