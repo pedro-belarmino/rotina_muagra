@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear } from "../../service/taskLogService";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
@@ -19,6 +19,8 @@ export const useDailyTasksController = () => {
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
     const [monthlyTotals, setMonthlyTotals] = useState<Record<string, number>>({});
     const [yearlyTotals, setYearlyTotals] = useState<Record<string, number>>({});
+    const [monthlyLogDays, setMonthlyLogDays] = useState<Record<string, number>>({});
+    const [yearlyLogDays, setYearlyLogDays] = useState<Record<string, number>>({});
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
@@ -134,6 +136,9 @@ export const useDailyTasksController = () => {
         const status: Record<string, string | null> = {};
         const monthly: Record<string, number> = {};
         const yearly: Record<string, number> = {};
+        const monthlyDays: Record<string, number> = {};
+        const yearlyDays: Record<string, number> = {};
+
 
         for (const task of userTasks) {
             const log = await getTaskLogByDate(user.uid, task.id!, today);
@@ -143,11 +148,20 @@ export const useDailyTasksController = () => {
             const yearlyTotal = await getTaskLogsByYear(user.uid, task.id!, now);
             monthly[task.id!] = monthlyTotal;
             yearly[task.id!] = yearlyTotal;
+
+            if (!task.dailyGoal) {
+                const monthlyDaysCount = await getTaskLogDaysByMonth(user.uid, task.id!, now);
+                const yearlyDaysCount = await getTaskLogDaysByYear(user.uid, task.id!, now);
+                monthlyDays[task.id!] = monthlyDaysCount;
+                yearlyDays[task.id!] = yearlyDaysCount;
+            }
         }
 
         setDoneToday(status);
         setMonthlyTotals(monthly);
         setYearlyTotals(yearly);
+        setMonthlyLogDays(monthlyDays);
+        setYearlyLogDays(yearlyDays);
         setLoading(false);
     };
 
@@ -324,6 +338,8 @@ export const useDailyTasksController = () => {
         openModal,
         monthlyTotals,
         yearlyTotals,
+        monthlyLogDays,
+        yearlyLogDays,
     }
 
 }
