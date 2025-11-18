@@ -72,6 +72,16 @@ export function useTaskController() {
 
 
     const handleChange = (field: string, value: any) => {
+
+        if (field === 'name') {
+            const limitedValue = value.slice(0, 30);
+            setTask((prev) => ({
+                ...prev,
+                name: limitedValue
+            }));
+            return
+        }
+
         if (field === "dailyGoal" || field === "totalGoal") {
             // Se o usuário apagar, deixa como string vazia
             if (value === "" || value === null) {
