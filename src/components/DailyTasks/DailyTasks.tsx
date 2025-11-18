@@ -69,6 +69,8 @@ function DailyTasks() {
         openModal,
         monthlyTotals,
         yearlyTotals,
+        monthlyLogDays,
+        yearlyLogDays,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -334,16 +336,25 @@ function DailyTasks() {
                             const yearDays = daysInYearFor(new Date());
                             const dailyGoal = Number(task.dailyGoal ?? 0);
 
-                            const monthGoalTotal = monthDays * dailyGoal;
-                            const yearGoalTotal = yearDays * dailyGoal;
+                            let monthPercent, yearPercent, monthLabel, yearLabel;
 
-                            const monthTotal = monthlyTotals[task.id!] ?? 0;
-                            const yearTotal = yearlyTotals[task.id!] ?? 0;
-
-                            const monthPercent = monthGoalTotal > 0 ? (monthTotal / monthGoalTotal) * 100 : 0;
-                            const yearPercent = yearGoalTotal > 0 ? (yearTotal / yearGoalTotal) * 100 : 0;
-
-
+                            if (dailyGoal > 0) {
+                                const monthGoalTotal = monthDays * dailyGoal;
+                                const yearGoalTotal = yearDays * dailyGoal;
+                                const monthTotal = monthlyTotals[task.id!] ?? 0;
+                                const yearTotal = yearlyTotals[task.id!] ?? 0;
+                                monthPercent = monthGoalTotal > 0 ? (monthTotal / monthGoalTotal) * 100 : 0;
+                                yearPercent = yearGoalTotal > 0 ? (yearTotal / yearGoalTotal) * 100 : 0;
+                                monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+                                yearLabel = `${yearTotal} ${formatMeasure(task.measure || '')} / ${yearGoalTotal} ${formatMeasure(task.measure || '')}`;
+                            } else {
+                                const completedMonthDays = monthlyLogDays[task.id!] ?? 0;
+                                const completedYearDays = yearlyLogDays[task.id!] ?? 0;
+                                monthPercent = monthDays > 0 ? (completedMonthDays / monthDays) * 100 : 0;
+                                yearPercent = yearDays > 0 ? (completedYearDays / yearDays) * 100 : 0;
+                                monthLabel = `${completedMonthDays} / ${monthDays} dias`;
+                                yearLabel = `${completedYearDays} / ${yearDays} dias`;
+                            }
 
 
                             return (
@@ -408,7 +419,7 @@ function DailyTasks() {
                                                             </Box>
 
                                                             <Typography fontSize={12} color="text.secondary">
-                                                                {monthTotal} {formatMeasure(task.measure || '')} / {monthGoalTotal} {formatMeasure(task.measure || '')}
+                                                                {monthLabel}
                                                             </Typography>
 
                                                             {/* Year */}
@@ -443,7 +454,7 @@ function DailyTasks() {
                                                             </Box>
 
                                                             <Typography fontSize={12} color="text.secondary">
-                                                                {yearTotal} {formatMeasure(task.measure || '')} / {yearGoalTotal} {formatMeasure(task.measure || '')}
+                                                                {yearLabel}
                                                             </Typography>
 
                                                         </Box>
