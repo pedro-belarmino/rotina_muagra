@@ -469,7 +469,7 @@ function DailyTasks() {
                                                             </Typography>
                                                             {/* PENDENTE */}
                                                             <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={0}>
-                                                                Pendente no Mês
+                                                                Pendente até Hoje
                                                             </Typography>
 
                                                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -478,7 +478,7 @@ function DailyTasks() {
                                                                         sx={{
                                                                             width: "100%",
                                                                             height: 4,
-                                                                            bgcolor: "grey.800",
+                                                                            bgcolor: "success.main",
                                                                             borderRadius: 5,
                                                                             overflow: "hidden",
                                                                             direction: 'rtl'
@@ -489,7 +489,7 @@ function DailyTasks() {
                                                                             sx={{
                                                                                 width: `${100 - monthPercent}%`,
                                                                                 height: "4px",
-                                                                                bgcolor: "warning.main",
+                                                                                bgcolor: "error.main",
                                                                             }}
                                                                         />
                                                                     </Box>
