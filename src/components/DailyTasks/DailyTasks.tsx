@@ -336,25 +336,36 @@ function DailyTasks() {
                             const yearDays = daysInYearFor(new Date());
                             const dailyGoal = Number(task.dailyGoal ?? 0);
 
-                            let monthPercent, yearPercent, monthLabel, yearLabel;
+                            let monthPercent, yearPercent, monthLabel, yearLabel, monthPendingLabel;
 
                             if (dailyGoal > 0) {
                                 const monthGoalTotal = monthDays * dailyGoal;
                                 const yearGoalTotal = yearDays * dailyGoal;
                                 const monthTotal = monthlyTotals[task.id!] ?? 0;
                                 const yearTotal = yearlyTotals[task.id!] ?? 0;
-                                monthPercent = monthGoalTotal > 0 ? (monthTotal / monthGoalTotal) * 100 : 0;
-                                yearPercent = yearGoalTotal > 0 ? (yearTotal / yearGoalTotal) * 100 : 0;
+
+                                monthPercent = (monthTotal / monthGoalTotal) * 100;
+                                yearPercent = (yearTotal / yearGoalTotal) * 100;
+
                                 monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
                                 yearLabel = `${yearTotal} ${formatMeasure(task.measure || '')} / ${yearGoalTotal} ${formatMeasure(task.measure || '')}`;
+
+                                const monthPending = monthGoalTotal - monthTotal;
+                                monthPendingLabel = `${monthPending} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
                             } else {
                                 const completedMonthDays = monthlyLogDays[task.id!] ?? 0;
                                 const completedYearDays = yearlyLogDays[task.id!] ?? 0;
-                                monthPercent = monthDays > 0 ? (completedMonthDays / monthDays) * 100 : 0;
-                                yearPercent = yearDays > 0 ? (completedYearDays / yearDays) * 100 : 0;
+
+                                monthPercent = (completedMonthDays / monthDays) * 100;
+                                yearPercent = (completedYearDays / yearDays) * 100;
+
                                 monthLabel = `${completedMonthDays} / ${monthDays} dias`;
                                 yearLabel = `${completedYearDays} / ${yearDays} dias`;
+
+                                const monthPending = monthDays - completedMonthDays;
+                                monthPendingLabel = `${monthPending} / ${monthDays} dias`;
                             }
+
 
 
                             return (
@@ -455,6 +466,42 @@ function DailyTasks() {
 
                                                             <Typography fontSize={12} color="text.secondary">
                                                                 {yearLabel}
+                                                            </Typography>
+                                                            {/* PENDENTE */}
+                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={0}>
+                                                                Pendente no Mês
+                                                            </Typography>
+
+                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                <Box flexGrow={1}>
+                                                                    <Box
+                                                                        sx={{
+                                                                            width: "100%",
+                                                                            height: 4,
+                                                                            bgcolor: "grey.800",
+                                                                            borderRadius: 5,
+                                                                            overflow: "hidden",
+                                                                            direction: 'rtl'
+
+                                                                        }}
+                                                                    >
+                                                                        <Box
+                                                                            sx={{
+                                                                                width: `${100 - monthPercent}%`,
+                                                                                height: "4px",
+                                                                                bgcolor: "warning.main",
+                                                                            }}
+                                                                        />
+                                                                    </Box>
+                                                                </Box>
+
+                                                                <Typography fontSize={12}>
+                                                                    {Math.round(100 - monthPercent)}%
+                                                                </Typography>
+                                                            </Box>
+
+                                                            <Typography fontSize={12} color="text.secondary">
+                                                                {monthPendingLabel}
                                                             </Typography>
 
                                                         </Box>
@@ -596,7 +643,7 @@ function DailyTasks() {
                                 type="number"
                                 label='Meta'
                                 value={goalValue}
-                                onChange={(e) => setGoalValue(e.target.value)}
+                                onChange={(e) => setGoalValue(e.target.value.slice(0, 5))}
                                 InputProps={{
                                     inputProps: { min: 0 },
                                     sx: {
