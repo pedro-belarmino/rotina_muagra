@@ -399,7 +399,7 @@ function DailyTasks() {
                                                         <Box mt={0}>
 
                                                             {/* Month */}
-                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main">
+                                                            <Typography fontSize={13} color="warning.main">
                                                                 Progresso no Mês
                                                             </Typography>
 
@@ -434,7 +434,7 @@ function DailyTasks() {
                                                             </Typography>
 
                                                             {/* Year */}
-                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={0}>
+                                                            <Typography fontSize={13} color="warning.main" mt={0}>
                                                                 Progresso no Ano
                                                             </Typography>
 
@@ -468,7 +468,7 @@ function DailyTasks() {
                                                                 {yearLabel}
                                                             </Typography>
                                                             {/* PENDENTE */}
-                                                            <Typography fontSize={13} fontWeight="bold" color="warning.main" mt={0}>
+                                                            <Typography fontSize={13} color="error.main" mt={0}>
                                                                 Pendente até Hoje
                                                             </Typography>
 
