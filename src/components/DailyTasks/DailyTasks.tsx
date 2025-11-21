@@ -332,39 +332,59 @@ function DailyTasks() {
 
 
                         {paginatedTasks.map((task) => {
+                            const monthDays = daysInMonthFor(new Date());
+
                             const currentDate = new Date();
                             const currentDayOfMonth = currentDate.getDate();
                             const yearDays = daysInYearFor(currentDate);
                             const dailyGoal = Number(task.dailyGoal ?? 0);
 
-                            let monthPercent, yearPercent, monthLabel, yearLabel, monthPendingLabel;
+                            let monthPercent, yearPercent, monthLabel, yearLabel, monthPendingLabel, monthPercentToPendant, monthLabelToPendant, monthPendingLabelToPendant;
 
                             if (dailyGoal > 0) {
+                                const monthGoalTotal = monthDays * dailyGoal;
+
                                 const monthGoalToDate = currentDayOfMonth * dailyGoal;
                                 const yearGoalTotal = yearDays * dailyGoal;
                                 const monthTotal = monthlyTotals[task.id!] ?? 0;
                                 const yearTotal = yearlyTotals[task.id!] ?? 0;
 
-                                monthPercent = (monthTotal / monthGoalToDate) * 100;
+                                monthPercent = (monthTotal / monthGoalTotal) * 100;
+                                monthPercentToPendant = (monthTotal / monthGoalToDate) * 100;
+
                                 yearPercent = (yearTotal / yearGoalTotal) * 100;
 
-                                monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
+                                monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+
+                                monthLabelToPendant = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
                                 yearLabel = `${yearTotal} ${formatMeasure(task.measure || '')} / ${yearGoalTotal} ${formatMeasure(task.measure || '')}`;
 
-                                const monthPending = monthGoalToDate - monthTotal;
-                                monthPendingLabel = `${monthPending > 0 ? monthPending : 0} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
+                                const monthPendingToPendant = monthGoalToDate - monthTotal;
+                                monthPendingLabelToPendant = `${monthPendingToPendant > 0 ? monthPendingToPendant : 0} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
+
+                                const monthPending = monthGoalTotal - monthTotal;
+                                monthPendingLabel = `${monthPending} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+
+
                             } else {
                                 const completedMonthDays = monthlyLogDays[task.id!] ?? 0;
                                 const completedYearDays = yearlyLogDays[task.id!] ?? 0;
 
-                                monthPercent = (completedMonthDays / currentDayOfMonth) * 100;
+                                monthPercent = (completedMonthDays / monthDays) * 100;
+                                monthPercentToPendant = (completedMonthDays / currentDayOfMonth) * 100;
                                 yearPercent = (completedYearDays / yearDays) * 100;
 
-                                monthLabel = `${completedMonthDays} / ${currentDayOfMonth} dias`;
+                                monthLabel = `${completedMonthDays} / ${monthDays} dias`
+                                monthLabelToPendant = `${completedMonthDays} / ${currentDayOfMonth} dias`;
                                 yearLabel = `${completedYearDays} / ${yearDays} dias`;
 
-                                const monthPending = currentDayOfMonth - completedMonthDays;
-                                monthPendingLabel = `${monthPending > 0 ? monthPending : 0} / ${currentDayOfMonth} dias`;
+
+
+                                const monthPendingToPendant = currentDayOfMonth - completedMonthDays;
+                                monthPendingLabelToPendant = `${monthPendingToPendant > 0 ? monthPendingToPendant : 0} / ${currentDayOfMonth} dias`;
+
+                                const monthPending = monthDays - completedMonthDays;
+                                monthPendingLabel = `${monthPending} / ${monthDays} dias`;
                             }
 
                             return (
@@ -486,7 +506,7 @@ function DailyTasks() {
                                                                     >
                                                                         <Box
                                                                             sx={{
-                                                                                width: `${100 - monthPercent}%`,
+                                                                                width: `${100 - monthPercentToPendant}%`,
                                                                                 height: "4px",
                                                                                 bgcolor: "error.main",
                                                                             }}
@@ -495,12 +515,12 @@ function DailyTasks() {
                                                                 </Box>
 
                                                                 <Typography fontSize={12}>
-                                                                    {Math.round(100 - monthPercent)}%
+                                                                    {Math.round(100 - monthPercentToPendant)}%
                                                                 </Typography>
                                                             </Box>
 
                                                             <Typography fontSize={12} color="text.secondary">
-                                                                {monthPendingLabel}
+                                                                {monthPendingLabelToPendant}
                                                             </Typography>
 
                                                         </Box>
