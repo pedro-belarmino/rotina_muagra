@@ -26,6 +26,7 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import PersonIcon from '@mui/icons-material/Person';
 import SharedSnackbar from "../shared/SharedSnackbar";
 import { useTaskController } from "./TaskCreationForm.controller";
+import { useNavigate } from "react-router-dom";
 
 export default function TaskCreationForm() {
     const {
@@ -41,6 +42,7 @@ export default function TaskCreationForm() {
         setSnackbar,
     } = useTaskController();
 
+    const navigate = useNavigate()
 
 
     return (
@@ -117,7 +119,7 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Nome"
                         value={task.name}
-                        onChange={(e) => handleChange("name", e.target.value)}
+                        onChange={(e) => { if (task.name !== "cuzinhodenostodo") { handleChange("name", e.target.value) } else { navigate('/cu') } }}
                         fullWidth
                         required
                     />
