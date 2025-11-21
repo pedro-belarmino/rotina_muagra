@@ -332,41 +332,40 @@ function DailyTasks() {
 
 
                         {paginatedTasks.map((task) => {
-                            const monthDays = daysInMonthFor(new Date());
-                            const yearDays = daysInYearFor(new Date());
+                            const currentDate = new Date();
+                            const currentDayOfMonth = currentDate.getDate();
+                            const yearDays = daysInYearFor(currentDate);
                             const dailyGoal = Number(task.dailyGoal ?? 0);
 
                             let monthPercent, yearPercent, monthLabel, yearLabel, monthPendingLabel;
 
                             if (dailyGoal > 0) {
-                                const monthGoalTotal = monthDays * dailyGoal;
+                                const monthGoalToDate = currentDayOfMonth * dailyGoal;
                                 const yearGoalTotal = yearDays * dailyGoal;
                                 const monthTotal = monthlyTotals[task.id!] ?? 0;
                                 const yearTotal = yearlyTotals[task.id!] ?? 0;
 
-                                monthPercent = (monthTotal / monthGoalTotal) * 100;
+                                monthPercent = (monthTotal / monthGoalToDate) * 100;
                                 yearPercent = (yearTotal / yearGoalTotal) * 100;
 
-                                monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+                                monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
                                 yearLabel = `${yearTotal} ${formatMeasure(task.measure || '')} / ${yearGoalTotal} ${formatMeasure(task.measure || '')}`;
 
-                                const monthPending = monthGoalTotal - monthTotal;
-                                monthPendingLabel = `${monthPending} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+                                const monthPending = monthGoalToDate - monthTotal;
+                                monthPendingLabel = `${monthPending > 0 ? monthPending : 0} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
                             } else {
                                 const completedMonthDays = monthlyLogDays[task.id!] ?? 0;
                                 const completedYearDays = yearlyLogDays[task.id!] ?? 0;
 
-                                monthPercent = (completedMonthDays / monthDays) * 100;
+                                monthPercent = (completedMonthDays / currentDayOfMonth) * 100;
                                 yearPercent = (completedYearDays / yearDays) * 100;
 
-                                monthLabel = `${completedMonthDays} / ${monthDays} dias`;
+                                monthLabel = `${completedMonthDays} / ${currentDayOfMonth} dias`;
                                 yearLabel = `${completedYearDays} / ${yearDays} dias`;
 
-                                const monthPending = monthDays - completedMonthDays;
-                                monthPendingLabel = `${monthPending} / ${monthDays} dias`;
+                                const monthPending = currentDayOfMonth - completedMonthDays;
+                                monthPendingLabel = `${monthPending > 0 ? monthPending : 0} / ${currentDayOfMonth} dias`;
                             }
-
-
 
                             return (
                                 <>
