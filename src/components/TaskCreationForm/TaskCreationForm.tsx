@@ -119,7 +119,7 @@ export default function TaskCreationForm() {
                     <TextField
                         label="Nome"
                         value={task.name}
-                        onChange={(e) => { if (task.name !== "cuzinhodenostodo") { handleChange("name", e.target.value) } else { navigate('/cu') } }}
+                        onChange={(e) => { if (task.name !== "num sei o qu") { handleChange("name", e.target.value) } else { navigate('/--') } }}
                         fullWidth
                         required
                     />

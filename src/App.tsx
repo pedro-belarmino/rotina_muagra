@@ -35,6 +35,7 @@ function App() {
                             <Route path='/historico' element={<History />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
                             <Route path='muagrometro' element={<GlobalCouter />} />
+                            <Route path='--' element={<><img src="/-/guardiao.jpg" alt="" /></>} />
                         </Route>
 
 
