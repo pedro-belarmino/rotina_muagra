@@ -49,7 +49,7 @@ function App() {
                                         }}
                                     >
                                         <img
-                                            style={{ width: "20%" }}
+                                            style={{ width: "50%" }}
                                             src="/-/guardiao.jpg"
                                             alt=""
                                         />
