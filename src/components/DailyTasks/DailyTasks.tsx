@@ -339,7 +339,7 @@ function DailyTasks() {
                             const yearDays = daysInYearFor(currentDate);
                             const dailyGoal = Number(task.dailyGoal ?? 0);
 
-                            let monthPercent, yearPercent, monthLabel, yearLabel, monthPendingLabel, monthPercentToPendant, monthLabelToPendant, monthPendingLabelToPendant;
+                            let monthPercent, yearPercent, monthLabel, yearLabel, monthPercentToPendant, monthPendingLabelToPendant;
 
                             if (dailyGoal > 0) {
                                 const monthGoalTotal = monthDays * dailyGoal;
@@ -356,14 +356,12 @@ function DailyTasks() {
 
                                 monthLabel = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
 
-                                monthLabelToPendant = `${monthTotal} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
                                 yearLabel = `${yearTotal} ${formatMeasure(task.measure || '')} / ${yearGoalTotal} ${formatMeasure(task.measure || '')}`;
 
                                 const monthPendingToPendant = monthGoalToDate - monthTotal;
                                 monthPendingLabelToPendant = `${monthPendingToPendant > 0 ? monthPendingToPendant : 0} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
 
-                                const monthPending = monthGoalTotal - monthTotal;
-                                monthPendingLabel = `${monthPending} ${formatMeasure(task.measure || '')} / ${monthGoalTotal} ${formatMeasure(task.measure || '')}`;
+
 
 
                             } else {
@@ -375,7 +373,6 @@ function DailyTasks() {
                                 yearPercent = (completedYearDays / yearDays) * 100;
 
                                 monthLabel = `${completedMonthDays} / ${monthDays} dias`
-                                monthLabelToPendant = `${completedMonthDays} / ${currentDayOfMonth} dias`;
                                 yearLabel = `${completedYearDays} / ${yearDays} dias`;
 
 
@@ -383,8 +380,7 @@ function DailyTasks() {
                                 const monthPendingToPendant = currentDayOfMonth - completedMonthDays;
                                 monthPendingLabelToPendant = `${monthPendingToPendant > 0 ? monthPendingToPendant : 0} / ${currentDayOfMonth} dias`;
 
-                                const monthPending = monthDays - completedMonthDays;
-                                monthPendingLabel = `${monthPending} / ${monthDays} dias`;
+
                             }
 
                             return (
