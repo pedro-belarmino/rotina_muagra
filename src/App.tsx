@@ -10,6 +10,7 @@ import History from './views/History';
 import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCouter from './views/GlobalCounter';
+import AuthorizeEmail from './views/AuthorizeEmail';
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
                 <Routes>
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Login />} />
+                    <Route path='/authorize-email' element={<AuthorizeEmail />} />
 
                     <Route element={<PrivateWrapper />}>
                         <Route element={<Template />}>
