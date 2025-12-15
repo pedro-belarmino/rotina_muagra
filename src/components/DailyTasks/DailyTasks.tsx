@@ -281,38 +281,6 @@ function DailyTasks() {
                 </Card>
 
 
-                {/* <Card
-                    sx={{
-                        mb: 2,
-                        borderRadius: 3,
-                        boxShadow: 1,
-                        textAlign: "center",
-                        p: 1.5,
-                    }}
-                >
-                    <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                        <TextField
-                            fullWidth
-                            label="A quem ou a o que lembrou de agradecer?"
-                            value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                            margin="normal"
-                            variant="outlined"
-                            inputProps={{ maxLength: 200 }}
-                        />
-                        <Stack direction="row" spacing={1} justifyContent="center">
-                            <Button
-                                size="small"
-                                variant="outlined"
-                                color="warning"
-                                onClick={saveComment}
-                                sx={{ textTransform: "none", fontWeight: "bold" }}
-                            >
-                                Salvar Comentário
-                            </Button>
-                        </Stack>
-                    </CardContent>
-                </Card> */}
 
                 {tasks.length === 0 ? <>
 
