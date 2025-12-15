@@ -483,41 +483,51 @@ function DailyTasks() {
                                                                 {yearLabel}
                                                             </Typography>
                                                             {/* PENDENTE */}
-                                                            <Typography fontSize={13} color="error.main" mt={0}>
-                                                                Pendente até Hoje
+                                                            <Typography fontSize={monthPercentToPendant < 100 ? 13 : 15} color={monthPercentToPendant < 100 ? 'error.main' : 'success.main'} mt={0}>
+                                                                {monthPercentToPendant < 100 ? <>Pendente até Hoje</> : <>Você está em dia com esta Tarefa! Muagra!</>}
                                                             </Typography>
 
-                                                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                                                <Box flexGrow={1}>
-                                                                    <Box
-                                                                        sx={{
-                                                                            width: "100%",
-                                                                            height: 4,
-                                                                            bgcolor: "success.main",
-                                                                            borderRadius: 5,
-                                                                            overflow: "hidden",
-                                                                            direction: 'rtl'
+                                                            {monthPercentToPendant < 100 ? <>
+                                                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                                                    <Box flexGrow={1}>
 
-                                                                        }}
-                                                                    >
                                                                         <Box
                                                                             sx={{
-                                                                                width: `${100 - monthPercentToPendant}%`,
-                                                                                height: "4px",
-                                                                                bgcolor: "error.main",
+                                                                                width: "100%",
+                                                                                height: 4,
+                                                                                bgcolor: "success.main",
+                                                                                borderRadius: 5,
+                                                                                overflow: "hidden",
+                                                                                direction: 'rtl'
+
                                                                             }}
-                                                                        />
+                                                                        >
+                                                                            <Box
+                                                                                sx={{
+                                                                                    width: `${100 - monthPercentToPendant}%`,
+                                                                                    height: "4px",
+                                                                                    bgcolor: "error.main",
+                                                                                }}
+                                                                            />
+                                                                        </Box>
+
                                                                     </Box>
+
+                                                                    <Typography fontSize={12}>
+                                                                        {Math.round(100 - monthPercentToPendant)}%
+                                                                    </Typography>
                                                                 </Box>
 
-                                                                <Typography fontSize={12}>
-                                                                    {Math.round(100 - monthPercentToPendant)}%
+                                                                <Typography fontSize={12} color="text.secondary">
+                                                                    {monthPendingLabelToPendant}
                                                                 </Typography>
-                                                            </Box>
+                                                            </> :
 
-                                                            <Typography fontSize={12} color="text.secondary">
-                                                                {monthPendingLabelToPendant}
-                                                            </Typography>
+                                                                <>
+
+                                                                </>
+                                                            }
+
 
                                                         </Box>
                                                     </Box>
