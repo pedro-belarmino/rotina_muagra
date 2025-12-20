@@ -1,8 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth"
-import { auth, db } from "../firebase/config";
-import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
+import { auth } from "../firebase/config";
 
 type AuthContextType = {
     user: User | null;
@@ -19,28 +18,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            if (currentUser) {
-
-                const userRef = doc(db, "users", currentUser.uid);
-                const snapshot = await getDoc(userRef);
-
-
-                if (!snapshot.exists()) {
-                    await setDoc(userRef, {
-                        uid: currentUser.uid,
-                        displayName: currentUser.displayName,
-                        email: currentUser.email,
-                        photoURL: currentUser.photoURL,
-                        createdAt: Timestamp.now(),
-                    });
-                }
-
-                setUser(currentUser);
-            } else {
-                setUser(null);
-            }
-
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
             setLoading(false);
         });
 
