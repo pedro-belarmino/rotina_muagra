@@ -198,17 +198,6 @@ export default function TaskCreationForm() {
                     )}
                     <Divider />
 
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                color="warning"
-                                checked={task.dailyTask}
-                                onChange={(e) => handleChange("dailyTask", e.target.checked)}
-                            />
-                        }
-                        label="Tarefa diária?"
-                    />
-
                     <Button
                         variant="contained"
                         color="warning"
