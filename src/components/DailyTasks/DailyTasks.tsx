@@ -558,6 +558,22 @@ function DailyTasks() {
                                                 checked={!!task.priority}
                                                 onChange={() => handleTogglePriority(task)}
                                             />
+
+                                            <Typography
+                                                variant="subtitle2"
+                                                fontWeight="bold"
+                                                color="warning"
+                                                sx={{
+                                                    paddingLeft: 2,
+                                                    fontSize: {
+                                                        xs: "1.200rem",
+                                                        md: "1.25rem",
+                                                    },
+                                                }}
+                                            >
+                                                Streak: 000
+                                            </Typography>
+
                                         </Stack>
 
                                     </Card>
