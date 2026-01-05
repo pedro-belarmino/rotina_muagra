@@ -11,6 +11,7 @@ import {
     getDoc,
     increment,
     runTransaction,
+    orderBy,
 } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { formatISODate, getNowInBrasilia, getPeriodStartForType } from "../utils/period";
@@ -364,4 +365,23 @@ export const getTaskLogDaysByYear = async (uid: string, taskId: string, date: Da
     const snap = await getDocs(q);
     const uniqueDays = new Set(snap.docs.map(doc => doc.data().day));
     return uniqueDays.size;
+};
+
+export const getTaskLogsByTask = async (uid: string, taskId: string): Promise<TaskLog[]> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const q = query(
+        logsRef,
+        where("taskId", "==", taskId),
+        orderBy("doneAt", "asc")
+    );
+
+    const snap = await getDocs(q);
+    return snap.docs.map((doc) => {
+        const data = doc.data();
+        return {
+            ...data,
+            id: doc.id,
+            doneAt: (data.doneAt as Timestamp).toDate(),
+        } as TaskLog;
+    });
 };

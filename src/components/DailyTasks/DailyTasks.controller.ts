@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear } from "../../service/taskLogService";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear, getTaskLogsByTask } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
+import type { TaskLog } from "../../types/TaskLog";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 import { daysInMonth, daysInYear } from "../../utils/period";
@@ -21,6 +22,7 @@ export const useDailyTasksController = () => {
     const [yearlyTotals, setYearlyTotals] = useState<Record<string, number>>({});
     const [monthlyLogDays, setMonthlyLogDays] = useState<Record<string, number>>({});
     const [yearlyLogDays, setYearlyLogDays] = useState<Record<string, number>>({});
+    const [streaks, setStreaks] = useState<Record<string, number>>({});
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
@@ -93,6 +95,48 @@ export const useDailyTasksController = () => {
         setYearlyTotals((prev) => ({ ...prev, [selectedTask.id!]: yearlyTotal }));
     };
 
+    const calculateStreak = (logs: TaskLog[]): number => {
+        if (!logs || logs.length === 0) {
+            return 0;
+        }
+
+        const uniqueDays = [...new Set(logs.map(log => {
+            const date = new Date(log.doneAt);
+            return new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+        }))].sort((a, b) => b - a);
+
+        if (uniqueDays.length === 0) {
+            return 0;
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayTime = today.getTime();
+
+        const latestLogTime = uniqueDays[0];
+        const diff = todayTime - latestLogTime;
+        const dayDiff = diff / (1000 * 60 * 60 * 24);
+
+        if (dayDiff > 1) {
+            return 0;
+        }
+
+        let currentStreak = 1;
+        for (let i = 0; i < uniqueDays.length - 1; i++) {
+            const date1 = uniqueDays[i];
+            const date2 = uniqueDays[i + 1];
+            const dayDifference = (date1 - date2) / (1000 * 60 * 60 * 24);
+
+            if (dayDifference === 1) {
+                currentStreak++;
+            } else {
+                break;
+            }
+        }
+
+        return currentStreak;
+    };
+
 
     const fetchTasks = async () => {
         if (!user) return;
@@ -100,27 +144,19 @@ export const useDailyTasksController = () => {
 
         let userTasks = await getTasks(user.uid, false);
 
-
-        for (const t of userTasks) {
-            await ensureTaskPeriodIsCurrent(user.uid, t);
-            await ensureTaskYearIsCurrent(user.uid, t);
-        }
-
+        await Promise.all(userTasks.map(t => Promise.all([
+            ensureTaskPeriodIsCurrent(user.uid, t),
+            ensureTaskYearIsCurrent(user.uid, t)
+        ])));
 
         userTasks = await getTasks(user.uid, false);
 
-
         userTasks.sort((a, b) => {
-
             if (a.priority && !b.priority) return -1;
             if (!a.priority && b.priority) return 1;
-
-
             if (a.priority && b.priority) {
                 return b.priority.toMillis() - a.priority.toMillis();
             }
-
-
             const [ah, am] = a.schedule.split(":").map(Number);
             const [bh, bm] = b.schedule.split(":").map(Number);
             return ah * 60 + am - (bh * 60 + bm);
@@ -128,40 +164,58 @@ export const useDailyTasksController = () => {
 
         setTasks(userTasks);
 
-
         const now = new Date();
         const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
+        const promises = userTasks.map(async (task) => {
+            const log = await getTaskLogByDate(user.uid, task.id!, today);
+            const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id!, now);
+            const yearlyTotal = await getTaskLogsByYear(user.uid, task.id!, now);
+            const logs = await getTaskLogsByTask(user.uid, task.id!);
+            const streak = calculateStreak(logs);
+
+            let monthlyDaysCount = 0;
+            let yearlyDaysCount = 0;
+            if (!task.dailyGoal) {
+                monthlyDaysCount = await getTaskLogDaysByMonth(user.uid, task.id!, now);
+                yearlyDaysCount = await getTaskLogDaysByYear(user.uid, task.id!, now);
+            }
+
+            return {
+                taskId: task.id!,
+                log,
+                monthlyTotal,
+                yearlyTotal,
+                monthlyDaysCount,
+                yearlyDaysCount,
+                streak,
+            };
+        });
+
+        const results = await Promise.all(promises);
 
         const status: Record<string, string | null> = {};
         const monthly: Record<string, number> = {};
         const yearly: Record<string, number> = {};
         const monthlyDays: Record<string, number> = {};
         const yearlyDays: Record<string, number> = {};
+        const streaksData: Record<string, number> = {};
 
-
-        for (const task of userTasks) {
-            const log = await getTaskLogByDate(user.uid, task.id!, today);
-            status[task.id!] = log ? log.id! : null;
-
-            const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id!, now);
-            const yearlyTotal = await getTaskLogsByYear(user.uid, task.id!, now);
-            monthly[task.id!] = monthlyTotal;
-            yearly[task.id!] = yearlyTotal;
-
-            if (!task.dailyGoal) {
-                const monthlyDaysCount = await getTaskLogDaysByMonth(user.uid, task.id!, now);
-                const yearlyDaysCount = await getTaskLogDaysByYear(user.uid, task.id!, now);
-                monthlyDays[task.id!] = monthlyDaysCount;
-                yearlyDays[task.id!] = yearlyDaysCount;
-            }
-        }
+        results.forEach(result => {
+            status[result.taskId] = result.log ? result.log.id! : null;
+            monthly[result.taskId] = result.monthlyTotal;
+            yearly[result.taskId] = result.yearlyTotal;
+            monthlyDays[result.taskId] = result.monthlyDaysCount;
+            yearlyDays[result.taskId] = result.yearlyDaysCount;
+            streaksData[result.taskId] = result.streak;
+        });
 
         setDoneToday(status);
         setMonthlyTotals(monthly);
         setYearlyTotals(yearly);
         setMonthlyLogDays(monthlyDays);
         setYearlyLogDays(yearlyDays);
+        setStreaks(streaksData);
         setLoading(false);
     };
 
@@ -340,6 +394,7 @@ export const useDailyTasksController = () => {
         yearlyTotals,
         monthlyLogDays,
         yearlyLogDays,
+        streaks,
     }
 
 }
