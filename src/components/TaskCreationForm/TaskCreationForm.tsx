@@ -132,20 +132,15 @@ export default function TaskCreationForm() {
                         rows={2}
                         fullWidth
                     />
-                    <FormControlLabel control={
-
-                        <Switch
-                            checked={defineDailyGoal}
-                            onChange={() => {
-                                setDefineDailyGoal(!defineDailyGoal);
-                                if (defineDailyGoal) {
-                                    resetDailyGoals();
-                                }
-                            }}
-                            color="warning"
-                        />
-                    }
-                        label='Definir Meta Diária'
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                color="warning"
+                                checked={task.dailyTask}
+                                onChange={(e) => handleChange("dailyTask", e.target.checked)}
+                            />
+                        }
+                        label="Tarefa diária?"
                     />
 
                     {defineDailyGoal && (
@@ -196,6 +191,23 @@ export default function TaskCreationForm() {
 
                         </>
                     )}
+
+                    <FormControlLabel control={
+
+                        <Switch
+                            checked={defineDailyGoal}
+                            onChange={() => {
+                                setDefineDailyGoal(!defineDailyGoal);
+                                if (defineDailyGoal) {
+                                    resetDailyGoals();
+                                }
+                            }}
+                            color="warning"
+                        />
+                    }
+                        label='Definir Meta Diária'
+                    />
+
                     <Divider />
 
                     <Button

@@ -7,20 +7,20 @@ export type Task = {
     totalGoal?: number;
     totalGoalType?: 'monthly';
     archived: boolean;
-    createdAt: any; // Timestamp do Firestore
-    schedule: string; // "HH:mm"
+    createdAt: any;
+    schedule: string;
     dailyTask: boolean;
 
-    days?: number; // quantos dias no período atual
-    periodStart?: string | null; // data 'YYYY-MM-DD' que marca o início do período atual (semana/mes) para essa tarefa
+    days?: number;
+    periodStart?: string | null;
 
-    daysYear?: number; //  novo campo: dias feitos no ano
-    yearStart?: string | null; //  marca início do ano "YYYY"
+    daysYear?: number;
+    yearStart?: string | null;
 
-    totalMonth?: number;  //  novo: medida acumulada do mês
-    totalYear?: number;   // novo: medida acumulada do ano
+    totalMonth?: number;
+    totalYear?: number;
 
-    priority?: any; // Timestamp do Firestore
+    priority?: any;
     taskType?: 'personal' | 'gratitude';
     gratitudeTrack?: 'semente' | 'broto' | 'flor' | 'fruto' | 'arvore' | 'floresta' | 'guardião' | 'infinito' | '';
     icon?: string;
