@@ -16,7 +16,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useState } from "react";
-import { Task } from "../../types/Task";
+import type { Task } from "../../types/Task";
 
 interface ReportConfigurationModalProps {
     open: boolean;
