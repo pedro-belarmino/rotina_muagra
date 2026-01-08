@@ -13,6 +13,7 @@ import {
     AccordionDetails,
     Paper,
     Box,
+    Button,
 
 } from "@mui/material";
 import { useHistoryDisplayController } from "./HistoryDisplay.controller";
@@ -104,7 +105,7 @@ export default function HistoryDisplay() {
                         </Accordion>
                     </Card>
                 )}
-
+                <Button variant="outlined" color="warning" sx={{ m: 2 }}>Gerar Relatorio</Button>
                 {Object.entries(taskStats).map(([taskId, stats]) => {
                     const task = tasks[taskId];
                     return (
