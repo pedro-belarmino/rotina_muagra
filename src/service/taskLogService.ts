@@ -348,6 +348,51 @@ export const getTaskLogDaysByMonth = async (uid: string, taskId: string, date: D
     return uniqueDays.size;
 };
 
+export const getTaskLogsByPeriod = async (
+    uid: string,
+    startDate: Date,
+    endDate: Date,
+    taskIds: string[]
+): Promise<TaskLog[]> => {
+    if (taskIds.length === 0) {
+        return [];
+    }
+
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const allLogs: TaskLog[] = [];
+    const chunks: string[][] = [];
+
+    for (let i = 0; i < taskIds.length; i += 30) {
+        chunks.push(taskIds.slice(i, i + 30));
+    }
+
+    for (const chunk of chunks) {
+        const q = query(
+            logsRef,
+            where("taskId", "in", chunk),
+            where("doneAt", ">=", Timestamp.fromDate(startDate)),
+            where("doneAt", "<=", Timestamp.fromDate(endDate))
+        );
+        const snap = await getDocs(q);
+        const logs = snap.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                taskId: data.taskId,
+                taskName: data.taskName,
+                measure: data.measure,
+                userId: uid,
+                doneAt: (data.doneAt as Timestamp).toDate(),
+                value: data.value,
+            } as TaskLog;
+        });
+        allLogs.push(...logs);
+    }
+
+    return allLogs;
+};
+
+
 export const getTaskLogDaysByYear = async (uid: string, taskId: string, date: Date): Promise<number> => {
     const logsRef = collection(db, "users", uid, "taskLogs");
     const year = date.getFullYear();
