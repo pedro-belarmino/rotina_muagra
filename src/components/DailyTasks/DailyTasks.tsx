@@ -559,21 +559,23 @@ function DailyTasks() {
                                                 checked={!!task.priority}
                                                 onChange={() => handleTogglePriority(task)}
                                             />
+                                            <div style={{ paddingLeft: 10 }}>
 
-                                            <Typography
-                                                variant="subtitle2"
-                                                fontWeight="bold"
-                                                color="warning"
-                                                sx={{
-                                                    paddingLeft: 2,
-                                                    fontSize: {
-                                                        xs: "1.200rem",
-                                                        md: "1.25rem",
-                                                    },
-                                                }}
-                                            >
-                                                Streak: {streaks[task.id!] ?? 0}
-                                            </Typography>
+                                                <Typography
+                                                    color="warning"
+                                                    sx={{
+                                                        fontSize: {
+                                                            xs: "1.100rem",
+                                                            md: "1.15rem",
+                                                        },
+                                                    }}
+                                                >
+                                                    Streak: {streaks[task.id!] ?? 0}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    (dias consecutivos)
+                                                </Typography>
+                                            </div>
 
                                         </Stack>
 
