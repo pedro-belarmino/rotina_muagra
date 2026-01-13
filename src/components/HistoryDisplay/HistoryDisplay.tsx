@@ -71,7 +71,7 @@ export default function HistoryDisplay() {
                 data={reportData}
             />
             <Container maxWidth="sm" sx={{ py: 3 }}>
-                <Button variant="contained" onClick={openConfigModal} sx={{ mb: 2 }}>
+                <Button variant="contained" color="warning" onClick={openConfigModal} sx={{ mb: 2 }}>
                     Gerar Relatório
                 </Button>
                 <Typography variant="h5" align="center" gutterBottom fontWeight="bold">

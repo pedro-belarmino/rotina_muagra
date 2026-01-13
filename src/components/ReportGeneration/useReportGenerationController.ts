@@ -58,9 +58,23 @@ export const useReportGenerationController = (tasks: Task[]) => {
             const taskDays = Math.max(1, Math.ceil(taskTimeDiff / (1000 * 3600 * 24))); // Garante no mínimo 1 dia
 
             const logs = taskLogs.filter(log => log.taskId === task.id);
-            const totalDone = logs.reduce((sum, log) => sum + log.value, 0);
-            const totalGoal = (task.dailyGoal ?? 1) * taskDays;
-            const percentage = totalGoal > 0 ? (totalDone / totalGoal) * 100 : 0;
+
+            let totalDone: number;
+            let totalGoal: number;
+            let percentage: number;
+
+            if (!task.dailyGoal) {
+                const uniqueDays = new Set(
+                    logs.map(log => log.doneAt.toISOString().split('T')[0])
+                );
+                totalDone = uniqueDays.size;
+                totalGoal = taskDays;
+                percentage = totalGoal > 0 ? (totalDone / totalGoal) * 100 : 0;
+            } else {
+                totalDone = logs.reduce((sum, log) => sum + log.value, 0);
+                totalGoal = task.dailyGoal * taskDays;
+                percentage = totalGoal > 0 ? (totalDone / totalGoal) * 100 : 0;
+            }
 
             return {
                 ...task,
