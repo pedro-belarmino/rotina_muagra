@@ -71,6 +71,7 @@ function DailyTasks() {
         yearlyTotals,
         monthlyLogDays,
         yearlyLogDays,
+        streaks,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -559,20 +560,22 @@ function DailyTasks() {
                                                 onChange={() => handleTogglePriority(task)}
                                             />
 
-                                            <Typography
-                                                variant="subtitle2"
-                                                fontWeight="bold"
-                                                color="warning"
-                                                sx={{
-                                                    paddingLeft: 2,
-                                                    fontSize: {
-                                                        xs: "1.200rem",
-                                                        md: "1.25rem",
-                                                    },
-                                                }}
-                                            >
-                                                Streak: 000
-                                            </Typography>
+                                            <div>
+
+                                                <Typography
+                                                    color="warning"
+                                                    sx={{
+                                                        paddingLeft: 2,
+                                                        fontSize: {
+                                                            xs: "1.200rem",
+                                                            md: "1.25rem",
+                                                        },
+                                                    }}
+                                                >
+                                                    Streak: {streaks[task.id!] ?? 0}
+                                                </Typography>
+                                                <Typography color='textSecondary' fontSize={'small'}>(dias consecutivos)</Typography>
+                                            </div>
 
                                         </Stack>
 
