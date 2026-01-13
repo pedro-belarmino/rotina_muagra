@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear } from "../../service/taskLogService";
+import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear, getTaskStreak } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
@@ -21,6 +21,8 @@ export const useDailyTasksController = () => {
     const [yearlyTotals, setYearlyTotals] = useState<Record<string, number>>({});
     const [monthlyLogDays, setMonthlyLogDays] = useState<Record<string, number>>({});
     const [yearlyLogDays, setYearlyLogDays] = useState<Record<string, number>>({});
+    const [streaks, setStreaks] = useState<Record<string, number>>({});
+
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [goalValue, setGoalValue] = useState<number | string>("");
@@ -138,6 +140,7 @@ export const useDailyTasksController = () => {
         const yearly: Record<string, number> = {};
         const monthlyDays: Record<string, number> = {};
         const yearlyDays: Record<string, number> = {};
+        const streaksData: Record<string, number> = {};
 
 
         for (const task of userTasks) {
@@ -155,6 +158,8 @@ export const useDailyTasksController = () => {
                 monthlyDays[task.id!] = monthlyDaysCount;
                 yearlyDays[task.id!] = yearlyDaysCount;
             }
+            const streak = await getTaskStreak(user.uid, task.id!);
+            streaksData[task.id!] = streak;
         }
 
         setDoneToday(status);
@@ -162,6 +167,7 @@ export const useDailyTasksController = () => {
         setYearlyTotals(yearly);
         setMonthlyLogDays(monthlyDays);
         setYearlyLogDays(yearlyDays);
+        setStreaks(streaksData);
         setLoading(false);
     };
 
@@ -340,6 +346,7 @@ export const useDailyTasksController = () => {
         yearlyTotals,
         monthlyLogDays,
         yearlyLogDays,
+        streaks,
     }
 
 }

@@ -348,6 +348,39 @@ export const getTaskLogDaysByMonth = async (uid: string, taskId: string, date: D
     return uniqueDays.size;
 };
 
+export const getTaskStreak = async (uid: string, taskId: string): Promise<number> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const q = query(logsRef, where("taskId", "==", taskId));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+        return 0;
+    }
+
+    const logDays = new Set(snap.docs.map(doc => doc.data().day as string));
+
+    let streak = 0;
+    let currentDate = getNowInBrasilia();
+    const todayKey = formatISODate(currentDate);
+
+    if (!logDays.has(todayKey)) {
+        currentDate.setUTCDate(currentDate.getUTCDate() - 1);
+    }
+
+    // Now, loop backwards from `currentDate`
+    while (true) {
+        const dayKey = formatISODate(currentDate);
+        if (logDays.has(dayKey)) {
+            streak++;
+            currentDate.setUTCDate(currentDate.getUTCDate() - 1);
+        } else {
+            break; // Streak is broken
+        }
+    }
+
+    return streak;
+};
+
 export const getTaskLogsByPeriod = async (
     uid: string,
     startDate: Date,

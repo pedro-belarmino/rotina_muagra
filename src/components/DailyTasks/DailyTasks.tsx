@@ -71,6 +71,7 @@ function DailyTasks() {
         yearlyTotals,
         monthlyLogDays,
         yearlyLogDays,
+        streaks,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -571,7 +572,7 @@ function DailyTasks() {
                                                     },
                                                 }}
                                             >
-                                                Streak: 000
+                                                Streak: {streaks[task.id!] ?? 0}
                                             </Typography>
 
                                         </Stack>
