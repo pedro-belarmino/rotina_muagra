@@ -43,6 +43,14 @@ export default function ReportDisplayModal({
                                     series={[{ data: data.counters.map((c: { value: any; }) => c.value) }]}
                                 />
                             </Box>
+                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                                <Typography variant="h6" color="textSecondary">
+                                    Média diária de agradecimentos
+                                </Typography>
+                                <Typography variant="h4" fontWeight="bold">
+                                    {data.averageGratitude.toFixed(2)}
+                                </Typography>
+                            </Box>
                         </Paper>
                         <Paper sx={{ p: 3, mt: 3 }}>
                             <Typography variant="h6">Balanço por Tarefa</Typography>

@@ -88,6 +88,9 @@ export const useReportGenerationController = (tasks: Task[]) => {
             ? taskBalances.reduce((sum, task) => sum + task.percentage, 0) / taskBalances.length
             : 0;
 
+        const totalGratitude = counters.reduce((sum, c) => sum + c.value, 0);
+        const averageGratitude = days > 0 ? totalGratitude / days : 0;
+
         let aggregatedCounters: { dateKey: string; value: number }[];
 
         if (days <= 31) {
@@ -122,6 +125,7 @@ export const useReportGenerationController = (tasks: Task[]) => {
             generalBalance,
             taskBalances,
             counters: aggregatedCounters,
+            averageGratitude,
         });
 
         // Open display modal
