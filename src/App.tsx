@@ -7,6 +7,7 @@ import { CssBaseline } from '@mui/material';
 import Home from './views/Home';
 import Template from './components/shared/Template';
 import History from './views/History';
+import Report from './views/Report';
 import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCouter from './views/GlobalCounter';
@@ -35,6 +36,7 @@ function App() {
                             <Route path='/criar-tarefa' element={<CreateTask />} />
                             <Route path='/home' element={<Home />} />
                             <Route path='/historico' element={<History />} />
+                            <Route path='/relatorio' element={<Report />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
                             <Route path='muagrometro' element={<GlobalCouter />} />
                             <Route

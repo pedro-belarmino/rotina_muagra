@@ -19,9 +19,6 @@ import {
 import { useHistoryDisplayController } from "./HistoryDisplay.controller";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { formatData } from '../../utils/formatting';
-import ReportConfigurationModal from "../ReportGeneration/ReportConfigurationModal";
-import ReportDisplayModal from "../ReportGeneration/ReportDisplayModal";
-import { useReportGenerationController } from "../ReportGeneration/useReportGenerationController";
 
 export default function HistoryDisplay() {
 
@@ -33,16 +30,6 @@ export default function HistoryDisplay() {
         counterTotal,
         handleChange,
     } = useHistoryDisplayController()
-
-    const {
-        configModalOpen,
-        displayModalOpen,
-        openConfigModal,
-        closeConfigModal,
-        closeDisplayModal,
-        generateReport,
-        reportData,
-    } = useReportGenerationController(Object.values(tasks).filter(task => !task.archived));
 
     if (counterTotal == 0 && (Array.isArray(taskStats) ? taskStats.length == 0 : Object.keys(taskStats).length == 0)) return (
         <Container maxWidth="sm" sx={{ py: 3 }}>
@@ -59,21 +46,7 @@ export default function HistoryDisplay() {
 
     return (
         <>
-            <ReportConfigurationModal
-                open={configModalOpen}
-                onClose={closeConfigModal}
-                tasks={Object.values(tasks)}
-                onGenerate={generateReport}
-            />
-            <ReportDisplayModal
-                open={displayModalOpen}
-                onClose={closeDisplayModal}
-                data={reportData}
-            />
             <Container maxWidth="sm" sx={{ py: 3 }}>
-                <Button variant="contained" color="warning" onClick={openConfigModal} sx={{ mb: 2 }}>
-                    Gerar Relatório
-                </Button>
                 <Typography variant="h5" align="center" gutterBottom fontWeight="bold">
                     Histórico por Tarefa
                 </Typography>

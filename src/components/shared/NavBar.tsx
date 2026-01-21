@@ -31,6 +31,8 @@ export default function NavBar() {
             setValue(1);
         } else if (location.pathname === "/historico") {
             setValue(2);
+        } else if (location.pathname === "/relatorio") {
+            setValue(3);
         }
     }, [location.pathname]);
 
@@ -47,7 +49,7 @@ export default function NavBar() {
                 <BottomNavigationAction label="Home" icon={<HomeIcon />} onClick={() => navigate('/home')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Criar" icon={<AddBoxIcon />} onClick={() => navigate('/criar-tarefa')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Historico" icon={<HistoryIcon />} onClick={() => navigate('/historico')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
-                <BottomNavigationAction label="Relatório" icon={<AssessmentIcon />} onClick={ß} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
+                <BottomNavigationAction label="Relatório" icon={<AssessmentIcon />} onClick={() => navigate('/relatorio')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Sair" icon={<LogoutRoundedIcon />} onClick={() => navigate('/')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
             </BottomNavigation>
         </Box>
