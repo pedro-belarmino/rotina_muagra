@@ -13,7 +13,6 @@ import {
     AccordionDetails,
     Paper,
     Box,
-    Button,
 
 } from "@mui/material";
 import { useHistoryDisplayController } from "./HistoryDisplay.controller";
