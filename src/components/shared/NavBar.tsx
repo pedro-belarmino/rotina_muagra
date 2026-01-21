@@ -7,6 +7,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from "react-router-dom";
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 // import ShareIcon from '@mui/icons-material/Share';
 
@@ -15,11 +16,13 @@ import { useNavigate } from "react-router-dom";
 // import { useAuth } from "../../context/AuthContext";
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
+
 export default function NavBar() {
 
     // const { user } = useAuth();
     const navigate = useNavigate()
     const [value, setValue] = useState(0);
+
 
     useEffect(() => {
         if (location.pathname === "/home") {
@@ -44,7 +47,7 @@ export default function NavBar() {
                 <BottomNavigationAction label="Home" icon={<HomeIcon />} onClick={() => navigate('/home')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Criar" icon={<AddBoxIcon />} onClick={() => navigate('/criar-tarefa')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Historico" icon={<HistoryIcon />} onClick={() => navigate('/historico')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
-                {/* <BottomNavigationAction label="Compartilhar" icon={<ShareIcon />} onClick={() => navigate('/')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} /> */}
+                <BottomNavigationAction label="Relatório" icon={<AssessmentIcon />} onClick={ß} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Sair" icon={<LogoutRoundedIcon />} onClick={() => navigate('/')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
             </BottomNavigation>
         </Box>
