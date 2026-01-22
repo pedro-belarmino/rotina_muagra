@@ -147,76 +147,70 @@ function DailyTasks() {
                                 alt="Logo para fundo claro"
                             />
                         )}
+
                         <Typography
                             variant="h5"
                             fontWeight="bold"
                             color="warning.main"
-                            sx={{ my: 0.5 }}
+                            sx={{ my: 1.5 }}
                         >
                             {counter}
                         </Typography>
-                        <Stack direction="row" spacing={1} sx={{ position: 'relative' }} justifyContent="center">
+
+                        <Stack direction="column" spacing={1.5} alignItems="stretch">
+                            {/* Botão 1: Lembrei de Agradecer */}
                             <Button
-                                size="small"
+                                fullWidth
+                                size="medium"
                                 variant="outlined"
                                 color="warning"
                                 onClick={addCounter}
-                                sx={{ textTransform: "none", fontWeight: "bold" }}
+                                startIcon={<span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>+</span>}
+                                sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
                             >
-                                + Lembrei de Agradecer
+                                Lembrei de Agradecer
                             </Button>
-                            <Tooltip title={'Muagrômetro Global'}>
 
-                                <Box
-                                    onClick={() => navigate("/muagrometro")}
-                                    component="img"
-                                    src="/Globo.png"
-                                    alt=""
-                                    sx={{
-                                        cursor: "pointer",
-                                        position: "absolute",
-                                        right: 0,
-                                        top: "50%",
-                                        transform: "translateY(-50%)",
-                                        height: "150%",
-                                        objectFit: "contain",
-                                    }}
-                                />
+                            {/* Botão 2: Diário do Agradecimento */}
+                            <Tooltip title='Seu diário de agradecimento'>
+                                <Button
+                                    fullWidth
+                                    size="medium"
+                                    variant="outlined"
+                                    color="warning"
+                                    onClick={() => setDiaryModal(true)}
+                                    startIcon={
+                                        <Box
+                                            component="img"
+                                            src={isDarkMode ? "/diario/Ícone Diário para fundo claro.png" : "/diario/ìcone Diário para fundo Escuro.png"}
+                                            sx={{ width: 20, height: 20, objectFit: "contain" }}
+                                        />
+                                    }
+                                    sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
+                                >
+                                    Diário do Agradecimento
+                                </Button>
                             </Tooltip>
-                            <Tooltip title='Seu diario de agradecimento' onClick={() => setDiaryModal(true)}>
-                                {isDarkMode ? (
-                                    <Box
-                                        onClick={() => setDiaryModal(true)}
-                                        component="img"
-                                        src="/diario/Ícone Diário para fundo claro.png"
-                                        alt=""
-                                        sx={{
-                                            cursor: "pointer",
-                                            position: "absolute",
-                                            left: 0,
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                            height: "150%",
-                                            objectFit: "contain",
-                                        }}
-                                    />
-                                ) : (
-                                    <Box
-                                        onClick={() => setDiaryModal(true)}
-                                        component="img"
-                                        src="/diario/ìcone Diário para fundo Escuro.png"
-                                        alt=""
-                                        sx={{
-                                            cursor: "pointer",
-                                            position: "absolute",
-                                            left: 0,
-                                            top: "50%",
-                                            transform: "translateY(-50%)",
-                                            height: "150%",
-                                            objectFit: "contain",
-                                        }}
-                                    />
-                                )}
+
+                            {/* Botão 3: Muagrômetro Global */}
+                            <Tooltip title={'Muagrômetro Global'}>
+                                <Button
+                                    fullWidth
+                                    size="medium"
+                                    variant="outlined"
+                                    color="warning"
+                                    onClick={() => navigate("/muagrometro")}
+                                    startIcon={
+                                        <Box
+                                            component="img"
+                                            src="/Globo.png"
+                                            sx={{ width: 20, height: 20, objectFit: "contain" }}
+                                        />
+                                    }
+                                    sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
+                                >
+                                    Muagrômetro Global
+                                </Button>
                             </Tooltip>
                         </Stack>
                     </CardContent>
