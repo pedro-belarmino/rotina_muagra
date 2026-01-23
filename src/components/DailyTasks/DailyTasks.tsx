@@ -26,11 +26,12 @@ import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
 import { useNavigate } from 'react-router-dom';
 import { formatMeasure } from '../../utils/formatting';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
 import BigIconRenderer from '../shared/BigIconRender';
 import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 import { useTheme } from '@mui/material/styles';
+import { DailyTasksSkeleton } from './Skeleton';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -96,7 +97,20 @@ function DailyTasks() {
     const paginatedTasks = tasks.slice(startIndex, endIndex);
     const totalPages = Math.ceil(tasks.length / itemsPerPage);
 
-    if (loading) return <LoadingScreen />;
+
+    const [showSplash, setShowSplash] = useState(true);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowSplash(false);
+        }, 2000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (showSplash) return <LoadingScreen />;
+
+    if (loading) return <DailyTasksSkeleton />;
 
 
     return (
