@@ -3,6 +3,7 @@ import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
+import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import {
     Container,
     Typography,
@@ -137,13 +138,13 @@ function DailyTasks() {
                         {isDarkMode ? (
                             <img
                                 src="/Logo Muagrômetro Final Colorida para fundo escuro .png"
-                                style={{ width: 200 }}
+                                style={{ width: 300 }}
                                 alt="Logo para fundo escuro"
                             />
                         ) : (
                             <img
                                 src="/Logo Muagrômetro Final Colorido.png"
-                                style={{ width: 200 }}
+                                style={{ width: 300 }}
                                 alt="Logo para fundo claro"
                             />
                         )}
@@ -165,8 +166,20 @@ function DailyTasks() {
                                 variant="outlined"
                                 color="warning"
                                 onClick={addCounter}
-                                startIcon={<span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>+</span>}
-                                sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
+                                startIcon={
+                                    <Box
+                                        sx={{
+                                            width: 40,
+                                            height: 40,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}
+                                    >
+                                        <LightbulbOutlinedIcon sx={{ fontSize: 32 }} />
+                                    </Box>
+                                }
+                                sx={{ textTransform: "none", borderRadius: 2 }}
                             >
                                 Lembrei de Agradecer
                             </Button>
@@ -183,10 +196,10 @@ function DailyTasks() {
                                         <Box
                                             component="img"
                                             src={isDarkMode ? "/diario/Ícone Diário para fundo claro.png" : "/diario/ìcone Diário para fundo Escuro.png"}
-                                            sx={{ width: 20, height: 20, objectFit: "contain" }}
+                                            sx={{ width: 40, height: 40, objectFit: "contain" }}
                                         />
                                     }
-                                    sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
+                                    sx={{ textTransform: "none", borderRadius: 2 }}
                                 >
                                     Diário do Agradecimento
                                 </Button>
@@ -204,10 +217,10 @@ function DailyTasks() {
                                         <Box
                                             component="img"
                                             src="/Globo.png"
-                                            sx={{ width: 20, height: 20, objectFit: "contain" }}
+                                            sx={{ width: 40, height: 40, objectFit: "contain" }}
                                         />
                                     }
-                                    sx={{ textTransform: "none", fontWeight: "bold", borderRadius: 2 }}
+                                    sx={{ textTransform: "none", borderRadius: 2 }}
                                 >
                                     Muagrômetro Global
                                 </Button>
