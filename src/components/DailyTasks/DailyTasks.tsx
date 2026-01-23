@@ -103,14 +103,17 @@ function DailyTasks() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowSplash(false);
-        }, 2000);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, []);
 
-    if (showSplash) return <LoadingScreen />;
+    if (showSplash && loading) {
+        return <LoadingScreen />;
+    } else if (loading) {
+        return <DailyTasksSkeleton />;
+    }
 
-    if (loading) return <DailyTasksSkeleton />;
 
 
     return (
