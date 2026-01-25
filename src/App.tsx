@@ -12,6 +12,7 @@ import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCouter from './views/GlobalCounter';
 import AuthorizeEmail from './views/AuthorizeEmail';
+import AccessDenied from './views/AccessDenied';
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Login />} />
                     <Route path='/authorize-email' element={<AuthorizeEmail />} />
+                    <Route path='/acesso-negado' element={<AccessDenied />} />
 
                     <Route element={<PrivateWrapper />}>
                         <Route element={<Template />}>
