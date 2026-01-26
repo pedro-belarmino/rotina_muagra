@@ -67,7 +67,7 @@ export default function TaskCreationForm() {
                             label="Tipo da Tarefa"
                         >
                             <MenuItem value="personal">Pessoal</MenuItem>
-                            <MenuItem value="gratitude">Trilha do Agradecimento</MenuItem>
+                            <MenuItem value="gratitude">Trilha do Agradecedor</MenuItem>
                         </Select>
                     </FormControl>
 
