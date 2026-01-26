@@ -16,7 +16,7 @@ export default function PrivateWrapper() {
     }
 
     if (user && !isAuthorized) {
-        const allowedPaths = ["/home", "/acesso-negado"];
+        const allowedPaths = ["/home", "/acesso-negado", "/muagrometro"];
         if (!allowedPaths.includes(location.pathname)) {
             return <Navigate to="/acesso-negado" replace />;
         }

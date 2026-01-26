@@ -8,19 +8,24 @@ import {
 
 import { LineChart } from "@mui/x-charts/LineChart";
 import type { Key } from "react";
-
+import { useHistoryDisplayController } from "../HistoryDisplay/HistoryDisplay.controller";
+import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
+ import CheckBoxOutlinedIcon from '@mui/icons-material/CheckBoxOutlined';
 interface ReportDisplayContentProps {
     data: any;
 }
 
 export default function ReportDisplayContent({
     data,
-}: ReportDisplayContentProps) {
+}: ReportDisplayContentProps){
     if (!data) return null;
 
-    return (
-        <>
-            <Paper sx={{ p: 3, mt: 2, borderRadius: 2 }}>
+  const {counterTotal} = useHistoryDisplayController()
+
+
+return (
+    <>
+        <Paper sx={{ p: 3, mt: 2, borderRadius: 2 }}>
                 <Typography variant="h6" color="textSecondary">Balanço Geral</Typography>
                 <Typography variant="h3" fontWeight="bold" color="warning.main">
                     {data.generalBalance.toFixed(2)}%
@@ -37,11 +42,72 @@ export default function ReportDisplayContent({
                         }]}
                         series={[{
                             data: data.counters.map((c: { value: any; }) => c.value),
-                            color: '#ed6c02' // warning.main color
+                            color: '#ed6c02'
                         }]}
                         height={300}
                     />
                 </Box>
+                <Paper sx={{p: 3, borderRadius: 2}} elevation={5}>
+                    <Typography variant="body2" color="textSecondary">
+                        Controlador de tarefas carregado: {counterTotal}
+                    </Typography>
+<Paper sx={{ p: 2, m: 2 }}>
+  {[
+    { value: 100, label: "100 agradecimentos", max: 500 },
+    { value: 500, label: "500 agradecimentos", max: 1000 },
+    { value: 1000, label: "1.000 agradecimentos", max: 5000 },
+    { value: 5000, label: "5.000 agradecimentos", max: 10000 },
+    { value: 10000, label: "10.000 agradecimentos", max: 25000 },
+    { value: 25000, label: "25.000 agradecimentos", max: 50000 },
+    { value: 50000, label: "50.000 agradecimentos", max: 100000 },
+    { value: 100000, label: "100.000 agradecimentos+", max: Infinity },
+  ].map(({ value, label, max }) => {
+    const active = counterTotal >= value && counterTotal < max;
+    const checked = counterTotal >= value;
+
+    return (
+      <Box
+        key={value}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          mb: 1,
+        }}
+      >
+        {/* Ícone esquerda */}
+        {checked ? (
+          <CheckBoxOutlinedIcon />
+        ) : (
+          <CheckBoxOutlineBlankOutlinedIcon fontSize="small" />
+        )}
+
+        {/* Preenchimento tracejado */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            mx: 1,
+            borderBottom: active
+              ? "2px dashed currentColor"
+              : "1px dashed rgba(0,0,0,0.3)",
+          }}
+        />
+
+        {/* Texto direita */}
+        <Typography
+          variant={active ? "body1" : "subtitle2"}
+          sx={{
+            fontWeight: active ? "bold" : "normal",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {label}
+        </Typography>
+      </Box>
+    );
+  })}
+</Paper>
+                
+                </Paper>
             </Paper>
 
             <Paper sx={{ p: 3, mt: 3, borderRadius: 2 }}>
