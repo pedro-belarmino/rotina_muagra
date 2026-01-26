@@ -49,7 +49,7 @@ return (
                 </Box>
                 <Paper sx={{p: 3, borderRadius: 2}} elevation={5}>
                     <Typography variant="body2" color="textSecondary">
-                        Controlador de tarefas carregado: {counterTotal}
+                        Muagradecimentos: {counterTotal}
                     </Typography>
 <Paper sx={{ p: 2, m: 2 }}>
   {[
