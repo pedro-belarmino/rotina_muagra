@@ -193,7 +193,12 @@ function DailyTasks() {
                                             justifyContent: 'center'
                                         }}
                                     >
-                                        <LightbulbOutlinedIcon sx={{ fontSize: 32 }} />
+                                        <img src="public/icone.png" alt=""
+                                         style={{
+                                            width: 20,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'}}/>
                                     </Box>
                                 }
                                 sx={{ textTransform: "none", borderRadius: 2 }}
