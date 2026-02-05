@@ -3,7 +3,6 @@ import UnarchiveOutlinedIcon from '@mui/icons-material/UnarchiveOutlined';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import StarIcon from '@mui/icons-material/Star';
-import LightbulbOutlinedIcon from '@mui/icons-material/LightbulbOutlined';
 import {
     Container,
     Typography,
