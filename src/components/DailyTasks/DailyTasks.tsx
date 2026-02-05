@@ -31,6 +31,7 @@ import BigIconRenderer from '../shared/BigIconRender';
 import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 import { useTheme } from '@mui/material/styles';
 import { DailyTasksSkeleton } from './Skeleton';
+import CelebrationMilestones from '../CelebrationMilestones/CelebrationMilestones';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -298,6 +299,7 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
+                <CelebrationMilestones />
 
 
                 {tasks.length === 0 ? <>
