@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getTasks, updateTask, deleteTaskPermanently } from "../../service/taskService";
+import {
+    getTasks,
+    updateTask,
+    deleteTaskPermanently,
+} from "../../service/taskService";
 import type { Task } from "../../types/Task";
 
 export function useArchivedTasksListController() {
-
     const { user } = useAuth();
     const [archivedTasks, setArchivedTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(false);
@@ -62,6 +65,5 @@ export function useArchivedTasksListController() {
         unarchiveModal,
         archivedTasks,
         loading,
-
-    }
+    };
 }
