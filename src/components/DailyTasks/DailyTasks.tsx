@@ -184,11 +184,11 @@ function DailyTasks() {
                                 color="warning"
                                 onClick={addCounter}
                                 startIcon={
-                                <Box
-                                            component="img"
-                                            src={isDarkMode ? "/icone.png" : "/icone v2.png"}
-                                            sx={{ width: 35, height: 35, objectFit: "contain" }}
-                                        />
+                                    <Box
+                                        component="img"
+                                        src={isDarkMode ? "/icone.png" : "/icone v2.png"}
+                                        sx={{ width: 35, height: 35, objectFit: "contain" }}
+                                    />
                                 }
                                 sx={{ textTransform: "none", borderRadius: 2 }}
                             >
