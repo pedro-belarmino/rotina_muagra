@@ -17,7 +17,7 @@ import {
     Pagination,
     Stack,
     Checkbox,
-    CircularProgress,
+    LinearProgress,
 } from "@mui/material";
 
 import Tooltip from '@mui/material/Tooltip';
@@ -241,60 +241,39 @@ function DailyTasks() {
                 </Card>
 
                 <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
-                    <CardContent sx={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', py: 1, '&:last-child': { pb: 1 } }}>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Progresso no Mês
-                            </Typography>
-                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={monthlyProgress} color='warning' />
-                                <Box
-                                    sx={{
-                                        top: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        position: 'absolute',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Typography variant="caption" component="div" color="text.secondary">
-                                        {`${Math.round(monthlyProgress)}%`}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {monthlyDays} / {totalDaysInMonth} dias
-                            </Typography>
+                    <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
+                        <Box sx={{ mb: 1.5 }}>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                <Typography variant="body2" color="text.secondary" fontWeight="bold">
+                                    Progresso no Mês
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    {monthlyDays} / {totalDaysInMonth} dias ({Math.round(monthlyProgress)}%)
+                                </Typography>
+                            </Stack>
+                            <LinearProgress
+                                variant="determinate"
+                                value={monthlyProgress}
+                                color='warning'
+                                sx={{ height: 8, borderRadius: 5, mt: 0.5 }}
+                            />
                         </Box>
-                        <Box sx={{ textAlign: 'center' }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Progresso no Ano
-                            </Typography>
-                            <Box sx={{ position: 'relative', display: 'inline-flex', mt: 1 }}>
-                                <CircularProgress variant="determinate" value={yearlyProgress} color='warning' />
-                                <Box
-                                    sx={{
-                                        top: 0,
-                                        left: 0,
-                                        bottom: 0,
-                                        right: 0,
-                                        position: 'absolute',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Typography variant="caption" component="div" color="text.secondary">
-                                        {`${Math.round(yearlyProgress)}%`}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {yearlyDays} / {totalDaysInYear} dias
-                            </Typography>
+
+                        <Box>
+                            <Stack direction="row" justifyContent="space-between" alignItems="center">
+                                <Typography variant="body2" color="text.secondary" fontWeight="bold">
+                                    Progresso no Ano
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                    {yearlyDays} / {totalDaysInYear} dias ({Math.round(yearlyProgress)}%)
+                                </Typography>
+                            </Stack>
+                            <LinearProgress
+                                variant="determinate"
+                                value={yearlyProgress}
+                                color='warning'
+                                sx={{ height: 8, borderRadius: 5, mt: 0.5 }}
+                            />
                         </Box>
                     </CardContent>
                 </Card>

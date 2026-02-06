@@ -10,7 +10,8 @@ export interface Milestone {
 }
 
 export const useCelebrationMilestonesController = () => {
-    const { user } = useAuth();
+    const { user, isAuthorized } = useAuth();
+    const [runningTotal, setRunningTotal] = useState(0);
     const [milestones, setMilestones] = useState<Milestone[]>([
         { value: 100, label: "100 Agradecimentos", image: "100", reachedDate: null },
         { value: 500, label: "500 Agradecimentos", image: "500", reachedDate: null },
@@ -34,14 +35,14 @@ export const useCelebrationMilestonesController = () => {
                 // Sort counters by dateKey ascending
                 const sortedCounters = [...counters].sort((a, b) => a.dateKey.localeCompare(b.dateKey));
 
-                let runningTotal = 0;
+                let total = 0;
                 const milestoneDates: Record<number, string> = {};
 
                 for (const counter of sortedCounters) {
-                    runningTotal += counter.value;
+                    total += counter.value;
 
                     for (const m of milestones) {
-                        if (runningTotal >= m.value && !milestoneDates[m.value]) {
+                        if (total >= m.value && !milestoneDates[m.value]) {
                             // Format dateKey (YYYY-MM-DD) to DD.MM.YYYY
                             const [year, month, day] = counter.dateKey.split("-");
                             milestoneDates[m.value] = `${day}.${month}.${year}`;
@@ -49,6 +50,7 @@ export const useCelebrationMilestonesController = () => {
                     }
                 }
 
+                setRunningTotal(total);
                 setMilestones(prev => prev.map(m => ({
                     ...m,
                     reachedDate: milestoneDates[m.value] || null
@@ -65,6 +67,8 @@ export const useCelebrationMilestonesController = () => {
 
     return {
         milestones,
-        loading
+        loading,
+        isAuthorized,
+        runningTotal
     };
 };

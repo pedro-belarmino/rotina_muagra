@@ -2,7 +2,9 @@ import { Box, Card, CardContent, Typography, Skeleton } from "@mui/material";
 import { useCelebrationMilestonesController } from "./CelebrationMilestones.controller";
 
 export default function CelebrationMilestones() {
-    const { milestones, loading } = useCelebrationMilestonesController();
+    const { milestones, loading, isAuthorized, runningTotal } = useCelebrationMilestonesController();
+
+    const displayMilestones = isAuthorized ? milestones : milestones.filter(m => m.value <= 100);
 
     if (loading) {
         return (
@@ -39,9 +41,10 @@ export default function CelebrationMilestones() {
                         display: 'grid',
                         gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)' },
                         gap: 2,
+                        alignItems: 'center'
                     }}
                 >
-                    {milestones.map((m) => (
+                    {displayMilestones.map((m) => (
                         <Box key={m.value} sx={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -74,6 +77,22 @@ export default function CelebrationMilestones() {
                             )}
                         </Box>
                     ))}
+
+                    {!isAuthorized && runningTotal > 100 && (
+                        <Box sx={{
+                            gridColumn: { xs: 'span 1', sm: 'span 3' },
+                            textAlign: 'center',
+                            p: 1,
+                            backgroundColor: 'rgba(255, 152, 0, 0.1)',
+                            borderRadius: 2,
+                            border: '1px dashed',
+                            borderColor: 'warning.main'
+                        }}>
+                            <Typography variant="body2" color="warning.main" fontWeight="bold">
+                                Assine a mentoria para desbloquear as outras insígnias do marco de celebração!
+                            </Typography>
+                        </Box>
+                    )}
                 </Box>
             </CardContent>
         </Card>
