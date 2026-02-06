@@ -17,7 +17,6 @@ import {
     Pagination,
     Stack,
     Checkbox,
-    CircularProgress,
     LinearProgress,
 } from "@mui/material";
 
