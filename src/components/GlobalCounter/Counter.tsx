@@ -1,7 +1,7 @@
 import { Button, Container, Divider, Paper, Typography, useTheme } from "@mui/material";
 import { useConterController } from "./Counter.controller";
 import { useNavigate } from "react-router-dom";
-
+import { useDailyTasksController } from '../DailyTasks/DailyTasks.controller';
 export default function Counter() {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
@@ -10,7 +10,7 @@ export default function Counter() {
     const random = Math.floor(Math.random() * Math.max(1, phraseList.length))
     const { title, text } = phraseList[random] ?? { title: "", text: "" }
     const navigate = useNavigate()
-
+    const { counter } = useDailyTasksController()
     const formatGlobalCount = (num: number): string => {
         const padded = num.toString().padStart(7, "0");
         return padded.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -35,19 +35,44 @@ export default function Counter() {
                 )}
             </div>
             <div>
+                <Paper variant="outlined" sx={{ p: 2 }}>
+                    <Typography textAlign={'center'} variant="h6" sx={{ display: 'flex', placeSelf: 'center' }}>
+                        Nosso movimento já gerou
+                    </Typography>
 
-                <Typography textAlign={'center'} variant="h6" sx={{ display: 'flex', placeSelf: 'center' }}>
-                    Nosso movimento já gerou
-                </Typography>
+                    <Paper sx={{ p: 1, m: 2, textAlign: "center" }}>
+                        <Typography fontWeight="bold" color="warning" variant="h3">
+                            {formatGlobalCount(globalCount)}
+                        </Typography>
+                    </Paper>
 
-                <Paper sx={{ p: 1, m: 2, textAlign: "center" }}>
-                    <Typography fontWeight="bold" color="warning" variant="h3">
-                        {formatGlobalCount(globalCount)}
+                    <Typography variant="h5" sx={{ display: 'flex', placeSelf: 'center' }}>
+                        Agradecimentos!
                     </Typography>
                 </Paper>
-
-                <Typography variant="h5" sx={{ display: 'flex', placeSelf: 'center' }}>
-                    Agradecimentos!
+                <br />
+                <Typography
+                    textAlign="center"
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "6px",
+                        fontSize: "1.2rem",
+                    }}
+                >
+                    Muagra pelos seus
+                    <Typography
+                        component="span"
+                        sx={{
+                            fontWeight: "bold",
+                            color: "warning.main",
+                            fontSize: "1.2rem",
+                        }}
+                    >
+                        {counter}
+                    </Typography>
+                    Agradecimentos de hoje
                 </Typography>
                 <br />
                 <Typography textAlign={'center'} sx={{ display: 'flex', placeSelf: 'center' }}>
@@ -65,15 +90,17 @@ export default function Counter() {
                         {text}
                     </Typography>
                 </Paper>
+                <div style={{ display: "flex", justifyContent: "center" }}>
 
-                <Button
-                    color="warning"
-                    variant="outlined"
-                    onClick={() => navigate("/home")}
-                    sx={{ width: "100%", mb: 2 }}
-                >
-                    Voltar
-                </Button>
+                    <Button
+                        color="warning"
+                        variant="contained"
+                        onClick={() => navigate("/home")}
+                        sx={{ mb: 2 }}
+                    >
+                        Voltar
+                    </Button>
+                </div>
             </div>
         </Container>
     );
