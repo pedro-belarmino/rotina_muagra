@@ -1,30 +1,47 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { db } from "../../firebase/config";
+import { useAuth } from "../../context/AuthContext";
+import { getTodayKey } from "../../service/counterService";
 
-export const useConterController = () => {
-
+export const useCounterController = () => {
+    const { user } = useAuth();
     const [globalCount, setGlobalCount] = useState(0);
-    const templateValue = 1080000
-
+    const [userCount, setUserCount] = useState(0);
+    const [selectedPhrase, setSelectedPhrase] = useState({ title: "", text: "" });
+    const templateValue = 1080000;
 
     useEffect(() => {
-
         const globalCounterRef = doc(db, "GlobalCounter", "global_counter");
-
-        const unsubcribe = onSnapshot(globalCounterRef, (snap) => {
+        const unsubscribe = onSnapshot(globalCounterRef, (snap) => {
             if (snap.exists()) {
-                setGlobalCount(snap.data().value + templateValue)
+                setGlobalCount(snap.data().value + templateValue);
             } else {
-                setGlobalCount(999999999)
+                setGlobalCount(999999999);
             }
-        })
-        return () => unsubcribe();
-    }, [])
+        }, (error) => {
+            console.error("Error listening to global counter:", error);
+        });
+        return () => unsubscribe();
+    }, []);
 
+    useEffect(() => {
+        if (!user) return;
+        const todayKey = getTodayKey();
+        const userCounterRef = doc(db, "users", user.uid, "dailyCounters", todayKey);
+        const unsubscribe = onSnapshot(userCounterRef, (snap) => {
+            if (snap.exists()) {
+                setUserCount(snap.data().value);
+            } else {
+                setUserCount(0);
+            }
+        }, (error) => {
+            console.error("Error listening to user counter:", error);
+        });
+        return () => unsubscribe();
+    }, [user]);
 
-
-    const phrases = () => [
+    const phraseOptions = [
         {
             title: "🌎 Corrente de Energia",
             text: "O Agradecimento é energia. Aqui, ela se soma, se espalha e se multiplica, transformando o mundo em 'Muagra' de cada vez."
@@ -41,12 +58,16 @@ export const useConterController = () => {
             title: "🔥 Chamado à Consciência",
             text: "Não é sobre contar cliques. É sobre despertar consciências. O Muagrômetro Global é a prova viva de que o simples Agradecer ainda move o mundo."
         }
-    ]
+    ];
 
-
+    useEffect(() => {
+        const random = Math.floor(Math.random() * phraseOptions.length);
+        setSelectedPhrase(phraseOptions[random]);
+    }, []);
 
     return {
         globalCount,
-        phrases
-    }
-}
+        userCount,
+        selectedPhrase
+    };
+};

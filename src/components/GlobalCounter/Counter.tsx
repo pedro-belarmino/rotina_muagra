@@ -1,16 +1,13 @@
 import { Button, Container, Divider, Paper, Typography, useTheme } from "@mui/material";
-import { useConterController } from "./Counter.controller";
+import { useCounterController } from "./Counter.controller";
 import { useNavigate } from "react-router-dom";
-import { useDailyTasksController } from '../DailyTasks/DailyTasks.controller';
+
 export default function Counter() {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
-    const { globalCount, phrases } = useConterController()
-    const phraseList = typeof phrases === "function" ? phrases() : phrases || []
-    const random = Math.floor(Math.random() * Math.max(1, phraseList.length))
-    const { title, text } = phraseList[random] ?? { title: "", text: "" }
+    const { globalCount, userCount, selectedPhrase } = useCounterController()
+    const { title, text } = selectedPhrase;
     const navigate = useNavigate()
-    const { counter } = useDailyTasksController()
     const formatGlobalCount = (num: number): string => {
         const padded = num.toString().padStart(7, "0");
         return padded.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -70,7 +67,7 @@ export default function Counter() {
                             fontSize: "1.2rem",
                         }}
                     >
-                        {counter}
+                        {userCount}
                     </Typography>
                     Agradecimentos de hoje
                 </Typography>
