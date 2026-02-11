@@ -51,20 +51,18 @@ export default function Counter() {
                 <Typography
                     textAlign="center"
                     sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "6px",
-                        fontSize: "1.2rem",
+                        fontSize: { xs: "1rem", sm: "1.2rem" },
+                        lineHeight: 1.4,
+                        px: 2,
                     }}
                 >
-                    Muagra pelos seus
+                    Muagra pelos seus{" "}
                     <Typography
                         component="span"
                         sx={{
                             fontWeight: "bold",
                             color: "warning.main",
-                            fontSize: "1.2rem",
+                            mx: 0.5,
                         }}
                     >
                         {userCount}
