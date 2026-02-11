@@ -74,6 +74,8 @@ function DailyTasks() {
         monthlyLogDays,
         yearlyLogDays,
         streaks,
+        filter,
+        setFilter,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -92,10 +94,20 @@ function DailyTasks() {
 
     const fullDateDisplay = `${day}/${month}/${year}`;
 
+    useEffect(() => {
+        setPage(1);
+    }, [filter]);
+
+    const filteredTasks = tasks.filter(task => {
+        if (filter === 'pending') return !doneToday[task.id!];
+        if (filter === 'completed') return !!doneToday[task.id!];
+        return true;
+    });
+
     const startIndex = (page - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const paginatedTasks = tasks.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(tasks.length / itemsPerPage);
+    const paginatedTasks = filteredTasks.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
 
 
     const [showSplash, setShowSplash] = useState(true);
@@ -280,8 +292,38 @@ function DailyTasks() {
 
                 <CelebrationMilestones />
 
+                <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 2, mt: 2 }}>
+                    <Button
+                        variant={filter === 'pending' ? 'contained' : 'outlined'}
+                        onClick={() => setFilter('pending')}
+                        color="warning"
+                        size="small"
+                        sx={{ textTransform: 'none', borderRadius: 2 }}
+                    >
+                        Tarefas Pendentes
+                    </Button>
+                    <Button
+                        variant={filter === 'completed' ? 'contained' : 'outlined'}
+                        onClick={() => setFilter('completed')}
+                        color="warning"
+                        size="small"
+                        sx={{ textTransform: 'none', borderRadius: 2 }}
+                    >
+                        Tarefas Concluídas
+                    </Button>
+                    <Button
+                        variant={filter === 'all' ? 'contained' : 'outlined'}
+                        onClick={() => setFilter('all')}
+                        color="warning"
+                        size="small"
+                        sx={{ textTransform: 'none', borderRadius: 2 }}
+                    >
+                        Todas as Tarefas
+                    </Button>
+                </Stack>
 
-                {tasks.length === 0 ? <>
+
+                {filteredTasks.length === 0 ? <>
 
                     <Container component={Paper} sx={{ margin: 4, placeSelf: "center" }}>
                         <Typography
@@ -289,7 +331,7 @@ function DailyTasks() {
                             fontWeight={"bold"}
                             sx={{ justifyContent: "center", display: "flex", p: 1 }}
                         >
-                            Crie uma tafera para visualizá-la aqui.
+                            {tasks.length === 0 ? "Crie uma tarefa para visualizá-la aqui." : "Nenhuma tarefa encontrada para este filtro."}
                         </Typography>
                     </Container>
                 </> : <>
