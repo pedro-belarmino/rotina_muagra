@@ -42,6 +42,7 @@ export const useDailyTasksController = () => {
     const [severity, setSeverity] = useState<SeverityType>('info');
 
     const [diarModal, setDiaryModal] = useState(false)
+    const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
 
     useEffect(() => {
         setCommentLenght(comment.length);
@@ -347,6 +348,8 @@ export const useDailyTasksController = () => {
         monthlyLogDays,
         yearlyLogDays,
         streaks,
+        filter,
+        setFilter,
     }
 
 }
