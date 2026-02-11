@@ -1,4 +1,5 @@
 import { db } from "../firebase/config";
+import { getNowInBrasilia } from "../utils/period";
 import {
     doc,
     getDoc,
@@ -13,13 +14,8 @@ import {
     where,
 } from "firebase/firestore";
 
-// const getTodayKey = () => {
-//     const today = new Date();
-//     return today.toISOString().split("T")[0];
-// };
-
-const getTodayKey = () => {
-    const today = new Date();
+export const getTodayKey = () => {
+    const today = getNowInBrasilia();
     const yyyy = today.getFullYear();
     const mm = String(today.getMonth() + 1).padStart(2, "0");
     const dd = String(today.getDate()).padStart(2, "0");

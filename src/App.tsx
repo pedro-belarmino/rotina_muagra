@@ -10,7 +10,7 @@ import History from './views/History';
 import Report from './views/Report';
 import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
-import GlobalCouter from './views/GlobalCounter';
+import GlobalCounter from './views/GlobalCounter';
 import AuthorizeEmail from './views/AuthorizeEmail';
 import AccessDenied from './views/AccessDenied';
 
@@ -40,7 +40,7 @@ function App() {
                             <Route path='/historico' element={<History />} />
                             <Route path='/relatorio' element={<Report />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
-                            <Route path='muagrometro' element={<GlobalCouter />} />
+                            <Route path='muagrometro' element={<GlobalCounter />} />
                             <Route
                                 path='--'
                                 element={
