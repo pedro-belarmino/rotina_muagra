@@ -294,15 +294,6 @@ function DailyTasks() {
 
                 <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 2, mt: 2 }}>
                     <Button
-                        variant={filter === 'all' ? 'contained' : 'outlined'}
-                        onClick={() => setFilter('all')}
-                        color="warning"
-                        size="small"
-                        sx={{ textTransform: 'none', borderRadius: 2 }}
-                    >
-                        Todas as Tarefas
-                    </Button>
-                    <Button
                         variant={filter === 'pending' ? 'contained' : 'outlined'}
                         onClick={() => setFilter('pending')}
                         color="warning"
@@ -310,6 +301,15 @@ function DailyTasks() {
                         sx={{ textTransform: 'none', borderRadius: 2 }}
                     >
                         Tarefas Pendentes
+                    </Button>
+                    <Button
+                        variant={filter === 'all' ? 'contained' : 'outlined'}
+                        onClick={() => setFilter('all')}
+                        color="warning"
+                        size="small"
+                        sx={{ textTransform: 'none', borderRadius: 2 }}
+                    >
+                        Todas as Tarefas
                     </Button>
                     <Button
                         variant={filter === 'completed' ? 'contained' : 'outlined'}
