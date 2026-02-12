@@ -292,7 +292,7 @@ function DailyTasks() {
 
                 <CelebrationMilestones />
 
-                <Stack direction="row" spacing={1} justifyContent="center" sx={{ mb: 2, mt: 2 }}>
+                <Stack component={Paper} direction="row" spacing={1} justifyContent="center" sx={{ mb: 2, mt: 2, p: 3, borderRadius: 3, boxShadow: 1 }}>
                     <Button
                         variant={filter === 'pending' ? 'contained' : 'outlined'}
                         onClick={() => setFilter('pending')}

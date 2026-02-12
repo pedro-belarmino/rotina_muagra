@@ -42,7 +42,7 @@ export const useDailyTasksController = () => {
     const [severity, setSeverity] = useState<SeverityType>('info');
 
     const [diarModal, setDiaryModal] = useState(false)
-    const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('all');
+    const [filter, setFilter] = useState<'all' | 'pending' | 'completed'>('pending');
 
     useEffect(() => {
         setCommentLenght(comment.length);
