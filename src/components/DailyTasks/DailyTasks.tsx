@@ -109,6 +109,9 @@ function DailyTasks() {
     const paginatedTasks = filteredTasks.slice(startIndex, endIndex);
     const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
 
+    const pendingCount = tasks.filter(task => !doneToday[task.id!]).length;
+    const completedCount = tasks.filter(task => doneToday[task.id!]).length;
+    const allCount = tasks.length;
 
     const [showSplash, setShowSplash] = useState(true);
 
@@ -134,14 +137,16 @@ function DailyTasks() {
 
 
                 <Stack
+                    component={Paper}
+                    elevation={1}
                     direction={{ xs: "column", sm: "row" }}
                     spacing={1}
                     alignItems="center"
                     justifyContent="space-between"
-                    sx={{ mb: 2, textAlign: { xs: "center", sm: "left" } }}
+                    sx={{ p: 1, mb: 2, textAlign: { xs: "center", sm: "left" } }}
                 >
                     <Box sx={{ width: { xs: "100%", sm: "auto" } }}>
-                        <Typography variant="h6" fontWeight="bold" noWrap>
+                        <Typography sx={{ fontSize: 19 }} fontWeight="bold" noWrap>
                             Minhas Rotinas de Hoje - {fullDateDisplay}
                         </Typography>
                     </Box>
@@ -291,37 +296,40 @@ function DailyTasks() {
                 </Card>
 
                 <CelebrationMilestones />
+                <Paper sx={{ mb: 2, mt: 2, p: 3, borderRadius: 3, boxShadow: 1 }}>
+                    <Typography pb={2} variant='inherit' fontWeight='bold'>Seleção de Rotinas / Tarefas do Dia</Typography>
+                    <Stack direction="row" spacing={1} justifyContent="center" >
 
-                <Stack component={Paper} direction="row" spacing={1} justifyContent="center" sx={{ mb: 2, mt: 2, p: 3, borderRadius: 3, boxShadow: 1 }}>
-                    <Button
-                        variant={filter === 'pending' ? 'contained' : 'outlined'}
-                        onClick={() => setFilter('pending')}
-                        color="warning"
-                        size="small"
-                        sx={{ textTransform: 'none', borderRadius: 2 }}
-                    >
-                        Tarefas Pendentes
-                    </Button>
-                    <Button
-                        variant={filter === 'all' ? 'contained' : 'outlined'}
-                        onClick={() => setFilter('all')}
-                        color="warning"
-                        size="small"
-                        sx={{ textTransform: 'none', borderRadius: 2 }}
-                    >
-                        Todas as Tarefas
-                    </Button>
-                    <Button
-                        variant={filter === 'completed' ? 'contained' : 'outlined'}
-                        onClick={() => setFilter('completed')}
-                        color="warning"
-                        size="small"
-                        sx={{ textTransform: 'none', borderRadius: 2 }}
-                    >
-                        Tarefas Concluídas
-                    </Button>
-                </Stack>
+                        <Button
+                            variant={filter === 'pending' ? 'contained' : 'outlined'}
+                            onClick={() => setFilter('pending')}
+                            color="warning"
+                            size="small"
+                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                        >
+                            Tarefas Pendentes {pendingCount}
+                        </Button>
+                        <Button
+                            variant={filter === 'all' ? 'contained' : 'outlined'}
+                            onClick={() => setFilter('all')}
+                            color="warning"
+                            size="small"
+                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                        >
+                            Todas as Tarefas {allCount}
+                        </Button>
+                        <Button
+                            variant={filter === 'completed' ? 'contained' : 'outlined'}
+                            onClick={() => setFilter('completed')}
+                            color="warning"
+                            size="small"
+                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                        >
+                            Tarefas Concluídas {completedCount}
+                        </Button>
+                    </Stack>
 
+                </Paper>
 
                 {filteredTasks.length === 0 ? <>
 
