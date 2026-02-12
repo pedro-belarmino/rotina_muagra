@@ -305,7 +305,7 @@ function DailyTasks() {
                             onClick={() => setFilter('pending')}
                             color="warning"
                             size="small"
-                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                            sx={{ textTransform: 'none', borderRadius: 2, fontWeight: 'bold' }}
                         >
                             Tarefas Pendentes {pendingCount}
                         </Button>
@@ -314,7 +314,7 @@ function DailyTasks() {
                             onClick={() => setFilter('all')}
                             color="warning"
                             size="small"
-                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                            sx={{ textTransform: 'none', borderRadius: 2, fontWeight: 'bold' }}
                         >
                             Todas as Tarefas {allCount}
                         </Button>
@@ -323,7 +323,7 @@ function DailyTasks() {
                             onClick={() => setFilter('completed')}
                             color="warning"
                             size="small"
-                            sx={{ textTransform: 'none', borderRadius: 2 }}
+                            sx={{ textTransform: 'none', borderRadius: 2, fontWeight: 'bold' }}
                         >
                             Tarefas Concluídas {completedCount}
                         </Button>
