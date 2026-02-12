@@ -184,7 +184,7 @@ function DailyTasks() {
                         )}
 
                         <Typography
-                            variant="h5"
+                            variant="h4"
                             fontWeight="bold"
                             color="warning.main"
                             sx={{ my: 1.5 }}

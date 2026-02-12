@@ -56,13 +56,14 @@ export default function Counter() {
                         px: 2,
                     }}
                 >
-                    Muagra pelos seus{" "}
+                    Muagra pelos seus{""}
                     <Typography
                         component="span"
                         sx={{
+                            fontSize: 30,
                             fontWeight: "bold",
                             color: "warning.main",
-                            mx: 0.5,
+                            mx: 1
                         }}
                     >
                         {userCount}
