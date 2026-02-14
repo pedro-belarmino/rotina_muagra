@@ -327,6 +327,15 @@ function DailyTasks() {
                         >
                             Tarefas Concluídas {completedCount}
                         </Button>
+                        <Button
+                            variant={filter === 'completed' ? 'contained' : 'outlined'}
+                            onClick={() => navigate('/arquivadas')}
+                            color="warning"
+                            size="small"
+                            sx={{ textTransform: 'none', borderRadius: 2, fontWeight: 'bold' }}
+                        >
+                            Tarefas Arquivadas <UnarchiveOutlinedIcon />
+                        </Button>
                     </Stack>
 
                 </Paper>
@@ -648,10 +657,6 @@ function DailyTasks() {
                     />
                 </Box>
 
-                <Button color='inherit' onClick={() => navigate('/arquivadas')}>
-                    <UnarchiveOutlinedIcon />
-                    tarefas arquivadas
-                </Button>
             </Container>
 
             <Modal
