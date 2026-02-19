@@ -238,7 +238,7 @@ export default function PrincingComponent() {
                         ? 'transparent'
                         : plan.isRecommended
                           ? `${theme.palette.warning.main}15`
-                          : theme.palette.grey[100],
+                          : theme.palette.background.default,
                       border: plan.type === 'free' ? `1px solid ${theme.palette.divider}` : 'none',
                     }}
                   >
@@ -423,8 +423,8 @@ export default function PrincingComponent() {
                         ? 'transparent'
                         : plan.isRecommended
                           ? `${theme.palette.warning.main}15`
-                          : theme.palette.grey[100],
-                      border: plan.type === 'free' ? `1px solid ${theme.palette.divider}` : 'none',
+                          : theme.palette.background.default,
+                      border: `1px solid ${theme.palette.divider}`,
                     }}
                   >
                     {plan.priceOld && (
