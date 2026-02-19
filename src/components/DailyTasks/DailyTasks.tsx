@@ -18,6 +18,7 @@ import {
     Stack,
     Checkbox,
     LinearProgress,
+    useMediaQuery,
 } from "@mui/material";
 
 import Tooltip from '@mui/material/Tooltip';
@@ -81,7 +82,7 @@ function DailyTasks() {
 
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
-
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const [page, setPage] = useState(1);
 
@@ -296,8 +297,129 @@ function DailyTasks() {
                 </Card>
 
                 <CelebrationMilestones />
-                <Paper sx={{ mb: 2, mt: 2, p: 3, borderRadius: 3, boxShadow: 1 }}>
-                    <Typography pb={2} variant='inherit' fontWeight='bold'>Seleção de Rotinas / Tarefas do Dia</Typography>
+
+                {isMobile && (
+
+
+                    <Paper sx={{ mb: 2, mt: 2, p: 3, borderRadius: 3, boxShadow: 1 }}>
+                        <Typography pb={2} variant='inherit' fontWeight='bold'>Seleção de Rotinas / Tarefas do Dia</Typography>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            useFlexGap
+                            flexWrap="wrap"
+                            justifyContent="center"
+                            sx={{ width: '100%' }}
+                        >
+                            <Button
+                                variant={filter === 'pending' ? 'contained' : 'outlined'}
+                                onClick={() => setFilter('pending')}
+                                color="warning"
+                                size="small"
+                                sx={{
+                                    textTransform: 'none',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+
+                                    flexBasis: {
+                                        xs: 'calc(50% - 8px)',
+                                        md: 'calc(25% - 8px)'
+                                    },
+                                    flexGrow: 1,
+                                    height: '60px',
+                                    lineHeight: 1.2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                Tarefas Pendentes {pendingCount}
+                            </Button>
+                            <Button
+                                variant={filter === 'all' ? 'contained' : 'outlined'}
+                                onClick={() => setFilter('pending')}
+                                color="warning"
+                                size="small"
+                                sx={{
+                                    textTransform: 'none',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+
+                                    flexBasis: {
+                                        xs: 'calc(50% - 8px)',
+                                        md: 'calc(25% - 8px)'
+                                    },
+                                    flexGrow: 1,
+                                    height: '60px',
+                                    lineHeight: 1.2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                Todas as Tarefas {allCount}
+                            </Button>
+                            <Button
+                                variant={filter === 'completed' ? 'contained' : 'outlined'}
+                                onClick={() => setFilter('pending')}
+                                color="warning"
+                                size="small"
+                                sx={{
+                                    textTransform: 'none',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+
+                                    flexBasis: {
+                                        xs: 'calc(50% - 8px)',
+                                        md: 'calc(25% - 8px)'
+                                    },
+                                    flexGrow: 1,
+                                    height: '60px',
+                                    lineHeight: 1.2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                Tarefas Concluídas {completedCount}
+                            </Button>
+                            <Button
+                                variant={'outlined'}
+                                onClick={() => setFilter('pending')}
+                                color="warning"
+                                size="small"
+                                sx={{
+                                    textTransform: 'none',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+                                    flexBasis: {
+                                        xs: 'calc(50% - 8px)',
+                                        md: 'calc(25% - 8px)'
+                                    },
+                                    flexGrow: 1,
+                                    height: '60px',
+                                    lineHeight: 1.2,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                Tarefas Arquivadas <UnarchiveOutlinedIcon />
+                            </Button>
+                        </Stack>
+
+                    </Paper>
+                )}
+                {!isMobile && (
+
                     <Stack direction="row" spacing={1} justifyContent="center" >
 
                         <Button
@@ -337,8 +459,7 @@ function DailyTasks() {
                             Tarefas Arquivadas <UnarchiveOutlinedIcon />
                         </Button>
                     </Stack>
-
-                </Paper>
+                )}
 
                 {filteredTasks.length === 0 ? <>
 
@@ -657,7 +778,7 @@ function DailyTasks() {
                     />
                 </Box>
 
-            </Container>
+            </Container >
 
             <Modal
                 open={openModal}
