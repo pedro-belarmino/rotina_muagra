@@ -339,7 +339,7 @@ function DailyTasks() {
                             </Button>
                             <Button
                                 variant={filter === 'all' ? 'contained' : 'outlined'}
-                                onClick={() => setFilter('pending')}
+                                onClick={() => setFilter('all')}
                                 color="warning"
                                 size="small"
                                 sx={{
@@ -365,7 +365,7 @@ function DailyTasks() {
                             </Button>
                             <Button
                                 variant={filter === 'completed' ? 'contained' : 'outlined'}
-                                onClick={() => setFilter('pending')}
+                                onClick={() => setFilter('completed')}
                                 color="warning"
                                 size="small"
                                 sx={{
@@ -391,7 +391,7 @@ function DailyTasks() {
                             </Button>
                             <Button
                                 variant={'outlined'}
-                                onClick={() => setFilter('pending')}
+                                onClick={() => navigate('/arquivadas')}
                                 color="warning"
                                 size="small"
                                 sx={{
@@ -411,8 +411,9 @@ function DailyTasks() {
                                     justifyContent: 'center',
                                     textAlign: 'center'
                                 }}
+                                endIcon={<UnarchiveOutlinedIcon />}
                             >
-                                Tarefas Arquivadas <UnarchiveOutlinedIcon />
+                                Tarefas Arquivadas
                             </Button>
                         </Stack>
 
