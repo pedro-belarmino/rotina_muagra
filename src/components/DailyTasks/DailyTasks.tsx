@@ -33,6 +33,7 @@ import { daysInMonthFor, daysInYearFor } from '../../utils/period';
 import { useTheme } from '@mui/material/styles';
 import { DailyTasksSkeleton } from './Skeleton';
 import CelebrationMilestones from '../CelebrationMilestones/CelebrationMilestones';
+import Phases from '../Phases/Phases';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -257,6 +258,8 @@ function DailyTasks() {
                         </Stack>
                     </CardContent>
                 </Card>
+
+                <Phases />
 
                 <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
                     <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
