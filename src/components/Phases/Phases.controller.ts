@@ -23,8 +23,8 @@ const PHASE_CONFIG = [
     { key: 'fruto', label: 'Fruto', target: 120 },
     { key: 'arvore', label: 'Árvore', target: 180 },
     { key: 'floresta', label: 'Floresta', target: 200 },
-    { key: 'guardiao', label: 'Guardião', target: 1 },
-    { key: 'infinito', label: 'Infinito', target: 1 },
+    { key: 'guardiao', label: 'Guardião', target: 240 },
+    { key: 'infinito', label: 'Infinito', target: 280 },
 ];
 
 export const usePhasesController = (refreshTrigger?: any) => {

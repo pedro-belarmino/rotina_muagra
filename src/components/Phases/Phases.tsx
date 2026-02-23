@@ -3,7 +3,10 @@ import { usePhasesController } from "./Phases.controller";
 
 export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
     const { phases, loading } = usePhasesController(refreshTrigger);
-
+    const totalPasheValue = phases.reduce(
+        (sum, phase) => sum + (phase.accumulatedValue || 0),
+        0
+    );
     if (loading) {
         return (
             <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
@@ -31,8 +34,8 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
     return (
         <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
             <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                    Trilha do Agradecedor - Suas Fases Conquistadas
+                <Typography variant="h6" sx={{ mb: 2 }} textAlign='center'>
+                    <b>Trilha do Agradecedor</b> - Suas Fases Conquistadas
                 </Typography>
                 <Box
                     sx={{
@@ -77,7 +80,8 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                         </Box>
                     ))}
                 </Box>
+                <Typography variant="subtitle2" color="textSecondary">Total de Agradecimentos: <b>{totalPasheValue}</b></Typography>
             </CardContent>
-        </Card>
+        </Card >
     );
 }
