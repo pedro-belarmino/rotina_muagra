@@ -19,9 +19,9 @@ export interface PhaseInfo {
 const PHASE_CONFIG = [
     { key: 'semente', label: 'Semente', target: 20 },
     { key: 'broto', label: 'Broto', target: 40 },
-    { key: 'flor', label: 'Flor', target: 100 },
+    { key: 'flor', label: 'Flor', target: 80 },
     { key: 'fruto', label: 'Fruto', target: 120 },
-    { key: 'arvore', label: 'Árvore', target: 180 },
+    { key: 'arvore', label: 'Árvore', target: 160 },
     { key: 'floresta', label: 'Floresta', target: 200 },
     { key: 'guardiao', label: 'Guardião', target: 240 },
     { key: 'infinito', label: 'Infinito', target: 280 },
