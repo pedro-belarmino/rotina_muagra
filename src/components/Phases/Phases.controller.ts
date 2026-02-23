@@ -23,8 +23,8 @@ const PHASE_CONFIG = [
     { key: 'fruto', label: 'Fruto', target: 260 },
     { key: 'arvore', label: 'Árvore', target: 420 },
     { key: 'floresta', label: 'Floresta', target: 620 },
-    { key: 'guardiao', label: 'Guardião', target: undefined },
-    { key: 'infinito', label: 'Infinito', target: undefined },
+    { key: 'guardiao', label: 'Guardião', target: 1 },
+    { key: 'infinito', label: 'Infinito', target: 1 },
 ];
 
 export const usePhasesController = (refreshTrigger?: any) => {
@@ -63,7 +63,6 @@ export const usePhasesController = (refreshTrigger?: any) => {
             const task = tasks.find(t => {
                 const track = t.gratitudeTrack;
                 if (!track) return false;
-                if (config.key === 'guardiao') return track === 'guardião';
                 return track === config.key;
             });
 
