@@ -80,7 +80,7 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                         </Box>
                     ))}
                 </Box>
-                <Typography variant="subtitle2" color="textSecondary">Total de Agradecimentos: <b>{totalPasheValue}</b></Typography>
+                <Typography variant="subtitle2" color="textSecondary" paddingTop={2} sx={{ textAlign: 'right' }}>Total de Agradecimentos: <b>{totalPasheValue}</b></Typography>
             </CardContent>
         </Card >
     );
