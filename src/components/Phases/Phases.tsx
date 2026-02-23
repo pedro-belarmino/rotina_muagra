@@ -1,8 +1,8 @@
 import { Box, Card, CardContent, Typography, Skeleton } from "@mui/material";
 import { usePhasesController } from "./Phases.controller";
 
-export default function Phases() {
-    const { phases, loading } = usePhasesController();
+export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
+    const { phases, loading } = usePhasesController(refreshTrigger);
 
     if (loading) {
         return (

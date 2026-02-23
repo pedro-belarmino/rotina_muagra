@@ -259,7 +259,7 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                <Phases />
+                <Phases refreshTrigger={counter} />
 
                 <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
                     <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>

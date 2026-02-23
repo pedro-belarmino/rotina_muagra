@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTasks } from "../../service/taskService";
-import { getAllDailyCounters } from "../../service/counterService";
+import { getAllTaskLogs } from "../../service/taskLogService";
 import { Task } from "../../types/Task";
-import { formatISODate } from "../../utils/period";
+import { TaskLog } from "../../types/TaskLog";
 
 export interface PhaseInfo {
     key: string;
@@ -27,10 +27,10 @@ const PHASE_CONFIG = [
     { key: 'infinito', label: 'Infinito', target: undefined },
 ];
 
-export const usePhasesController = () => {
+export const usePhasesController = (refreshTrigger?: any) => {
     const { user } = useAuth();
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [counters, setCounters] = useState<{ dateKey: string; value: number }[]>([]);
+    const [logs, setLogs] = useState<TaskLog[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -40,15 +40,14 @@ export const usePhasesController = () => {
                 return;
             }
             try {
-                const [allTasks, allCounters] = await Promise.all([
+                const [allTasks, allLogs] = await Promise.all([
                     getTasks(user.uid),
-                    getAllDailyCounters(user.uid)
+                    getAllTaskLogs(user.uid)
                 ]);
 
-                // Filter gratitude tasks and normalize gratitudeTrack strings
                 const gratitudeTasks = allTasks.filter(t => t.taskType === 'gratitude');
                 setTasks(gratitudeTasks);
-                setCounters(allCounters.sort((a, b) => a.dateKey.localeCompare(b.dateKey)));
+                setLogs(allLogs);
             } catch (error) {
                 console.error("Error fetching phases data:", error);
             } finally {
@@ -57,15 +56,10 @@ export const usePhasesController = () => {
         };
 
         fetchData();
-    }, [user]);
+    }, [user, refreshTrigger]);
 
     const phases = useMemo(() => {
-        const result: PhaseInfo[] = [];
-
-        // Map phases to their first creation dates
-        const phaseTasks = PHASE_CONFIG.map(config => {
-            // Find the task for this phase. Normalize keys if necessary.
-            // Some keys in MenuItem are 'guardiao' but in Task type might be 'guardião'
+        return PHASE_CONFIG.map(config => {
             const task = tasks.find(t => {
                 const track = t.gratitudeTrack;
                 if (!track) return false;
@@ -73,79 +67,47 @@ export const usePhasesController = () => {
                 return track === config.key;
             });
 
-            return {
-                ...config,
-                createdAt: task ? (task.createdAt instanceof Date ? task.createdAt : new Date(task.createdAt)) : null,
-                isCreated: !!task
-            };
-        });
-
-        for (let i = 0; i < phaseTasks.length; i++) {
-            const currentPhase = phaseTasks[i];
-
-            if (!currentPhase.isCreated) {
-                result.push({
-                    key: currentPhase.key,
-                    label: currentPhase.label,
-                    target: currentPhase.target,
+            if (!task) {
+                return {
+                    key: config.key,
+                    label: config.label,
+                    target: config.target,
                     accumulatedValue: 0,
                     isCreated: false,
                     isTargetReached: false,
-                    iconPath: `/icons-pb/${currentPhase.key}.png`
-                });
-                continue;
+                    iconPath: `/icons-pb/${config.key}.png`
+                };
             }
 
-            // Calculate active range for this phase
-            const startDate = currentPhase.createdAt!;
-            const startKey = formatISODate(startDate);
+            const taskLogs = logs.filter(l => l.taskId === task.id);
+            const accumulatedValue = taskLogs.reduce((acc, curr) => acc + curr.value, 0);
 
-            // Find next phase's creation date to define end of range
-            let endKey: string | null = null;
-            for (let j = i + 1; j < phaseTasks.length; j++) {
-                if (phaseTasks[j].isCreated) {
-                    const endDate = phaseTasks[j].createdAt!;
-                    endKey = formatISODate(endDate);
-                    break;
-                }
-            }
-
-            // Filter counters in range [startKey, endKey)
-            // If endKey is same as startKey, the range might be empty or we should decide.
-            // Usually if both are same day, the newer phase wins for that day.
-            const phaseCounters = counters.filter(c => {
-                if (c.dateKey < startKey) return false;
-                if (endKey && c.dateKey >= endKey) return false;
-                return true;
-            });
-
-            let accumulatedValue = 0;
             let dateReached: string | undefined = undefined;
-            const target = currentPhase.target;
-
-            for (const c of phaseCounters) {
-                accumulatedValue += c.value;
-                if (target !== undefined && !dateReached && accumulatedValue >= target) {
-                    // Format date to DD/MM/YYYY
-                    const [year, month, day] = c.dateKey.split('-');
-                    dateReached = `${day}/${month}/${year}`;
+            if (config.target !== undefined && accumulatedValue >= config.target) {
+                const sortedLogs = [...taskLogs].sort((a, b) => a.doneAt.getTime() - b.doneAt.getTime());
+                let runningSum = 0;
+                for (const log of sortedLogs) {
+                    runningSum += log.value;
+                    if (runningSum >= config.target) {
+                        const d = log.doneAt;
+                        dateReached = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+                        break;
+                    }
                 }
             }
 
-            result.push({
-                key: currentPhase.key,
-                label: currentPhase.label,
-                target: target,
+            return {
+                key: config.key,
+                label: config.label,
+                target: config.target,
                 accumulatedValue,
                 isCreated: true,
-                isTargetReached: target !== undefined && accumulatedValue >= target,
+                isTargetReached: config.target !== undefined && accumulatedValue >= config.target,
                 dateReached,
-                iconPath: `/icons/${currentPhase.key}.png`
-            });
-        }
-
-        return result;
-    }, [tasks, counters]);
+                iconPath: `/icons/${config.key}.png`
+            };
+        });
+    }, [tasks, logs]);
 
     return { phases, loading };
 };
