@@ -32,7 +32,7 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
         <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
             <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
                 <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                    Trilha do Agradecimento
+                    Trilha do Agradecedor - Suas Fases Conquistadas
                 </Typography>
                 <Box
                     sx={{
