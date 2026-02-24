@@ -68,7 +68,7 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                                 color={phase.isTargetReached ? "warning.main" : "text.primary"}
                                 sx={{ fontSize: '0.85rem' }}
                             >
-                                {phase.accumulatedValue}
+                                {phase.accumulatedValue >= phase.target ? phase.target : phase.accumulatedValue}
                             </Typography>
                             {phase.dateReached ? (
                                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
