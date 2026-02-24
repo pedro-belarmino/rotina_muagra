@@ -85,7 +85,20 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                         </Box>
                     ))}
                 </Box>
-                <Typography variant="subtitle2" color="textSecondary" paddingTop={2} sx={{ textAlign: 'right' }}>Total de Agradecimentos (acumulado): <b>{total}</b></Typography>
+                <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    paddingTop={2}
+                    sx={{ textAlign: 'right' }}
+                >
+                    Total de Agradecimentos (acumulado):{" "}
+                    <Box
+                        component="span"
+                        sx={{ color: "warning.main", fontWeight: "bold" }}
+                    >
+                        {total}
+                    </Box>
+                </Typography>
             </CardContent>
         </Card >
     );
