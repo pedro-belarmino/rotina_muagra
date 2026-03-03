@@ -2,8 +2,8 @@ import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTasks } from "../../service/taskService";
 import { getAllTaskLogs } from "../../service/taskLogService";
-import type { Task } from "../../types/Task";
-import type { TaskLog } from "../../types/TaskLog";
+import { Task } from "../../types/Task";
+import { TaskLog } from "../../types/TaskLog";
 
 export interface PhaseInfo {
     key: string;
@@ -41,7 +41,7 @@ export const usePhasesController = (refreshTrigger?: any) => {
             }
             try {
                 const [allTasks, allLogs] = await Promise.all([
-                    getTasks(user.uid),
+                    getTasks(user.uid, true),
                     getAllTaskLogs(user.uid)
                 ]);
 
@@ -63,7 +63,7 @@ export const usePhasesController = (refreshTrigger?: any) => {
             const task = tasks.find(t => {
                 const track = t.gratitudeTrack;
                 if (!track) return false;
-                if (config.key === 'guardiao') return track === 'guardião';
+                if (config.key === 'guardiao') return track === 'guardiao' || track === 'guardião';
                 return track === config.key;
             });
 
