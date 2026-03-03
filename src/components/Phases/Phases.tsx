@@ -4,6 +4,13 @@ import { usePhasesController } from "./Phases.controller";
 export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
     const { phases, loading } = usePhasesController(refreshTrigger);
 
+    const total = phases.reduce((acc, e) => {
+        const value = e.accumulatedValue >= e.target
+            ? e.target
+            : e.accumulatedValue;
+
+        return acc + value;
+    }, 0);
     if (loading) {
         return (
             <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
@@ -28,11 +35,12 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
         );
     }
 
+
     return (
         <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
             <CardContent sx={{ py: 1, "&:last-child": { pb: 1 } }}>
-                <Typography variant="h6" fontWeight="bold" sx={{ mb: 2 }}>
-                    Trilha do Agradecimento
+                <Typography variant="h6" sx={{ mb: 2 }} textAlign='center'>
+                    <b>Trilha do Agradecedor</b> - Suas Fases Conquistadas
                 </Typography>
                 <Box
                     sx={{
@@ -65,7 +73,7 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                                 color={phase.isTargetReached ? "warning.main" : "text.primary"}
                                 sx={{ fontSize: '0.85rem' }}
                             >
-                                {phase.accumulatedValue}
+                                {phase.accumulatedValue >= phase.target ? phase.target : phase.accumulatedValue}
                             </Typography>
                             {phase.dateReached ? (
                                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
@@ -77,7 +85,21 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                         </Box>
                     ))}
                 </Box>
+                <Typography
+                    variant="subtitle2"
+                    color="textSecondary"
+                    paddingTop={2}
+                    sx={{ textAlign: 'right' }}
+                >
+                    Total de Agradecimentos (acumulado):{" "}
+                    <Box
+                        component="span"
+                        sx={{ color: "warning.main", fontWeight: "bold" }}
+                    >
+                        {total}
+                    </Box>
+                </Typography>
             </CardContent>
-        </Card>
+        </Card >
     );
 }

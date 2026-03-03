@@ -18,13 +18,13 @@ export interface PhaseInfo {
 
 const PHASE_CONFIG = [
     { key: 'semente', label: 'Semente', target: 20 },
-    { key: 'broto', label: 'Broto', target: 60 },
-    { key: 'flor', label: 'Flor', target: 140 },
-    { key: 'fruto', label: 'Fruto', target: 260 },
-    { key: 'arvore', label: 'Árvore', target: 420 },
-    { key: 'floresta', label: 'Floresta', target: 620 },
-    { key: 'guardiao', label: 'Guardião', target: undefined },
-    { key: 'infinito', label: 'Infinito', target: undefined },
+    { key: 'broto', label: 'Broto', target: 40 },
+    { key: 'flor', label: 'Flor', target: 80 },
+    { key: 'fruto', label: 'Fruto', target: 120 },
+    { key: 'arvore', label: 'Árvore', target: 160 },
+    { key: 'floresta', label: 'Floresta', target: 200 },
+    { key: 'guardiao', label: 'Guardião', target: 240 },
+    { key: 'infinito', label: 'Infinito', target: 280 },
 ];
 
 export const usePhasesController = (refreshTrigger?: any) => {

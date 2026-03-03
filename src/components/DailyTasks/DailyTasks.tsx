@@ -34,6 +34,7 @@ import { useTheme } from '@mui/material/styles';
 import { DailyTasksSkeleton } from './Skeleton';
 import CelebrationMilestones from '../CelebrationMilestones/CelebrationMilestones';
 import Phases from '../Phases/Phases';
+import { useCelebrationMilestonesController } from '../CelebrationMilestones/CelebrationMilestones.controller';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -84,6 +85,9 @@ function DailyTasks() {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
+    const { isAuthorized } = useCelebrationMilestonesController();
+
 
     const [page, setPage] = useState(1);
 
@@ -259,7 +263,9 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                <Phases refreshTrigger={counter} />
+                {isAuthorized && (
+                    <Phases refreshTrigger={counter} />
+                )}
 
                 <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
                     <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>

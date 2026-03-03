@@ -70,7 +70,7 @@ export default function CelebrationMilestones() {
                             </Typography>
                             {m.reachedDate ? (
                                 <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem' }}>
-                                    {m.reachedDate}
+                                    {m.reachedDate.replace('.', '/').replace('.', '/')}
                                 </Typography>
                             ) : (
                                 <Box sx={{ height: '12px' }} /> /* Spacer to keep layout consistent */

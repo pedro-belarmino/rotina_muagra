@@ -23,6 +23,7 @@ import {
   CheckCircle as CheckCircleIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 interface PricingPlan {
   id: string;
@@ -46,6 +47,7 @@ export default function PrincingComponent() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [expandedPlan, setExpandedPlan] = useState<string | null>(isMobile ? 'free' : null);
+  const navigate = useNavigate()
 
   const plans: PricingPlan[] = [
     {
@@ -540,6 +542,7 @@ export default function PrincingComponent() {
       {/* Footer */}
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Button
+          onClick={() => navigate('/home')}
           color="warning"
           sx={{
             textTransform: 'none',

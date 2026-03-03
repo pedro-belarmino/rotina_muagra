@@ -57,11 +57,14 @@ export default function ReportConfigurationForm({
                         label="Data de Início"
                         value={startDate}
                         onChange={setStartDate}
+                        format="DD/MM/YYYY"
                     />
                     <DatePicker
                         label="Data Final"
                         value={endDate}
                         onChange={setEndDate}
+                        format="DD/MM/YYYY"
+
                     />
                 </Box>
             </LocalizationProvider>
