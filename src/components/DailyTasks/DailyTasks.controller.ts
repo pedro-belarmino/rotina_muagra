@@ -233,6 +233,33 @@ export const useDailyTasksController = () => {
         if (user) {
             const newValue = await incrementDailyCounter(user.uid);
             setCounter(newValue);
+
+            // Adicionar log para a tarefa de gratidão ativa (a mais recente criada)
+            const gratitudeTasks = tasks.filter(t => t.taskType === 'gratitude');
+            if (gratitudeTasks.length > 0) {
+                const activeTask = [...gratitudeTasks].sort((a, b) => {
+                    const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt);
+                    const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt);
+                    return dateB.getTime() - dateA.getTime();
+                })[0];
+
+                if (activeTask.id) {
+                    await addTaskLog(
+                        user.uid,
+                        {
+                            taskId: activeTask.id,
+                            userId: user.uid,
+                            doneAt: new Date(),
+                            value: 1,
+                            measure: activeTask.measure || '',
+                            taskName: activeTask.name
+                        },
+                        activeTask.name,
+                        activeTask.measure || ''
+                    );
+                }
+            }
+
             await fetchCounters();
             setSnackbarMessage(getRandomString())
             setSeverity('success')
