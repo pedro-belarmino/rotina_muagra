@@ -61,7 +61,7 @@ export default function Phases({ refreshTrigger }: { refreshTrigger?: any }) {
                                 component="img"
                                 src={phase.iconPath}
                                 sx={{
-                                    width: { xs: 45, sm: 55, md: 65 },
+                                    width: { xs: 45, sm: 55, md: 45 },
                                     height: 'auto',
                                     mb: 0.5,
                                 }}
