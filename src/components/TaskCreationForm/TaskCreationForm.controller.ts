@@ -1,9 +1,21 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { addTask } from "../../service/taskService";
+import { addTask, getTasks } from "../../service/taskService";
+import { getAllTaskLogs } from "../../service/taskLogService";
 import type { Task } from "../../types/Task";
 import type { SeverityType } from "../../components/shared/SharedSnackbar";
 import { useNavigate } from "react-router-dom";
+
+const PHASE_SEQUENCE = [
+    { key: 'semente', label: 'Semente', target: 20 },
+    { key: 'broto', label: 'Broto', target: 40 },
+    { key: 'flor', label: 'Flor', target: 80 },
+    { key: 'fruto', label: 'Fruto', target: 120 },
+    { key: 'arvore', label: 'Árvore', target: 160 },
+    { key: 'floresta', label: 'Floresta', target: 200 },
+    { key: 'guardiao', label: 'Guardião', target: 240 },
+    { key: 'infinito', label: 'Infinito', target: 280 },
+];
 
 export function useTaskController() {
     const { user } = useAuth();
@@ -177,6 +189,64 @@ export function useTaskController() {
             setSnackbarMessage('Selecione a fase da trilha dessa tarefa.');
             setSeverity('error');
             return;
+        }
+
+        if (task.taskType === 'gratitude') {
+            try {
+                const allTasks = await getTasks(user.uid, true);
+                const gratitudeTasks = allTasks.filter(t => t.taskType === 'gratitude');
+
+                // Validation 2: Check if this phase task already exists
+                const existingTask = gratitudeTasks.find(t => {
+                    const track = t.gratitudeTrack;
+                    if (!track) return false;
+                    if (task.gratitudeTrack === 'guardião') return track === 'guardião';
+                    return track === task.gratitudeTrack;
+                });
+
+                if (existingTask) {
+                    setSnackbar(true);
+                    setSnackbarMessage('Esta fase da trilha já foi criada.');
+                    setSeverity('error');
+                    return;
+                }
+
+                // Validation 1: Check if previous phase is completed
+                const currentIndex = PHASE_SEQUENCE.findIndex(p => p.key === task.gratitudeTrack);
+                if (currentIndex > 0) {
+                    const previousPhase = PHASE_SEQUENCE[currentIndex - 1];
+                    const previousTask = gratitudeTasks.find(t => {
+                        const track = t.gratitudeTrack;
+                        if (!track) return false;
+                        if (previousPhase.key === 'guardiao') return track === 'guardião';
+                        return track === previousPhase.key;
+                    });
+
+                    if (!previousTask) {
+                        setSnackbar(true);
+                        setSnackbarMessage(`Você precisa criar e completar a fase "${previousPhase.label}" antes de criar esta.`);
+                        setSeverity('error');
+                        return;
+                    }
+
+                    const allLogs = await getAllTaskLogs(user.uid);
+                    const previousTaskLogs = allLogs.filter(l => l.taskId === previousTask.id);
+                    const accumulatedValue = previousTaskLogs.reduce((acc, curr) => acc + curr.value, 0);
+
+                    if (accumulatedValue < (previousPhase.target ?? 0)) {
+                        setSnackbar(true);
+                        setSnackbarMessage(`A fase "${previousPhase.label}" ainda não foi completada (alcançou ${accumulatedValue}/${previousPhase.target}).`);
+                        setSeverity('error');
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao validar fases da trilha:", error);
+                setSnackbar(true);
+                setSnackbarMessage('Erro ao validar fases da trilha');
+                setSeverity('error');
+                return;
+            }
         }
 
 
