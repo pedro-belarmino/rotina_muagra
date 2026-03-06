@@ -218,7 +218,7 @@ export default function PrincingComponent() {
                     >
                       <Box
                         component="img"
-                        src="src/views/Agradecimembros v4.png"
+                        src="/Agradecimembros v4.png"
                         alt="AgradeceMembros"
                         sx={{
                           width: '100%',
@@ -411,7 +411,7 @@ export default function PrincingComponent() {
                   {plan.id === 'webapp' ? (
                     <Box
                       component="img"
-                      src="src/views/Agradecimembros v4.png"
+                      src="/Agradecimembros v4.png"
                       alt="AgradeceMembros"
                       sx={{
                         width: '200%',
