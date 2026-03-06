@@ -53,63 +53,64 @@ export default function PrincingComponent() {
     {
       id: 'free',
       badge: 'VOCÊ ESTÁ AQUI',
-      title: 'Acesso Gratuito! Por que Agradecer não custa nada. E nunca deve custar.',
-      subtitle: '',
+      title: 'Comece agora. Sem custo.',
+      subtitle: 'Para quem quer dar o primeiro passo e entender o poder do registro',
       priceLabel: 'Investimento',
-      priceValue: 'Grátis',
-      priceDescription: 'Para sempre, sem compromisso.',
+      priceValue: 'Gratuito',
+      priceDescription: '',
       benefits: [
-        'Muagrômetro - Seu contador pessoal de Agradecimentos.',
-        'Diário de Agradecimento',
-        'Muagrômetro Global - Seu/Nosso contador Universal de Agradecimentos.',
-        'Acesso ilimitado e vitalício à essas funções.',
+        'Muagrômetro pessoal.',
+        'Registro Diário de Agradecimento',
+        'Contador global.',
+        'Acesso ilimitado ao webapp básico.',
+        'Treino inical de presença.',
       ],
-      buttonText: 'Continuar Gratuito',
+      buttonText: 'começar gratuitamente',
       type: 'free',
     },
     {
       id: 'planilha',
       badge: 'ESTRUTURADO',
-      title: 'Sua Trilha - Versão Planilha',
-      subtitle: 'Trilha Completa + Planilha de Acompanhamento',
+      title: 'Trilha do Agradecedor Essencial',
+      subtitle: 'Método estruturado para criar a nova trilha mental. Aqui não é mais só registrar. É treinar.',
       priceOld: 'De R$ 198,80',
       priceLabel: 'Investimento Único',
       priceValue: 'R$ 88,80',
       priceDescription: 'Ativação e liberação de aulas e materiais',
       benefits: [
-        'Todos os benefícios da Versão Gratuita +',
-        'Trilha Completa (35 dias + Guardião)',
-        'Planilha exclusiva (Excel ou Google Sheets)',
-        'Selo Agradecedor Verificado (6ª fase Floresta)',
-        'Comunidade AgradeciMembros',
-        'Encontros ao vivo com Muagra',
-        'Vídeo-aulas sobre cada fase',
+        'Todos os benefícios do Webapp Gratuito',
+        'Trilha estruturada em fases',
+        'Plano de 35 dias com direcionamento',
+        'Aulas explicativas',
         'Áudios e meditações guiadas',
-        'Materiais exclusivos',
+        'Selo Agradecedor (1ª Fase)',
+        'Comunidade base',
       ],
-      buttonText: 'Entrar Agora na Trilha (Versão Planilha)',
+      buttonText: 'Entrar na Trilha Essencial',
       type: 'planilha',
     },
     {
       id: 'webapp',
       badge: '🌟 RECOMENDADO',
-      title: 'Sua Trilha - Versão com Webapp exclusivo',
-      subtitle: 'Trilha Completa + Webapp Muagra (Gestor de Rotinas e Hábitos)',
+      title: 'AgradeceMembros na Trilha do Agradecedor',
+      subtitle: 'Para quem decidiu não voltar atrás. Não é sobre começar. É sobre continuar.',
       priceOld: 'De R$ 198,80',
-      priceLabel: 'Investimento Inicial',
+      priceLabel: 'Assinatura Mensal',
       priceValue: 'R$ 88,80',
-      priceDescription: 'Ativação e liberação de aulas e materiais',
-      monthlyPrice: 'R$ 18,80/mês',
-      monthlyLabel: '(a partir de 30 dias, para manter acesso)',
+      priceDescription: 'Exclusivo para quem já está na Trilha Essencial',
+      monthlyPrice: '',
+      monthlyLabel: '',
       benefits: [
-        'Todos os benefícios da Versão Planilha +',
-        'Marcos de Celebração de Agradecimentos',
-        'Webapp exclusivo com interface intuitiva',
-        'Além das Fases da Trilha, Crie e acompanhe suas rotinas pessoais',
-        'Treine sua disciplina concluindo tarefas diárias simples, mas que rendem resultados compostos',
-        'Gestão por tarefa diária, com percentuais e gráficos de evolução em tempo real',
+        'Todos os benefícios da Trilha Essencial',
+        'Encontros ao vivo recorrentes',
+        'Desafios mensais',
+        'Marcos de evolução contínuos',
+        'Selos progressivos',
+        'Reconhecimento interno',
+        'Atualizações e conteídos exclusivos',
+        'Acompanhamento de constância',
       ],
-      buttonText: 'Entrar Agora na Trilha Principal (Versão Webapp Muagra)',
+      buttonText: 'Quero continuar na trilha',
       type: 'webapp',
       isRecommended: true,
     },
@@ -201,21 +202,46 @@ export default function PrincingComponent() {
                     size="small"
                     color={plan.isRecommended ? 'warning' : 'default'}
                     variant={plan.isRecommended ? 'filled' : 'outlined'}
-                    sx={{ mb: 2 }}
+                    sx={{ mb: plan.id === 'webapp' ? 0 : 2 }}
+
                   />
 
                   {/* Title */}
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 1,
-                      fontSize: { xs: '16px', md: '20px' },
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    {plan.title}
-                  </Typography>
+                  {plan.id === 'webapp' ? (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src="src/views/Agradecimembros v4.png"
+                        alt="AgradeceMembros"
+                        sx={{
+                          width: '100%',
+                          maxWidth: 3500,
+                          height: 'auto',
+                          objectFit: 'contain',
+                        }}
+                      />
+                    </Box>
+                  ) : (
+
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        fontWeight: 700,
+                        mb: 1,
+                        fontSize: { xs: '16px', md: '20px' },
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      {plan.title}
+                    </Typography>
+                  )}
 
                   {/* Subtitle */}
                   {plan.subtitle && (
@@ -380,17 +406,32 @@ export default function PrincingComponent() {
                     size="small"
                     color={plan.isRecommended ? 'warning' : 'default'}
                     variant={plan.isRecommended ? 'filled' : 'outlined'}
-                    sx={{ mb: 1, mr: 1 }}
+                    sx={{ mb: plan.id === 'webapp' ? 0 : 1, mr: plan.id === 'webapp' ? 0 : 1 }}
                   />
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      fontWeight: 700,
-                      color: theme.palette.text.primary,
-                    }}
-                  >
-                    {plan.title}
-                  </Typography>
+                  {plan.id === 'webapp' ? (
+                    <Box
+                      component="img"
+                      src="src/views/Agradecimembros v4.png"
+                      alt="AgradeceMembros"
+                      sx={{
+                        width: '200%',
+                        maxWidth: 300,
+                        height: 'auto',
+                        display: 'block',
+                        mt: 0.5,
+                      }}
+                    />
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 700,
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      {plan.title}
+                    </Typography>
+                  )}
                 </Box>
                 <ExpandMoreIcon
                   sx={{
