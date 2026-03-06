@@ -200,7 +200,7 @@ export function useTaskController() {
                 const existingTask = gratitudeTasks.find(t => {
                     const track = t.gratitudeTrack;
                     if (!track) return false;
-                    if (task.gratitudeTrack === 'guardiao') return track === 'guardiao' || track === 'guardião';
+                    if (task.gratitudeTrack === 'guardião') return track === 'guardião';
                     return track === task.gratitudeTrack;
                 });
 
@@ -218,7 +218,7 @@ export function useTaskController() {
                     const previousTask = gratitudeTasks.find(t => {
                         const track = t.gratitudeTrack;
                         if (!track) return false;
-                        if (previousPhase.key === 'guardiao') return track === 'guardiao' || track === 'guardião';
+                        if (previousPhase.key === 'guardiao') return track === 'guardião';
                         return track === previousPhase.key;
                     });
 
