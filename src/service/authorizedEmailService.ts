@@ -13,6 +13,15 @@ export const addAuthorizedEmail = async (email: string) => {
     }
 };
 
+export const addAuthorizedEmailPartial = async (email: string) => {
+    try {
+        await addDoc(authorizedEmailsPartialCollection, { email });
+    } catch (error) {
+        console.error("Error adding authorized partial email: ", error);
+        throw error;
+    }
+};
+
 export const isEmailAuthorizedPartial = async (email: string): Promise<boolean> => {
     try {
         const q = query(authorizedEmailsPartialCollection, where("email", "==", email));
