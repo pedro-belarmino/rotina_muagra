@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import LoadingScreen from "../views/LoadingScreen";
 
 export default function PrivateWrapper() {
-    const { user, loading, isAuthorized } = useAuth();
+    const { user, loading, isAuthorized, isAuthorizedPartial } = useAuth();
     const location = useLocation();
 
     if (loading) {
@@ -17,6 +17,11 @@ export default function PrivateWrapper() {
 
     if (user && !isAuthorized) {
         const allowedPaths = ["/home", "/acesso-negado", "/muagrometro"];
+
+        if (isAuthorizedPartial) {
+            allowedPaths.push("/criar-tarefa");
+        }
+
         if (!allowedPaths.includes(location.pathname)) {
             return <Navigate to="/acesso-negado" replace />;
         }

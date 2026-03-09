@@ -2,12 +2,24 @@ import { collection, addDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase/config";
 
 const authorizedEmailsCollection = collection(db, "authorizedEmails");
+const authorizedEmailsPartialCollection = collection(db, "authorizedEmailsPartial");
 
 export const addAuthorizedEmail = async (email: string) => {
     try {
         await addDoc(authorizedEmailsCollection, { email });
     } catch (error) {
         console.error("Error adding authorized email: ", error);
+        throw error;
+    }
+};
+
+export const isEmailAuthorizedPartial = async (email: string): Promise<boolean> => {
+    try {
+        const q = query(authorizedEmailsPartialCollection, where("email", "==", email));
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty;
+    } catch (error) {
+        console.error("Error checking if email is authorized partial: ", error);
         throw error;
     }
 };

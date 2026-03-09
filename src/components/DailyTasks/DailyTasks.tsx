@@ -86,7 +86,7 @@ function DailyTasks() {
     const isDarkMode = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const { isAuthorized } = useCelebrationMilestonesController();
+    const { isAuthorized, isAuthorizedPartial } = useAuth();
 
 
     const [page, setPage] = useState(1);
@@ -263,7 +263,7 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                {isAuthorized && (
+                {(isAuthorized || isAuthorizedPartial) && (
                     <Phases refreshTrigger={counter} />
                 )}
 
