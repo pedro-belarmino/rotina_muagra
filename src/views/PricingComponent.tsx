@@ -70,7 +70,7 @@ export default function PrincingComponent() {
     },
     {
       id: 'planilha',
-      badge: 'ESTRUTURADO',
+      badge: '🌟 RECOMENDADO',
       title: 'Trilha do Agradecedor Essencial',
       subtitle: 'Método estruturado para criar a nova trilha mental. Aqui não é mais só registrar. É treinar.',
       priceOld: 'De R$ 198,80',
@@ -88,10 +88,11 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Entrar na Trilha Essencial',
       type: 'planilha',
+      isRecommended: true,
     },
     {
       id: 'webapp',
-      badge: '🌟 RECOMENDADO',
+      badge: 'ESTRUTURADO',
       title: 'AgradeceMembros na Trilha do Agradecedor',
       subtitle: 'Para quem decidiu não voltar atrás. Não é sobre começar. É sobre continuar.',
       priceOld: 'De R$ 198,80',
@@ -112,7 +113,7 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Quero continuar na trilha',
       type: 'webapp',
-      isRecommended: true,
+
     },
   ];
 
