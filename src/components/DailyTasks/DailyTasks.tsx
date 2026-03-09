@@ -20,7 +20,7 @@ import {
     LinearProgress,
     useMediaQuery,
 } from "@mui/material";
-import { useAuth } from "../../context/AuthContext";
+
 import Tooltip from '@mui/material/Tooltip';
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -84,7 +84,7 @@ function DailyTasks() {
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-    const { isAuthorized, isAuthorizedPartial } = useAuth();
+
     const [page, setPage] = useState(1);
     const itemsPerPage = 8;
     const date = new Date();
@@ -256,9 +256,9 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                {(isAuthorized || isAuthorizedPartial) && (
-                    <Phases refreshTrigger={counter} />
-                )}
+
+                <Phases refreshTrigger={counter} />
+
 
                 <Card sx={{ mb: 2, borderRadius: 3, boxShadow: 1, p: 1.5 }}>
                     <CardContent sx={{ py: 1, '&:last-child': { pb: 1 } }}>
