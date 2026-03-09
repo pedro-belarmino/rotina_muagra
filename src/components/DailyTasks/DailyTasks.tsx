@@ -20,7 +20,7 @@ import {
     LinearProgress,
     useMediaQuery,
 } from "@mui/material";
-
+import { useAuth } from "../../context/AuthContext";
 import Tooltip from '@mui/material/Tooltip';
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
@@ -34,7 +34,6 @@ import { useTheme } from '@mui/material/styles';
 import { DailyTasksSkeleton } from './Skeleton';
 import CelebrationMilestones from '../CelebrationMilestones/CelebrationMilestones';
 import Phases from '../Phases/Phases';
-import { useCelebrationMilestonesController } from '../CelebrationMilestones/CelebrationMilestones.controller';
 function DailyTasks() {
     const {
         handleTogglePriority,
@@ -50,6 +49,7 @@ function DailyTasks() {
         setSnackbar,
         setDiaryModal,
         setComment,
+        setFilter,
         commentLenght,
         diarModal,
         snackbarMessage,
@@ -78,26 +78,19 @@ function DailyTasks() {
         yearlyLogDays,
         streaks,
         filter,
-        setFilter,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
     const theme = useTheme();
     const isDarkMode = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
-    const { isAuthorized } = useCelebrationMilestonesController();
-
-
+    const { isAuthorized, isAuthorizedPartial } = useAuth();
     const [page, setPage] = useState(1);
-
     const itemsPerPage = 8;
-
     const date = new Date();
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
-
     const fullDateDisplay = `${day}/${month}/${year}`;
 
     useEffect(() => {
@@ -263,7 +256,7 @@ function DailyTasks() {
                     </CardContent>
                 </Card>
 
-                {isAuthorized && (
+                {(isAuthorized || isAuthorizedPartial) && (
                     <Phases refreshTrigger={counter} />
                 )}
 

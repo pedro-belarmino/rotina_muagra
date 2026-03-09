@@ -18,7 +18,9 @@ const PHASE_SEQUENCE = [
 ];
 
 export function useTaskController() {
-    const { user } = useAuth();
+    const { user, isAuthorized, isAuthorizedPartial } = useAuth();
+
+    const initialTaskType = isAuthorizedPartial && !isAuthorized ? 'gratitude' : 'personal';
 
     const [task, setTask] = useState<Task>({
         name: "",
@@ -31,7 +33,7 @@ export function useTaskController() {
         schedule: "",
         dailyTask: true,
         archived: false,
-        taskType: 'personal',
+        taskType: initialTaskType,
         gratitudeTrack: '',
         icon: "",
         // days: []
@@ -49,7 +51,7 @@ export function useTaskController() {
             schedule: "",
             dailyTask: true,
             archived: false,
-            taskType: 'personal',
+            taskType: initialTaskType,
             gratitudeTrack: '',
             icon: "",
             // days: []
@@ -158,6 +160,14 @@ export function useTaskController() {
             navigate('')
             return;
         }
+
+        if (isAuthorizedPartial && !isAuthorized && task.taskType !== 'gratitude') {
+            setSnackbar(true);
+            setSnackbarMessage('Você tem acesso apenas para criar tarefas da trilha.');
+            setSeverity('error');
+            return;
+        }
+
         if (!task.name) {
             setSnackbar(true);
             setSnackbarMessage('Insira o nome da tarefa');
@@ -279,5 +289,7 @@ export function useTaskController() {
         handleChange,
         handleSave,
         setSnackbar,
+        isAuthorized,
+        isAuthorizedPartial,
     };
 }

@@ -12,6 +12,7 @@ import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCounter from './views/GlobalCounter';
 import AuthorizeEmail from './views/AuthorizeEmail';
+import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 // import AccessDenied from './views/AccessDenied';
 import PrincingComponent from './views/PricingComponent';
 
@@ -32,6 +33,7 @@ function App() {
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Login />} />
                     <Route path='/authorize-email' element={<AuthorizeEmail />} />
+                    <Route path='/authorize-email-partial' element={<AuthorizeEmailPartial />} />
                     <Route path='/acesso-negado' element={<PrincingComponent />} />
 
                     <Route element={<PrivateWrapper />}>

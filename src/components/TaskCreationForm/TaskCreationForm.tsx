@@ -32,6 +32,8 @@ export default function TaskCreationForm() {
     const {
         task,
         snackbar,
+        isAuthorized,
+        isAuthorizedPartial,
         snackbarMessage,
         severity,
         defineDailyGoal,
@@ -66,7 +68,9 @@ export default function TaskCreationForm() {
                             onChange={(e) => handleChange("taskType", e.target.value)}
                             label="Tipo da Tarefa"
                         >
-                            <MenuItem value="personal">Pessoal</MenuItem>
+                            {(isAuthorized || !isAuthorizedPartial) && (
+                                <MenuItem value="personal">Pessoal</MenuItem>
+                            )}
                             <MenuItem value="gratitude">Trilha do Agradecedor</MenuItem>
                         </Select>
                     </FormControl>
