@@ -24,6 +24,7 @@ import {
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 interface PricingPlan {
   id: string;
@@ -45,6 +46,7 @@ interface PricingPlan {
 
 export default function PrincingComponent() {
   const theme = useTheme();
+  const { isAuthorizedPartial } = useAuth()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [expandedPlan, setExpandedPlan] = useState<string | null>(isMobile ? 'free' : null);
   const navigate = useNavigate()
@@ -52,8 +54,8 @@ export default function PrincingComponent() {
   const plans: PricingPlan[] = [
     {
       id: 'free',
-      badge: 'VOCÊ ESTÁ AQUI',
-      title: 'Comece agora. Sem custo.',
+      badge: isAuthorizedPartial ? 'PLANO GRATUITO' : 'VOCÊ ESTÁ AQUI',
+      title: 'Permanece aqui. Sem Custo.',
       subtitle: 'Para quem quer dar o primeiro passo e entender o poder do registro',
       priceLabel: 'Investimento',
       priceValue: 'Gratuito',
@@ -65,12 +67,12 @@ export default function PrincingComponent() {
         'Acesso ilimitado ao webapp básico.',
         'Treino inical de presença.',
       ],
-      buttonText: 'começar gratuitamente',
+      buttonText: 'Continuar Gratuitamente',
       type: 'free',
     },
     {
       id: 'planilha',
-      badge: '🌟 RECOMENDADO',
+      badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '🌟 PLANO RECOMENDADO',
       title: 'Trilha do Agradecedor Essencial',
       subtitle: 'Método estruturado para criar a nova trilha mental. Aqui não é mais só registrar. É treinar.',
       priceOld: 'De R$ 198,80',
@@ -86,7 +88,7 @@ export default function PrincingComponent() {
         'Selo Agradecedor (1ª Fase)',
         'Comunidade base',
       ],
-      buttonText: 'Entrar na Trilha Essencial',
+      buttonText: 'QUero fazer a trilha do Agradecedor e depois me tornar Agradecimembro',
       type: 'planilha',
       isRecommended: true,
     },
@@ -97,12 +99,14 @@ export default function PrincingComponent() {
       subtitle: 'Para quem decidiu não voltar atrás. Não é sobre começar. É sobre continuar.',
       priceOld: 'De R$ 198,80',
       priceLabel: 'Assinatura Mensal',
-      priceValue: 'R$ 88,80',
+      priceValue: 'R$ 18,80',
       priceDescription: 'Exclusivo para quem já está na Trilha Essencial',
       monthlyPrice: '',
       monthlyLabel: '',
       benefits: [
         'Todos os benefícios da Trilha Essencial',
+        'Criação e Gestão de Tarefas Pessoais',
+        'Relatórios e Gráficos de Desempenho',
         'Encontros ao vivo recorrentes',
         'Desafios mensais',
         'Marcos de evolução contínuos',
@@ -111,7 +115,7 @@ export default function PrincingComponent() {
         'Atualizações e conteídos exclusivos',
         'Acompanhamento de constância',
       ],
-      buttonText: 'Quero continuar na trilha',
+      buttonText: 'Já fiz a trilha e quero ser Agradecimembro',
       type: 'webapp',
 
     },
@@ -125,7 +129,9 @@ export default function PrincingComponent() {
     if (plan.buttonUrl) {
       window.location.href = plan.buttonUrl;
     }
-    // URLs vazias para serem preenchidas depois
+    if (plan.id === 'free') {
+      navigate('/home')
+    }
   };
 
   const getCardVariant = (type: string) => {
@@ -223,7 +229,28 @@ export default function PrincingComponent() {
                         alt="AgradeceMembros"
                         sx={{
                           width: '100%',
-                          maxWidth: 3500,
+                          maxWidth: 350,
+                          height: 'auto',
+                          objectFit: 'contain',
+                        }}
+                      />
+                    </Box>
+                  ) : plan.id === 'planilha' ? (
+                    <Box
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Box
+                        component="img"
+                        src="/trilhaDoAgradecedor.png"
+                        alt="Trilha do Agradecedor"
+                        sx={{
+                          width: '100%',
+                          maxWidth: 350,
                           height: 'auto',
                           objectFit: 'contain',
                         }}
@@ -422,17 +449,31 @@ export default function PrincingComponent() {
                         mt: 0.5,
                       }}
                     />
-                  ) : (
-                    <Typography
-                      variant="body2"
+                  ) : plan.id === 'planilha' ? (
+                    <Box
+                      component="img"
+                      src="/trilhaDoAgradecedor.png"
+                      alt="Trilha do Agradecedor"
                       sx={{
-                        fontWeight: 700,
-                        color: theme.palette.text.primary,
+                        width: '200%',
+                        maxWidth: 300,
+                        height: 'auto',
+                        display: 'block',
+                        mt: 0.5,
                       }}
-                    >
-                      {plan.title}
-                    </Typography>
-                  )}
+                    />
+                  ) :
+                    (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {plan.title}
+                      </Typography>
+                    )}
                 </Box>
                 <ExpandMoreIcon
                   sx={{
