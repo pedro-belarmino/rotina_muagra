@@ -31,6 +31,7 @@ interface PricingPlan {
   badge: string;
   title: string;
   subtitle: string;
+  subtitle2: string;
   priceOld?: string;
   priceLabel: string;
   priceValue: string;
@@ -55,48 +56,49 @@ export default function PrincingComponent() {
     {
       id: 'free',
       badge: isAuthorizedPartial ? 'PLANO GRATUITO' : 'VOCÊ ESTÁ AQUI',
-      title: 'Permanece aqui. Sem Custo.',
-      subtitle: 'Para quem quer dar o primeiro passo e entender o poder do registro',
+      title: 'WebApp Muagra',
+      subtitle: 'Poucas pessoas chegam até aqui. Você faz parte.',
+      subtitle2: 'Aqui começa o treino do seu olhar.',
       priceLabel: 'Investimento',
       priceValue: 'Gratuito',
       priceDescription: '',
       benefits: [
         'Muagrômetro pessoal.',
         'Registro Diário de Agradecimento',
-        'Contador global.',
+        'Contador global de agradecimentos.',
         'Acesso ilimitado ao webapp básico.',
-        'Treino inical de presença.',
+        'Primeiro treino de percepção.',
       ],
-      buttonText: 'Continuar Gratuitamente',
+      buttonText: 'Começar a Registrar',
       type: 'free',
     },
     {
       id: 'planilha',
       badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '🌟 PLANO RECOMENDADO',
       title: 'Trilha do Agradecedor Essencial',
-      subtitle: 'Método estruturado para criar a nova trilha mental. Aqui não é mais só registrar. É treinar.',
+      subtitle: 'Agora é hora de aprofundar o treino.',
+      subtitle2: 'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
       priceOld: 'De R$ 198,80',
       priceLabel: 'Investimento Único',
       priceValue: 'R$ 88,80',
       priceDescription: 'Ativação e liberação de aulas e materiais',
       benefits: [
-        'Todos os benefícios do Webapp Gratuito',
-        'Trilha estruturada em fases',
-        'Plano de 35 dias com direcionamento',
-        'Aulas explicativas',
-        'Áudios e meditações guiadas',
-        'Selo Agradecedor (1ª Fase)',
-        'Comunidade base',
+        'Método da Trilha do Agradecedor',
+        'Exercícios guiados de percepção',
+        'Estrutura para desenvolver o hábito do agradecimento',
+        'Treinamento mental para transformar o olhar',
+        'Continuidade do treino iniciado no webapp',
       ],
-      buttonText: 'QUero fazer a trilha do Agradecedor e depois me tornar Agradecimembro',
+      buttonText: 'Quero treinar meu olhar',
       type: 'planilha',
       isRecommended: true,
     },
     {
       id: 'webapp',
-      badge: 'ESTRUTURADO',
+      badge: 'COMUNIDADE',
       title: 'AgradeceMembros na Trilha do Agradecedor',
-      subtitle: 'Para quem decidiu não voltar atrás. Não é sobre começar. É sobre continuar.',
+      subtitle: 'Para quem decidiu viver isso todos os dias.',
+      subtitle2: 'Um ambiente para continuar evoluindo junto com outros agradecedores.',
       priceOld: 'De R$ 198,80',
       priceLabel: 'Assinatura Mensal',
       priceValue: 'R$ 18,80',
@@ -104,18 +106,13 @@ export default function PrincingComponent() {
       monthlyPrice: '',
       monthlyLabel: '',
       benefits: [
-        'Todos os benefícios da Trilha Essencial',
-        'Criação e Gestão de Tarefas Pessoais',
-        'Relatórios e Gráficos de Desempenho',
-        'Encontros ao vivo recorrentes',
-        'Desafios mensais',
-        'Marcos de evolução contínuos',
-        'Selos progressivos',
-        'Reconhecimento interno',
-        'Atualizações e conteídos exclusivos',
-        'Acompanhamento de constância',
+        'Conteúdos contínuos de aprofundamento',
+        'Novos exercícios e reflexões',
+        'Ambiente de evolução constante',
+        'Conexão com outros AgradeciMembros',
+        'Continuidade do treinamento da trilha',
       ],
-      buttonText: 'Já fiz a trilha e quero ser Agradecimembro',
+      buttonText: 'Tornar-me AgradeciMembro',
       type: 'webapp',
 
     },
@@ -281,6 +278,17 @@ export default function PrincingComponent() {
                       }}
                     >
                       {plan.subtitle}
+                    </Typography>
+                  )}
+                  {plan.subtitle && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        mb: 3,
+                      }}
+                    >
+                      {plan.subtitle2}
                     </Typography>
                   )}
 
