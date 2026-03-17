@@ -22,7 +22,7 @@ export type Task = {
 
     priority?: any;
     taskType?: 'personal' | 'gratitude';
-    gratitudeTrack?: 'semente' | 'broto' | 'flor' | 'fruto' | 'arvore' | 'floresta' | 'guardião' | 'infinito' | '';
+    gratitudeTrack?: 'semente' | 'broto' | 'flor' | 'fruto' | 'arvore' | 'floresta' | 'guardiao' | 'infinito' | '';
     icon?: string;
 };
 

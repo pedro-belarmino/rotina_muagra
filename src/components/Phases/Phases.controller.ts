@@ -16,7 +16,7 @@ export interface PhaseInfo {
     iconPath: string;
 }
 
-const PHASE_CONFIG = [
+export const PHASE_CONFIG = [
     { key: 'semente', label: 'Semente', target: 20 },
     { key: 'broto', label: 'Broto', target: 40 },
     { key: 'flor', label: 'Flor', target: 80 },
@@ -63,7 +63,6 @@ export const usePhasesController = (refreshTrigger?: any) => {
             const task = tasks.find(t => {
                 const track = t.gratitudeTrack;
                 if (!track) return false;
-                if (config.key === 'guardiao') return track === 'guardião';
                 return track === config.key;
             });
 
@@ -96,15 +95,17 @@ export const usePhasesController = (refreshTrigger?: any) => {
                 }
             }
 
+            const isTargetReached = config.target !== undefined && accumulatedValue >= config.target;
+
             return {
                 key: config.key,
                 label: config.label,
                 target: config.target,
                 accumulatedValue,
                 isCreated: true,
-                isTargetReached: config.target !== undefined && accumulatedValue >= config.target,
+                isTargetReached,
                 dateReached,
-                iconPath: `/icons/${config.key}.png`
+                iconPath: isTargetReached ? `/icons/${config.key}.png` : `/icons-pb/${config.key}.png`
             };
         });
     }, [tasks, logs]);

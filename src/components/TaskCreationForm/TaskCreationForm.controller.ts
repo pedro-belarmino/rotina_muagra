@@ -5,17 +5,9 @@ import { getAllTaskLogs } from "../../service/taskLogService";
 import type { Task } from "../../types/Task";
 import type { SeverityType } from "../../components/shared/SharedSnackbar";
 import { useNavigate } from "react-router-dom";
+import { PHASE_CONFIG } from "../Phases/Phases.controller";
 
-const PHASE_SEQUENCE = [
-    { key: 'semente', label: 'Semente', target: 20 },
-    { key: 'broto', label: 'Broto', target: 40 },
-    { key: 'flor', label: 'Flor', target: 80 },
-    { key: 'fruto', label: 'Fruto', target: 120 },
-    { key: 'arvore', label: 'Árvore', target: 160 },
-    { key: 'floresta', label: 'Floresta', target: 200 },
-    { key: 'guardiao', label: 'Guardião', target: 240 },
-    { key: 'infinito', label: 'Infinito', target: 280 },
-];
+const PHASE_SEQUENCE = PHASE_CONFIG;
 
 export function useTaskController() {
     const { user, isAuthorized, isAuthorizedPartial } = useAuth();
@@ -210,7 +202,6 @@ export function useTaskController() {
                 const existingTask = gratitudeTasks.find(t => {
                     const track = t.gratitudeTrack;
                     if (!track) return false;
-                    if (task.gratitudeTrack === 'guardião') return track === 'guardião';
                     return track === task.gratitudeTrack;
                 });
 
@@ -228,7 +219,6 @@ export function useTaskController() {
                     const previousTask = gratitudeTasks.find(t => {
                         const track = t.gratitudeTrack;
                         if (!track) return false;
-                        if (previousPhase.key === 'guardiao') return track === 'guardião';
                         return track === previousPhase.key;
                     });
 

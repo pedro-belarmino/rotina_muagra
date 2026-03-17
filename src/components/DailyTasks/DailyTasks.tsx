@@ -25,6 +25,7 @@ import Tooltip from '@mui/material/Tooltip';
 import LoadingScreen from "../../views/LoadingScreen";
 import { useDailyTasksController } from './DailyTasks.controller';
 import { useNavigate } from 'react-router-dom';
+import { PHASE_CONFIG } from '../Phases/Phases.controller';
 import { formatMeasure } from '../../utils/formatting';
 import { useEffect, useState } from 'react';
 import SharedSnackbar from '../shared/SharedSnackbar';
@@ -491,7 +492,19 @@ function DailyTasks() {
 
                             let monthPercent, yearPercent, monthLabel, yearLabel, monthPercentToPendant, monthPendingLabelToPendant;
 
-                            if (dailyGoal > 0) {
+                            if (task.taskType === 'gratitude' && task.gratitudeTrack) {
+                                const phase = PHASE_CONFIG.find(p => p.key === task.gratitudeTrack);
+                                const target = phase?.target ?? 0;
+                                const accumulated = monthlyTotals[task.id!] ?? 0; // In gratitude tasks, we use the total accumulated
+
+                                monthPercent = (accumulated / target) * 100;
+                                monthPercentToPendant = 100; // Always "in day" for gratitude track as it is cumulative
+                                yearPercent = (accumulated / target) * 100;
+
+                                monthLabel = `${accumulated} / ${target} (Meta da Fase)`;
+                                yearLabel = `${accumulated} / ${target} (Meta da Fase)`;
+                                monthPendingLabelToPendant = "";
+                            } else if (dailyGoal > 0) {
                                 const monthGoalTotal = monthDays * dailyGoal;
 
                                 const monthGoalToDate = currentDayOfMonth * dailyGoal;
@@ -510,10 +523,6 @@ function DailyTasks() {
 
                                 const monthPendingToPendant = monthGoalToDate - monthTotal;
                                 monthPendingLabelToPendant = `${monthPendingToPendant > 0 ? monthPendingToPendant : 0} ${formatMeasure(task.measure || '')} / ${monthGoalToDate} ${formatMeasure(task.measure || '')}`;
-
-
-
-
                             } else {
                                 const completedMonthDays = monthlyLogDays[task.id!] ?? 0;
                                 const completedYearDays = yearlyLogDays[task.id!] ?? 0;
@@ -699,7 +708,10 @@ function DailyTasks() {
 
                                                 {task.taskType === 'gratitude' && task.gratitudeTrack && (
                                                     <img
-                                                        src={`/icons/${task.gratitudeTrack}.png`}
+                                                        src={((monthlyTotals[task.id!] ?? 0) >= (PHASE_CONFIG.find(p => p.key === task.gratitudeTrack)?.target ?? 0))
+                                                            ? `/icons/${task.gratitudeTrack}.png`
+                                                            : `/icons-pb/${task.gratitudeTrack}.png`
+                                                        }
                                                         alt={task.gratitudeTrack}
                                                         style={{ width: 80, height: 80 }}
                                                     />
