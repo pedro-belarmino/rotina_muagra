@@ -78,7 +78,7 @@ export default function PrincingComponent() {
       title: 'Trilha do Agradecedor Essencial',
       subtitle: 'Agora é hora de aprofundar o treino.',
       subtitle2: 'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
-      priceOld: 'De R$ 198,80',
+      priceOld: 'De R$ 298,80',
       priceLabel: 'Investimento Único',
       priceValue: 'R$ 88,80',
       priceDescription: 'Ativação e liberação de aulas e materiais',
@@ -99,7 +99,7 @@ export default function PrincingComponent() {
       title: 'AgradeceMembros na Trilha do Agradecedor',
       subtitle: 'Para quem decidiu viver isso todos os dias.',
       subtitle2: 'Um ambiente para continuar evoluindo junto com outros agradecedores.',
-      priceOld: 'De R$ 198,80',
+      priceOld: 'De R$ 298,80',
       priceLabel: 'Assinatura Mensal',
       priceValue: 'R$ 18,80',
       priceDescription: 'Exclusivo para quem já está na Trilha Essencial',
@@ -118,17 +118,16 @@ export default function PrincingComponent() {
     },
   ];
 
+  const link = 'https://muagrauni.hotmart.host/trilha-do-agradecedor-93a92980-d16d-4162-87ce-3d57dc93c09c'
+
   const togglePlan = (planId: string) => {
     setExpandedPlan(expandedPlan === planId ? null : planId);
   };
 
   const handleButtonClick = (plan: PricingPlan) => {
-    if (plan.buttonUrl) {
-      window.location.href = plan.buttonUrl;
-    }
     if (plan.id === 'free') {
       navigate('/home')
-    }
+    } else { window.location.href = link }
   };
 
   const getCardVariant = (type: string) => {
