@@ -4,7 +4,6 @@ import {
     Button,
     Container,
     TextField,
-    Typography,
     Card,
     CardContent,
     CardActions,
@@ -68,9 +67,17 @@ const AuthorizeEmailPartial = () => {
                     boxShadow: 6,
                 }}>
                     <CardContent>
-                        <Typography component="h1" variant="h5" align="center">
-                            Autorizar Novo E-mail (Acesso Parcial)
-                        </Typography>
+                        <Box
+                            component="img"
+                            src="/trilhaDoAgradecedor.png"
+                            alt="AgradeceMembros"
+                            sx={{
+                                width: '100%',
+                                maxWidth: 350,
+                                height: 'auto',
+                                objectFit: 'contain',
+                            }}
+                        />
                         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                             <TextField
                                 margin="normal"
