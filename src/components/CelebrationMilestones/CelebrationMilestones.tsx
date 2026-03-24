@@ -1,9 +1,10 @@
-import { Box, Card, CardContent, Typography, Skeleton } from "@mui/material";
+import { Box, Card, CardContent, Typography, Skeleton, Button } from "@mui/material";
 import { useCelebrationMilestonesController } from "./CelebrationMilestones.controller";
+import { useNavigate } from "react-router-dom";
 
 export default function CelebrationMilestones() {
     const { milestones, loading, isAuthorized, runningTotal } = useCelebrationMilestonesController();
-
+    const navigate = useNavigate()
     const displayMilestones = isAuthorized ? milestones : milestones.filter(m => m.value <= 100);
 
     if (loading) {
@@ -79,19 +80,22 @@ export default function CelebrationMilestones() {
                     ))}
 
                     {!isAuthorized && runningTotal > 100 && (
-                        <Box sx={{
+                        <Button component={Box} sx={{
                             gridColumn: { xs: 'span 1', sm: 'span 3' },
                             textAlign: 'center',
                             p: 1,
                             backgroundColor: 'rgba(255, 152, 0, 0.1)',
                             borderRadius: 2,
                             border: '1px dashed',
-                            borderColor: 'warning.main'
-                        }}>
+                            borderColor: 'warning.main',
+                            textTransform: 'none'
+                        }}
+                            onClick={() => navigate(`/acesso-negado`)}
+                        >
                             <Typography variant="body2" color="warning.main" fontWeight="bold">
-                                Assine a mentoria para desbloquear as outras insígnias do marco de celebração!
+                                Torne-se AgradeciMembro para ativar as demais insígnias dos Marcos de Celebração. <br />Clique aqui e veja como.
                             </Typography>
-                        </Box>
+                        </Button>
                     )}
                 </Box>
             </CardContent>
