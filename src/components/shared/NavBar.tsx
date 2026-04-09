@@ -8,6 +8,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import HistoryIcon from '@mui/icons-material/History';
 import { useNavigate } from "react-router-dom";
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 // import ShareIcon from '@mui/icons-material/Share';
 
@@ -33,6 +34,8 @@ export default function NavBar() {
             setValue(2);
         } else if (location.pathname === "/relatorio") {
             setValue(3);
+        } else if (location.pathname === "/dashboard") {
+            setValue(4);
         }
     }, [location.pathname]);
 
@@ -50,6 +53,7 @@ export default function NavBar() {
                 <BottomNavigationAction label="Criar" icon={<AddBoxIcon />} onClick={() => navigate('/criar-tarefa')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Historico" icon={<HistoryIcon />} onClick={() => navigate('/historico')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Relatório" icon={<AssessmentIcon />} onClick={() => navigate('/relatorio')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
+                <BottomNavigationAction label="Dashboard" icon={<DashboardIcon />} onClick={() => navigate('/dashboard')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
                 <BottomNavigationAction label="Sair" icon={<LogoutRoundedIcon />} onClick={() => navigate('/')} sx={{ '&.Mui-selected': { color: 'warning.main' } }} />
             </BottomNavigation>
         </Box>

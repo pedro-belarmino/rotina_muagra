@@ -12,6 +12,7 @@ import PrivateWrapper from './routes/PriavateWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCounter from './views/GlobalCounter';
 import AuthorizeEmail from './views/AuthorizeEmail';
+import Dashboard from './views/Dashboard';
 import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 // import AccessDenied from './views/AccessDenied';
 import PrincingComponent from './views/PricingComponent';
@@ -44,6 +45,7 @@ function App() {
                             <Route path='/relatorio' element={<Report />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
                             <Route path='muagrometro' element={<GlobalCounter />} />
+                            <Route path='/dashboard' element={<Dashboard />} />
                             <Route
                                 path='--'
                                 element={
