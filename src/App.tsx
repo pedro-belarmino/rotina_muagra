@@ -15,6 +15,7 @@ import AuthorizeEmail from './views/AuthorizeEmail';
 import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 // import AccessDenied from './views/AccessDenied';
 import PrincingComponent from './views/PricingComponent';
+import Dashboard from './views/Dashboard';
 
 function App() {
 
@@ -43,7 +44,8 @@ function App() {
                             <Route path='/historico' element={<History />} />
                             <Route path='/relatorio' element={<Report />} />
                             <Route path='/arquivadas' element={<ArchivedTasks />} />
-                            <Route path='muagrometro' element={<GlobalCounter />} />
+                            <Route path='/muagrometro' element={<GlobalCounter />} />
+                            <Route path='/dashboard' element={<Dashboard />} />
                             <Route
                                 path='--'
                                 element={

@@ -18,6 +18,15 @@ export default function PrivateWrapper() {
     if (user && !isAuthorized) {
         const allowedPaths = ["/home", "/acesso-negado", "/muagrometro"];
 
+        const dashboardAuthorizedEmails = [
+            "fabiomarcheriserrano@gmail.com",
+            "pedro.gbelarmino@gmail.com"
+        ];
+
+        if (user.email && dashboardAuthorizedEmails.includes(user.email.toLowerCase())) {
+            allowedPaths.push("/dashboard");
+        }
+
         if (isAuthorizedPartial) {
             allowedPaths.push("/criar-tarefa");
         }
