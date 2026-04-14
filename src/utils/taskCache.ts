@@ -1,4 +1,4 @@
-import { Task } from "../types/Task";
+import type { Task } from "../types/Task";
 
 const CACHE_KEY = "app_tasks_data";
 
