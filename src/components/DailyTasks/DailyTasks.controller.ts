@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear, getTaskStreak } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
+import { getTaskCache, setTaskCache } from "../../utils/taskCache";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
@@ -101,16 +102,37 @@ export const useDailyTasksController = () => {
         if (!user) return;
         setLoading(true);
 
-        let userTasks = await getTasks(user.uid, false);
+        const cachedData = getTaskCache();
+        let userTasks: Task[] = [];
+        let shouldRefreshFromFirebase = false;
 
+        if (cachedData && !cachedData.needsUpdate) {
+            userTasks = cachedData.tasks;
 
-        for (const t of userTasks) {
-            await ensureTaskPeriodIsCurrent(user.uid, t);
-            await ensureTaskYearIsCurrent(user.uid, t);
+            // Check if periods need updating even with cached data
+            for (const t of userTasks) {
+                const periodChanged = await ensureTaskPeriodIsCurrent(user.uid, t);
+                const yearChanged = await ensureTaskYearIsCurrent(user.uid, t);
+                if (periodChanged || yearChanged) {
+                    shouldRefreshFromFirebase = true;
+                }
+            }
+
+            if (shouldRefreshFromFirebase) {
+                userTasks = await getTasks(user.uid, false);
+                setTaskCache(userTasks);
+            }
+        } else {
+            userTasks = await getTasks(user.uid, false);
+
+            for (const t of userTasks) {
+                await ensureTaskPeriodIsCurrent(user.uid, t);
+                await ensureTaskYearIsCurrent(user.uid, t);
+            }
+
+            userTasks = await getTasks(user.uid, false);
+            setTaskCache(userTasks);
         }
-
-
-        userTasks = await getTasks(user.uid, false);
 
 
         userTasks.sort((a, b) => {
