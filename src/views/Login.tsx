@@ -3,6 +3,7 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { setPersistence, browserLocalPersistence } from "firebase/auth";
 import { auth } from "../firebase/config";
 import GoogleIcon from '@mui/icons-material/Google';
+import { clearTaskCache } from "../utils/taskCache";
 import {
     Box, Button, Typography,
     Avatar,
@@ -25,6 +26,7 @@ function App() {
 
     const handleLogout = async () => {
         await signOut(auth);
+        clearTaskCache();
     };
 
     if (loading) return <LoadingScreen />

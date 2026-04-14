@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import type { Task } from "../types/Task";
 import { getNowInBrasilia, getPeriodStartForType } from "../utils/period";
+import { invalidateTaskCache } from "../utils/taskCache";
 
 
 export async function addTask(userId: string, task: Task) {
@@ -32,6 +33,7 @@ export async function addTask(userId: string, task: Task) {
         totalMonth: 0,
         totalYear: 0,
     });
+    invalidateTaskCache();
 }
 
 
@@ -62,6 +64,7 @@ export async function getTasks(userId: string, includeArchived = false): Promise
 export async function updateTask(userId: string, taskId: string, updates: Partial<Task>) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, updates);
+    invalidateTaskCache();
 }
 
 
@@ -69,6 +72,7 @@ export async function updateTaskPriority(userId: string, taskId: string, isPrior
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     const priorityValue = isPriority ? Timestamp.now() : null;
     await updateDoc(taskRef, { priority: priorityValue });
+    invalidateTaskCache();
 }
 
 
@@ -113,6 +117,7 @@ export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promi
 export async function archiveTask(userId: string, taskId: string) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, { archived: true });
+    invalidateTaskCache();
 }
 
 
@@ -120,6 +125,7 @@ export async function deleteTaskPermanently(userId: string, taskId: string) {
 
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await deleteDoc(taskRef);
+    invalidateTaskCache();
 
 
     const logsRef = collection(db, "users", userId, "taskLogs");
