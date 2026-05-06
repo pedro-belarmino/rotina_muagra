@@ -3,6 +3,8 @@ import {
     collection,
     addDoc,
     getDocs,
+    getDocsFromCache,
+    getDocsFromServer,
     Timestamp,
     doc,
     updateDoc,
@@ -32,12 +34,29 @@ export async function addTask(userId: string, task: Task) {
         totalMonth: 0,
         totalYear: 0,
     });
+    // Força a atualização do cache após adicionar uma nova tarefa
+    await getTasks(userId, false, true);
 }
 
 
-export async function getTasks(userId: string, includeArchived = false): Promise<Task[]> {
+export async function getTasks(userId: string, includeArchived = false, forceRefresh = false): Promise<Task[]> {
     const tasksRef = collection(db, "users", userId, "tasks");
-    const snapshot = await getDocs(tasksRef);
+
+    let snapshot;
+    if (forceRefresh) {
+        snapshot = await getDocsFromServer(tasksRef);
+    } else {
+        try {
+            snapshot = await getDocsFromCache(tasksRef);
+            // Se o cache estiver vazio, busca do servidor
+            if (snapshot.empty) {
+                snapshot = await getDocs(tasksRef);
+            }
+        } catch (error) {
+            console.warn("Failed to fetch from cache, falling back to network", error);
+            snapshot = await getDocs(tasksRef);
+        }
+    }
 
     return snapshot.docs
         .map((docSnap) => {
@@ -62,6 +81,10 @@ export async function getTasks(userId: string, includeArchived = false): Promise
 export async function updateTask(userId: string, taskId: string, updates: Partial<Task>) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, updates);
+    // Se estiver desarquivando, forçamos a atualização do cache
+    if (updates.archived === false) {
+        await getTasks(userId, false, true);
+    }
 }
 
 
@@ -113,6 +136,8 @@ export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promi
 export async function archiveTask(userId: string, taskId: string) {
     const taskRef = doc(db, "users", userId, "tasks", taskId);
     await updateDoc(taskRef, { archived: true });
+    // Força a atualização do cache após arquivar uma tarefa
+    await getTasks(userId, false, true);
 }
 
 
@@ -131,4 +156,6 @@ export async function deleteTaskPermanently(userId: string, taskId: string) {
     );
 
     await Promise.all(batchDeletes);
+    // Força a atualização do cache após excluir permanentemente uma tarefa
+    await getTasks(userId, false, true);
 }

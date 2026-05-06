@@ -86,7 +86,7 @@ export const useDailyTasksController = () => {
 
         setConfirmModalOpen(false);
         setSelectedTask(null);
-        fetchTasks();
+        fetchTasks(true);
 
         const now = new Date();
         const monthlyTotal = await getTaskLogsByMonth(user.uid, selectedTask.id, now);
@@ -97,11 +97,13 @@ export const useDailyTasksController = () => {
     };
 
 
-    const fetchTasks = async () => {
+    const fetchTasks = async (forceRefresh = false) => {
         if (!user) return;
-        setLoading(true);
+        if (forceRefresh) {
+            setLoading(true);
+        }
 
-        let userTasks = await getTasks(user.uid, false);
+        let userTasks = await getTasks(user.uid, false, forceRefresh);
 
 
         for (const t of userTasks) {
@@ -110,7 +112,7 @@ export const useDailyTasksController = () => {
         }
 
 
-        userTasks = await getTasks(user.uid, false);
+        userTasks = await getTasks(user.uid, false, forceRefresh);
 
 
         userTasks.sort((a, b) => {
@@ -310,6 +312,8 @@ export const useDailyTasksController = () => {
             });
         }
 
+        fetchTasks(true);
+
         const now = new Date();
         const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id, now);
         const yearlyTotal = await getTaskLogsByYear(user.uid, task.id, now);
@@ -323,14 +327,14 @@ export const useDailyTasksController = () => {
         await archiveTask(user.uid, selectedTask.id);
         setOpenModal(false);
         setSelectedTask(null);
-        await fetchTasks();
+        await fetchTasks(true);
     };
 
 
     const handleTogglePriority = async (task: Task) => {
         if (!user || !task.id) return;
         await updateTaskPriority(user.uid, task.id, !task.priority);
-        await fetchTasks();
+        await fetchTasks(true);
     };
 
     return {
