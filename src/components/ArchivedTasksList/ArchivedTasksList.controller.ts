@@ -24,11 +24,13 @@ export function useArchivedTasksListController() {
         setSelectedTask(null);
     }
 
-    const fetchTasks = async () => {
+    const fetchTasks = async (forceRefresh = false) => {
         if (!user) return;
-        setLoading(true);
+        if (forceRefresh) {
+            setLoading(true);
+        }
 
-        const userTasks = await getTasks(user.uid, true);
+        const userTasks = await getTasks(user.uid, true, forceRefresh);
         setArchivedTasks(userTasks.filter((task) => task.archived));
         setLoading(false);
     };
@@ -41,7 +43,7 @@ export function useArchivedTasksListController() {
         if (user?.uid && selectedTask?.id) {
             await updateTask(user.uid, selectedTask.id, { archived: false });
             handleCloseModal();
-            fetchTasks();
+            fetchTasks(true);
         }
     };
 
@@ -49,7 +51,7 @@ export function useArchivedTasksListController() {
         if (user?.uid && selectedTask?.id) {
             await deleteTaskPermanently(user.uid, selectedTask.id);
             handleCloseModal();
-            fetchTasks();
+            fetchTasks(true);
         }
     };
     return {
