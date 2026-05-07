@@ -207,6 +207,28 @@ export const deleteTaskLog = async (uid: string, logId: string) => {
 
 
 
+export const getTaskLogsByDay = async (
+    uid: string,
+    dateKey: string
+): Promise<TaskLog[]> => {
+    const logsRef = collection(db, "users", uid, "taskLogs");
+    const q = query(logsRef, where("day", "==", dateKey));
+    const snap = await getDocs(q);
+    return snap.docs.map(docSnap => {
+        const data = docSnap.data();
+        return {
+            id: docSnap.id,
+            taskId: data.taskId,
+            taskName: data.taskName,
+            measure: data.measure,
+            userId: uid,
+            doneAt: (data.doneAt as Timestamp).toDate(),
+            value: data.value,
+            day: data.day,
+        } as TaskLog;
+    });
+};
+
 export const getTaskLogByDate = async (
     uid: string,
     taskId: string,

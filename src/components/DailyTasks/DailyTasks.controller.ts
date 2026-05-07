@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { getTaskLogByDate, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear, getTaskStreak } from "../../service/taskLogService";
+import { getTaskLogsByDay, deleteTaskLog, addTaskLog, getTaskLogsByMonth, getTaskLogsByYear, getTaskLogDaysByMonth, getTaskLogDaysByYear, getTaskStreak } from "../../service/taskLogService";
 import { getTasks, archiveTask, ensureTaskPeriodIsCurrent, ensureTaskYearIsCurrent, updateTask, updateTaskPriority } from "../../service/taskService";
 import type { Task } from "../../types/Task";
 import { getDailyCounter, incrementDailyCounter, updateDailyComment, getMonthlyDays, getYearlyDays } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
-import { daysInMonth, daysInYear } from "../../utils/period";
+import { daysInMonth, daysInYear, formatISODate, getNowInBrasilia } from "../../utils/period";
 
 
 export const useDailyTasksController = () => {
@@ -13,7 +13,10 @@ export const useDailyTasksController = () => {
     const { user } = useAuth();
     const [timeLeft, setTimeLeft] = useState("");
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+    const [paginatedTasks, setPaginatedTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(false);
+    const [statsLoading, setStatsLoading] = useState(false);
     const [doneToday, setDoneToday] = useState<Record<string, string | null>>({});
     const [openModal, setOpenModal] = useState(false);
     const [selectedTask, setSelectedTask] = useState<Task | null>(null);
@@ -22,6 +25,9 @@ export const useDailyTasksController = () => {
     const [monthlyLogDays, setMonthlyLogDays] = useState<Record<string, number>>({});
     const [yearlyLogDays, setYearlyLogDays] = useState<Record<string, number>>({});
     const [streaks, setStreaks] = useState<Record<string, number>>({});
+
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 8;
 
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
@@ -99,9 +105,7 @@ export const useDailyTasksController = () => {
 
     const fetchTasks = async (forceRefresh = false) => {
         if (!user) return;
-        if (forceRefresh) {
-            setLoading(true);
-        }
+        setLoading(true);
 
         let userTasks = await getTasks(user.uid, false, forceRefresh);
 
@@ -134,45 +138,83 @@ export const useDailyTasksController = () => {
         setTasks(userTasks);
 
 
-        const now = new Date();
-        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const now = getNowInBrasilia();
+        const today = formatISODate(now);
 
-
+        const logsToday = await getTaskLogsByDay(user.uid, today);
         const status: Record<string, string | null> = {};
-        const monthly: Record<string, number> = {};
-        const yearly: Record<string, number> = {};
-        const monthlyDays: Record<string, number> = {};
-        const yearlyDays: Record<string, number> = {};
-        const streaksData: Record<string, number> = {};
-
 
         for (const task of userTasks) {
-            const log = await getTaskLogByDate(user.uid, task.id!, today);
+            const log = logsToday.find(l => l.taskId === task.id);
             status[task.id!] = log ? log.id! : null;
-
-            const monthlyTotal = await getTaskLogsByMonth(user.uid, task.id!, now);
-            const yearlyTotal = await getTaskLogsByYear(user.uid, task.id!, now);
-            monthly[task.id!] = monthlyTotal;
-            yearly[task.id!] = yearlyTotal;
-
-            if (!task.dailyGoal) {
-                const monthlyDaysCount = await getTaskLogDaysByMonth(user.uid, task.id!, now);
-                const yearlyDaysCount = await getTaskLogDaysByYear(user.uid, task.id!, now);
-                monthlyDays[task.id!] = monthlyDaysCount;
-                yearlyDays[task.id!] = yearlyDaysCount;
-            }
-            const streak = await getTaskStreak(user.uid, task.id!);
-            streaksData[task.id!] = streak;
         }
 
         setDoneToday(status);
-        setMonthlyTotals(monthly);
-        setYearlyTotals(yearly);
-        setMonthlyLogDays(monthlyDays);
-        setYearlyLogDays(yearlyDays);
-        setStreaks(streaksData);
         setLoading(false);
     };
+
+    useEffect(() => {
+        const filtered = tasks.filter(task => {
+            if (filter === 'pending') return !doneToday[task.id!];
+            if (filter === 'completed') return !!doneToday[task.id!];
+            return true;
+        });
+        setFilteredTasks(filtered);
+        setPage(1);
+    }, [tasks, filter, doneToday]);
+
+    useEffect(() => {
+        const startIndex = (page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        setPaginatedTasks(filteredTasks.slice(startIndex, endIndex));
+    }, [filteredTasks, page]);
+
+    useEffect(() => {
+        const fetchStatsForPaginatedTasks = async () => {
+            if (!user || paginatedTasks.length === 0) return;
+
+            setStatsLoading(true);
+            const now = new Date();
+            const monthly: Record<string, number> = { ...monthlyTotals };
+            const yearly: Record<string, number> = { ...yearlyTotals };
+            const monthlyDays: Record<string, number> = { ...monthlyLogDays };
+            const yearlyDays: Record<string, number> = { ...yearlyLogDays };
+            const streaksData: Record<string, number> = { ...streaks };
+
+            await Promise.all(paginatedTasks.map(async (task) => {
+                if (!task.id) return;
+
+
+                const [monthlyTotal, yearlyTotal, streak] = await Promise.all([
+                    getTaskLogsByMonth(user.uid, task.id, now),
+                    getTaskLogsByYear(user.uid, task.id, now),
+                    getTaskStreak(user.uid, task.id)
+                ]);
+
+                monthly[task.id] = monthlyTotal;
+                yearly[task.id] = yearlyTotal;
+                streaksData[task.id] = streak;
+
+                if (!task.dailyGoal) {
+                    const [monthlyDaysCount, yearlyDaysCount] = await Promise.all([
+                        getTaskLogDaysByMonth(user.uid, task.id, now),
+                        getTaskLogDaysByYear(user.uid, task.id, now)
+                    ]);
+                    monthlyDays[task.id] = monthlyDaysCount;
+                    yearlyDays[task.id] = yearlyDaysCount;
+                }
+            }));
+
+            setMonthlyTotals(monthly);
+            setYearlyTotals(yearly);
+            setMonthlyLogDays(monthlyDays);
+            setYearlyLogDays(yearlyDays);
+            setStreaks(streaksData);
+            setStatsLoading(false);
+        };
+
+        fetchStatsForPaginatedTasks();
+    }, [paginatedTasks, user]);
 
     useEffect(() => {
         fetchTasks();
@@ -381,6 +423,10 @@ export const useDailyTasksController = () => {
         streaks,
         filter,
         setFilter,
+        page,
+        setPage,
+        paginatedTasks,
+        filteredTasks,
     }
 
 }

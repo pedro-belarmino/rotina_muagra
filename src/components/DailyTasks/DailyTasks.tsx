@@ -78,6 +78,10 @@ function DailyTasks() {
         yearlyLogDays,
         streaks,
         filter,
+        page,
+        setPage,
+        paginatedTasks,
+        filteredTasks,
     } = useDailyTasksController()
     const navigate = useNavigate()
 
@@ -85,7 +89,6 @@ function DailyTasks() {
     const isDarkMode = theme.palette.mode === 'dark';
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [page, setPage] = useState(1);
     const itemsPerPage = 8;
     const date = new Date();
     const day = String(date.getDate()).padStart(2, '0');
@@ -93,19 +96,6 @@ function DailyTasks() {
     const year = date.getFullYear();
     const fullDateDisplay = `${day}/${month}/${year}`;
 
-    useEffect(() => {
-        setPage(1);
-    }, [filter]);
-
-    const filteredTasks = tasks.filter(task => {
-        if (filter === 'pending') return !doneToday[task.id!];
-        if (filter === 'completed') return !!doneToday[task.id!];
-        return true;
-    });
-
-    const startIndex = (page - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const paginatedTasks = filteredTasks.slice(startIndex, endIndex);
     const totalPages = Math.ceil(filteredTasks.length / itemsPerPage);
 
     const pendingCount = tasks.filter(task => !doneToday[task.id!]).length;
