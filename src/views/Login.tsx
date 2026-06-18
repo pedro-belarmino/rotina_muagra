@@ -11,11 +11,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import { version } from '../../versioning'
 import LoadingScreen from "./LoadingScreen";
+import WelcomeModal from "../components/shared/WelcomeModal";
 
 function App() {
 
     const navigate = useNavigate()
-    const { user, loading } = useAuth();
+    const { user, loading, showWelcomeModal, markWelcomeModalAsSeen } = useAuth();
 
     const handleLogin = async () => {
         const provider = new GoogleAuthProvider();
@@ -28,6 +29,11 @@ function App() {
     };
 
     if (loading) return <LoadingScreen />
+
+    const handleWelcomeModalClose = async () => {
+        await markWelcomeModalAsSeen();
+        navigate('/home');
+    };
 
     return (
         <Card
@@ -129,6 +135,11 @@ function App() {
                 )}
             </CardActions>
             <p style={{ fontSize: 'small', }}>{version}</p>
+
+            <WelcomeModal
+                open={showWelcomeModal}
+                onClose={handleWelcomeModalClose}
+            />
         </Card>
     );
 }
