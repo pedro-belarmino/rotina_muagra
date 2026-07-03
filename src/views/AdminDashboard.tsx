@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar, TablePagination, useMediaQuery, useTheme, Card, CardContent, Divider, Stack } from "@mui/material";
-import { getAllUsers, getUserStats, UserProfile } from "../service/userService";
+import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar, TablePagination, CardContent, Card, Divider, Stack, useMediaQuery, useTheme } from "@mui/material";
+import { getAllUsers, getUserStats, type UserProfile } from "../service/userService";
 import { Timestamp } from "firebase/firestore";
 import dayjs from "dayjs";
 import { useAuth } from "../context/AuthContext";
