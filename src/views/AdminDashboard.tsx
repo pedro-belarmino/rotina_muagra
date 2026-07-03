@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar } from "@mui/material";
+import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar, TablePagination } from "@mui/material";
 import { getAllUsers, getUserStats, UserProfile } from "../service/userService";
 import { Timestamp } from "firebase/firestore";
 import dayjs from "dayjs";
@@ -19,6 +19,8 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<UserWithStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [sortBy, setSortBy] = useState<SortOption>("recent");
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -53,6 +55,17 @@ export default function AdminDashboard() {
         }
         return 0;
     });
+
+    const paginatedUsers = sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
+    const handleChangePage = (_event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     if (!isAdmin(currentUser?.email)) {
         return <Navigate to="/home" replace />;
@@ -99,7 +112,7 @@ export default function AdminDashboard() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {sortedUsers.map((user) => (
+                        {paginatedUsers.map((user) => (
                             <TableRow key={user.uid} hover>
                                 <TableCell>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -134,6 +147,17 @@ export default function AdminDashboard() {
                     </TableBody>
                 </Table>
             </TableContainer>
+            <TablePagination
+                rowsPerPageOptions={[10, 20, 50]}
+                component="div"
+                count={users.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                labelRowsPerPage="Usuários por página"
+                labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`}
+            />
         </Container>
     );
 }
