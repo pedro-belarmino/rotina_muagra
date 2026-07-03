@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
-import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar, TablePagination } from "@mui/material";
+import { Container, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, FormControl, InputLabel, Box, CircularProgress, Avatar, TablePagination, useMediaQuery, useTheme, Card, CardContent, Divider, Stack } from "@mui/material";
 import { getAllUsers, getUserStats, UserProfile } from "../service/userService";
 import { Timestamp } from "firebase/firestore";
 import dayjs from "dayjs";
 import { useAuth } from "../context/AuthContext";
 import { isAdmin } from "../utils/admin";
 import { Navigate } from "react-router-dom";
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import TouchAppIcon from '@mui/icons-material/TouchApp';
+import EventIcon from '@mui/icons-material/Event';
 
 interface UserWithStats extends UserProfile {
     totalClicks: number;
@@ -15,6 +18,8 @@ interface UserWithStats extends UserProfile {
 type SortOption = "recent" | "oldest" | "alphabetical";
 
 export default function AdminDashboard() {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState<UserWithStats[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,13 +85,20 @@ export default function AdminDashboard() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4, pb: 10 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                <Typography variant="h4" fontWeight="bold">
+        <Container maxWidth="lg" sx={{ py: isMobile ? 2 : 4, pb: 10 }}>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: isMobile ? 'column' : 'row',
+                justifyContent: 'space-between',
+                alignItems: isMobile ? 'flex-start' : 'center',
+                mb: 4,
+                gap: 2
+            }}>
+                <Typography variant={isMobile ? "h5" : "h4"} fontWeight="bold">
                     Painel do Administrador
                 </Typography>
 
-                <FormControl sx={{ minWidth: 200 }}>
+                <FormControl sx={{ minWidth: isMobile ? '100%' : 200 }}>
                     <InputLabel id="sort-select-label">Ordenar por</InputLabel>
                     <Select
                         labelId="sort-select-label"
@@ -101,52 +113,112 @@ export default function AdminDashboard() {
                 </FormControl>
             </Box>
 
-            <TableContainer component={Paper} sx={{ borderRadius: 3, overflow: 'hidden' }}>
-                <Table>
-                    <TableHead sx={{ bgcolor: 'action.hover' }}>
-                        <TableRow>
-                            <TableCell>Usuário</TableCell>
-                            <TableCell align="center">Criado em</TableCell>
-                            <TableCell align="center">Total de Cliques</TableCell>
-                            <TableCell align="center">Último Clique</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {paginatedUsers.map((user) => (
-                            <TableRow key={user.uid} hover>
-                                <TableCell>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                        <Avatar src={user.photoURL || undefined} alt={user.displayName || ""}>
-                                            {user.displayName?.[0] || user.email?.[0] || "?"}
-                                        </Avatar>
-                                        <Box>
-                                            <Typography variant="body1" fontWeight="medium">
-                                                {user.displayName || "Sem nome"}
-                                            </Typography>
-                                            <Typography variant="body2" color="textSecondary">
-                                                {user.email}
-                                            </Typography>
-                                        </Box>
+            {isMobile ? (
+                <Stack spacing={2}>
+                    {paginatedUsers.map((user) => (
+                        <Card key={user.uid} sx={{ borderRadius: 3, boxShadow: 2 }}>
+                            <CardContent>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                                    <Avatar src={user.photoURL || undefined} alt={user.displayName || ""}>
+                                        {user.displayName?.[0] || user.email?.[0] || "?"}
+                                    </Avatar>
+                                    <Box sx={{ overflow: 'hidden' }}>
+                                        <Typography variant="subtitle1" fontWeight="bold" noWrap>
+                                            {user.displayName || "Sem nome"}
+                                        </Typography>
+                                        <Typography variant="body2" color="textSecondary" noWrap>
+                                            {user.email}
+                                        </Typography>
                                     </Box>
-                                </TableCell>
-                                <TableCell align="center">
-                                    {dayjs(user.createdAt.toDate()).format("DD/MM/YYYY HH:mm")}
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Typography fontWeight="bold" color="warning.main">
-                                        {user.totalClicks}
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                    {user.lastClick
-                                        ? dayjs(user.lastClick.toDate()).format("DD/MM/YYYY HH:mm")
-                                        : "Nunca"}
-                                </TableCell>
+                                </Box>
+
+                                <Divider sx={{ my: 1.5 }} />
+
+                                <Stack spacing={1.5}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <EventIcon fontSize="small" color="action" />
+                                            <Typography variant="body2" color="textSecondary">Criado em:</Typography>
+                                        </Box>
+                                        <Typography variant="body2" fontWeight="medium">
+                                            {dayjs(user.createdAt.toDate()).format("DD/MM/YYYY HH:mm")}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <TouchAppIcon fontSize="small" color="action" />
+                                            <Typography variant="body2" color="textSecondary">Total cliques:</Typography>
+                                        </Box>
+                                        <Typography variant="body2" fontWeight="bold" color="warning.main">
+                                            {user.totalClicks}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <AccessTimeIcon fontSize="small" color="action" />
+                                            <Typography variant="body2" color="textSecondary">Último clique:</Typography>
+                                        </Box>
+                                        <Typography variant="body2" fontWeight="medium">
+                                            {user.lastClick
+                                                ? dayjs(user.lastClick.toDate()).format("DD/MM/YYYY HH:mm")
+                                                : "Nunca"}
+                                        </Typography>
+                                    </Box>
+                                </Stack>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </Stack>
+            ) : (
+                <TableContainer component={Paper} sx={{ borderRadius: 3, overflow: 'hidden' }}>
+                    <Table>
+                        <TableHead sx={{ bgcolor: 'action.hover' }}>
+                            <TableRow>
+                                <TableCell>Usuário</TableCell>
+                                <TableCell align="center">Criado em</TableCell>
+                                <TableCell align="center">Total de Cliques</TableCell>
+                                <TableCell align="center">Último Clique</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        </TableHead>
+                        <TableBody>
+                            {paginatedUsers.map((user) => (
+                                <TableRow key={user.uid} hover>
+                                    <TableCell>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                            <Avatar src={user.photoURL || undefined} alt={user.displayName || ""}>
+                                                {user.displayName?.[0] || user.email?.[0] || "?"}
+                                            </Avatar>
+                                            <Box>
+                                                <Typography variant="body1" fontWeight="medium">
+                                                    {user.displayName || "Sem nome"}
+                                                </Typography>
+                                                <Typography variant="body2" color="textSecondary">
+                                                    {user.email}
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {dayjs(user.createdAt.toDate()).format("DD/MM/YYYY HH:mm")}
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <Typography fontWeight="bold" color="warning.main">
+                                            {user.totalClicks}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        {user.lastClick
+                                            ? dayjs(user.lastClick.toDate()).format("DD/MM/YYYY HH:mm")
+                                            : "Nunca"}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
             <TablePagination
                 rowsPerPageOptions={[10, 20, 50]}
                 component="div"
