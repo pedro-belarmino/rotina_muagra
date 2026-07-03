@@ -1,5 +1,5 @@
 import { db } from "../firebase/config";
-import { collection, getDocs, doc, getDoc, query, orderBy, Timestamp } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
 
 export interface UserProfile {
     uid: string;
