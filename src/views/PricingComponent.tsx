@@ -41,8 +41,9 @@ interface PricingPlan {
   benefits: string[];
   buttonText: string;
   buttonUrl?: string;
-  type: 'free' | 'planilha' | 'webapp';
+  type: 'free' | 'planilha' | 'webapp' | 'renda';
   isRecommended?: boolean;
+  textUnderButton: string,
 }
 
 export default function PrincingComponent() {
@@ -64,17 +65,47 @@ export default function PrincingComponent() {
       priceDescription: '',
       benefits: [
         'Muagrômetro pessoal.',
-        'Registro Diário de Agradecimento',
+        'Diário do Agradecimento',
         'Contador global de agradecimentos.',
-        'Acesso ilimitado ao webapp básico.',
         'Primeiro treino de percepção.',
+        'Exercícios para criar o hábito diário.',
+        'Descubra seu nível atual de gratidão.',
       ],
-      buttonText: 'Começar a Registrar',
+      buttonText: 'Começar Gratuitamente',
       type: 'free',
+      textUnderButton: 'Seu primeiro passo leva menos de 2 minutos.'
+    },
+    {
+      id: 'rendalizado',
+      badge: 'RECOMENDADO',
+      title: 'Desafio Rendalizado',
+      subtitle: 'Você já começou a enxergar. Agora é hora de equilibrar sua vida.',
+      subtitle2: 'Quando saúde, família e finanças entram em equilíbrio, agradecer deixa de ser esforço e passa a ser consequência.',
+      priceOld: 'De R$ 197,80',
+      priceLabel: 'Investimento único',
+      priceValue: 'R$ 38,80',
+      priceDescription: 'ACESSO IMEDIATO',
+      benefits: [
+        'Método dos 28 dias.',
+        'Apenas 28 minutos por dia',
+        'Saúde.',
+        'Família.',
+        'Agradecimento conectado aos três pilares.',
+        'Checklist diário.',
+        'Exercícios práticos.',
+        'Criação de hábitos consistentes.',
+        'Mais clareza, disciplina e direção.',
+        'Preparação para a Trilha do Agradecedor.',
+        'Finanças',
+      ],
+      buttonText: 'QUERO EQUILIBRAR MINHA VIDA',
+      type: 'renda',
+      isRecommended: true,
+      textUnderButton: 'O equilíbrio muda o que você vive. O agradecimento muda a forma como você enxerga tudo isso.'
     },
     {
       id: 'planilha',
-      badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '🌟 PLANO RECOMENDADO',
+      badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '',
       title: 'Trilha do Agradecedor Essencial',
       subtitle: 'Agora é hora de aprofundar o treino.',
       subtitle2: 'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
@@ -91,7 +122,7 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Quero treinar meu olhar',
       type: 'planilha',
-      isRecommended: true,
+      textUnderButton: 'Pessoas agradecidas não apenas pensam diferente. Elas vivem diferente.'
     },
     {
       id: 'webapp',
@@ -114,7 +145,7 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Tornar-me AgradeciMembro',
       type: 'webapp',
-
+      textUnderButton: 'Quem continua treinando continua crescendo.'
     },
   ];
 
@@ -200,14 +231,15 @@ export default function PrincingComponent() {
               >
                 <CardContent sx={{ flex: 1 }}>
                   {/* Badge */}
-                  <Chip
-                    label={plan.badge}
-                    size="small"
-                    color={plan.isRecommended ? 'warning' : 'default'}
-                    variant={plan.isRecommended ? 'filled' : 'outlined'}
-                    sx={{ mb: plan.id === 'webapp' ? 0 : 2 }}
-
-                  />
+                  {plan.badge !== '' && (
+                    <Chip
+                      label={plan.badge}
+                      size="small"
+                      color={plan.isRecommended ? 'warning' : 'default'}
+                      variant={plan.isRecommended ? 'filled' : 'outlined'}
+                      sx={{ mb: plan.id === 'webapp' ? 0 : 2 }}
+                    />
+                  )}
 
                   {/* Title */}
                   {plan.id === 'webapp' ? (
@@ -411,6 +443,16 @@ export default function PrincingComponent() {
                     {plan.buttonText}
                   </Button>
                 </CardActions>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    display: 'block',
+                    m: 2
+                  }}
+                >
+                  {plan.textUnderButton}
+                </Typography>
               </Card>
             </Box>
           ))}
@@ -436,13 +478,15 @@ export default function PrincingComponent() {
                 }}
               >
                 <Box>
-                  <Chip
-                    label={plan.badge}
-                    size="small"
-                    color={plan.isRecommended ? 'warning' : 'default'}
-                    variant={plan.isRecommended ? 'filled' : 'outlined'}
-                    sx={{ mb: plan.id === 'webapp' ? 0 : 1, mr: plan.id === 'webapp' ? 0 : 1 }}
-                  />
+                  {plan.badge !== '' && (
+                    <Chip
+                      label={plan.badge}
+                      size="small"
+                      color={plan.isRecommended ? 'warning' : 'default'}
+                      variant={plan.isRecommended ? 'filled' : 'outlined'}
+                      sx={{ mb: plan.id === 'webapp' ? 0 : 1, mr: plan.id === 'webapp' ? 0 : 1 }}
+                    />
+                  )}
                   {plan.id === 'webapp' ? (
                     <Box
                       component="img"
@@ -623,6 +667,16 @@ export default function PrincingComponent() {
                     {plan.buttonText}
                   </Button>
                 </CardContent>
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: theme.palette.text.secondary,
+                    display: 'block',
+                    m: 2
+                  }}
+                >
+                  {plan.textUnderButton}
+                </Typography>
               </Collapse>
             </Card>
           ))}
