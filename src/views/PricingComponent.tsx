@@ -111,9 +111,9 @@ export default function PrincingComponent() {
       id: 'planilha',
       badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '',
       title: 'Trilha do Agradecedor Essencial',
-      subtitle: 'Agora é hora de aprofundar o treino.',
+      subtitle: 'Sua vida começou a mudar. Agora transforme o agradecimento em quem você é.',
       subtitle2:
-        'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
+        'Aqui o agradecimento deixa de ser uma prática e se torna uma nova forma de viver.',
       priceOld: 'De R$ 298,80',
       priceLabel: 'Investimento Único',
       priceValue: 'R$ 88,80',
@@ -135,8 +135,8 @@ export default function PrincingComponent() {
       badge: '🔒 ACESSO EXCLUSIVO',
       title: 'AgradeceMembros na Trilha do Agradecedor',
       subtitle:
-        'EXCLUSIVO para quem já percorreu a Trilha do Agradecedor e decidiu viver isso todos os dias.',
-      subtitle2: '',
+        'Você chegou até aqui. Agora mantenha sua evolução viva todos os dias.',
+      subtitle2: 'O crescimento não termina. Ele precisa continuar.',
       priceOld: 'De R$ 298,80',
       priceLabel: 'Assinatura Mensal',
       priceValue: 'R$ 18,80',
