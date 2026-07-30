@@ -13,7 +13,6 @@ import {
   ListItemText,
   useTheme,
   useMediaQuery,
-  // Grid,
   Card,
   CardContent,
   CardActions,
@@ -43,15 +42,17 @@ interface PricingPlan {
   buttonUrl?: string;
   type: 'free' | 'planilha' | 'webapp' | 'renda';
   isRecommended?: boolean;
-  textUnderButton: string,
+  textUnderButton: string;
 }
 
 export default function PrincingComponent() {
   const theme = useTheme();
-  const { isAuthorizedPartial } = useAuth()
+  const { isAuthorizedPartial } = useAuth();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [expandedPlan, setExpandedPlan] = useState<string | null>(isMobile ? 'free' : null);
-  const navigate = useNavigate()
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(
+    isMobile ? 'free' : null,
+  );
+  const navigate = useNavigate();
 
   const plans: PricingPlan[] = [
     {
@@ -73,14 +74,16 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Começar Gratuitamente',
       type: 'free',
-      textUnderButton: 'Seu primeiro passo leva menos de 2 minutos.'
+      textUnderButton: 'Seu primeiro passo leva menos de 2 minutos.',
     },
     {
       id: 'rendalizado',
       badge: 'RECOMENDADO',
       title: 'Desafio Rendalizado',
-      subtitle: 'Você já começou a enxergar. Agora é hora de equilibrar sua vida.',
-      subtitle2: 'Quando saúde, família e finanças entram em equilíbrio, agradecer deixa de ser esforço e passa a ser consequência.',
+      subtitle:
+        'Você já começou a enxergar. Agora é hora de equilibrar sua vida.',
+      subtitle2:
+        'Quando saúde, família e finanças entram em equilíbrio, agradecer deixa de ser esforço e passa a ser consequência.',
       priceOld: 'De R$ 197,80',
       priceLabel: 'Investimento único',
       priceValue: 'R$ 38,80',
@@ -90,25 +93,27 @@ export default function PrincingComponent() {
         'Apenas 28 minutos por dia',
         'Saúde.',
         'Família.',
+        'Finanças',
         'Agradecimento conectado aos três pilares.',
         'Checklist diário.',
         'Exercícios práticos.',
         'Criação de hábitos consistentes.',
         'Mais clareza, disciplina e direção.',
         'Preparação para a Trilha do Agradecedor.',
-        'Finanças',
       ],
       buttonText: 'QUERO EQUILIBRAR MINHA VIDA',
       type: 'renda',
       isRecommended: true,
-      textUnderButton: 'O equilíbrio muda o que você vive. O agradecimento muda a forma como você enxerga tudo isso.'
+      textUnderButton:
+        'O equilíbrio muda o que você vive. O agradecimento muda a forma como você enxerga tudo isso.',
     },
     {
       id: 'planilha',
       badge: isAuthorizedPartial ? '🌟 VOCÊ ESTÁ AQUI' : '',
       title: 'Trilha do Agradecedor Essencial',
       subtitle: 'Agora é hora de aprofundar o treino.',
-      subtitle2: 'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
+      subtitle2:
+        'Aqui o agradecimento deixa de ser apenas registro e se torna um treinamento consciente da mente.',
       priceOld: 'De R$ 298,80',
       priceLabel: 'Investimento Único',
       priceValue: 'R$ 88,80',
@@ -122,13 +127,15 @@ export default function PrincingComponent() {
       ],
       buttonText: 'Quero treinar meu olhar',
       type: 'planilha',
-      textUnderButton: 'Pessoas agradecidas não apenas pensam diferente. Elas vivem diferente.'
+      textUnderButton:
+        'Pessoas agradecidas não apenas pensam diferente. Elas vivem diferente.',
     },
     {
       id: 'webapp',
-      badge: 'COMUNIDADE',
+      badge: '🔒 ACESSO EXCLUSIVO',
       title: 'AgradeceMembros na Trilha do Agradecedor',
-      subtitle: 'EXCLUSIVO para quem já percorreu a Trilha do Agradecedor e decidiu viver isso todos os dias.',
+      subtitle:
+        'EXCLUSIVO para quem já percorreu a Trilha do Agradecedor e decidiu viver isso todos os dias.',
       subtitle2: '',
       priceOld: 'De R$ 298,80',
       priceLabel: 'Assinatura Mensal',
@@ -138,18 +145,27 @@ export default function PrincingComponent() {
       monthlyLabel: '',
       benefits: [
         'Conteúdos contínuos de aprofundamento',
-        'Novos exercícios e reflexões',
+        'Novos exercícios',
         'Ambiente de evolução constante',
-        'Conexão com outros AgradeciMembros',
-        'Continuidade do treinamento da trilha',
+        'Comunidade de pessoas comprometidas',
+        'Acompanhamento contínuo',
+        'Evolução constante',
+        'Desafios mensais',
+        'Ambiente para manter a disciplina',
+        'Continuação natural da Trilha',
       ],
-      buttonText: 'Tornar-me AgradeciMembro',
+      isRecommended: false,
+      buttonText: 'Quero fazer parte',
       type: 'webapp',
-      textUnderButton: 'Quem continua treinando continua crescendo.'
+      textUnderButton: 'Quem continua treinando continua crescendo.',
     },
   ];
 
-  const link = 'https://muagrauni.hotmart.host/trilha-do-agradecedor-93a92980-d16d-4162-87ce-3d57dc93c09c'
+  const desktopPlans = plans.slice(0, 3);
+  const horizontalPlan = plans[3];
+
+  const link =
+    'https://muagrauni.hotmart.host/trilha-do-agradecedor-93a92980-d16d-4162-87ce-3d57dc93c09c';
 
   const togglePlan = (planId: string) => {
     setExpandedPlan(expandedPlan === planId ? null : planId);
@@ -157,23 +173,20 @@ export default function PrincingComponent() {
 
   const handleButtonClick = (plan: PricingPlan) => {
     if (plan.id === 'free') {
-      navigate('/home')
-    } else { window.location.href = link }
+      navigate('/home');
+      return;
+    }
+
+    window.location.href = link;
   };
 
-  const getCardVariant = (type: string) => {
-    if (type === 'free') return 'outlined';
+  const getCardVariant = (type: PricingPlan['type']) => {
+    if (type === 'free') {
+      return 'outlined';
+    }
+
     return 'elevation';
   };
-
-  // const getChipColor = (type: string) => {
-  //   const colors: Record<string, 'warning' | 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success'> = {
-  //     free: 'default',
-  //     planilha: 'default',
-  //     webapp: 'warning',
-  //   };
-  //   return colors[type] || 'default';
-  // };
 
   return (
     <Container maxWidth="lg" sx={{ py: { xs: 3, md: 5 } }}>
@@ -189,8 +202,10 @@ export default function PrincingComponent() {
             color: theme.palette.text.primary,
           }}
         >
-          Continue Gratuitamente ou Entre na sua Trilha de preferência.
+          Sua transformação acontece em quatro etapas. Comece de onde você está
+          hoje.
         </Typography>
+
         <Typography
           variant="body1"
           sx={{
@@ -202,142 +217,394 @@ export default function PrincingComponent() {
             lineHeight: 1.6,
           }}
         >
-          "Ambas, através do Agradecimento, irão te ajudar a te levar sempre para o lugar certo, na hora certa, com as pessoas certas, fazendo o que é certo. Eu garanto por vivência. Muagra"
+          "Toda grande mudança começa com um passo. Primeiro você aprende a
+          enxergar. Depois fortalece sua vida. Em seguida transforma sua mente.
+          E, por fim, mantém essa evolução todos os dias."
         </Typography>
       </Box>
 
-      {/* Desktop View - Grid */}
+      {/* Desktop */}
       {!isMobile && (
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 3, mb: 4 }}>
-          {plans.map((plan) => (
-            <Box key={plan.id}>
-              <Card
-                variant={getCardVariant(plan.type)}
+        <Box sx={{ mb: 4 }}>
+          {/* Três primeiras colunas */}
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
+              gap: 3,
+              mb: 3,
+            }}
+          >
+            {desktopPlans.map((plan) => (
+              <Box key={plan.id}>
+                <Card
+                  variant={getCardVariant(plan.type)}
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    border: plan.isRecommended
+                      ? `2px solid ${theme.palette.warning.main}`
+                      : undefined,
+                    transform: plan.isRecommended
+                      ? 'scale(1.05)'
+                      : 'scale(1)',
+                    transition: 'all 0.3s ease',
+                    background: plan.isRecommended
+                      ? `linear-gradient(
+                          135deg,
+                          ${theme.palette.warning.light}20 0%,
+                          ${theme.palette.warning.light}10 100%
+                        )`
+                      : undefined,
+                    '&:hover': {
+                      boxShadow: theme.shadows[8],
+                      transform: plan.isRecommended
+                        ? 'scale(1.05)'
+                        : 'translateY(-4px)',
+                    },
+                  }}
+                >
+                  <CardContent sx={{ flex: 1 }}>
+                    {plan.badge !== '' && (
+                      <Chip
+                        label={plan.badge}
+                        size="small"
+                        color={
+                          plan.isRecommended || plan.type === 'webapp'
+                            ? 'warning'
+                            : 'default'
+                        } variant={
+                          plan.isRecommended ? 'filled' : 'outlined'
+                        }
+                        sx={{ mb: 2 }}
+                      />
+                    )}
+
+                    {plan.id === 'planilha' ? (
+                      <Box
+                        sx={{
+                          width: '100%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <Box
+                          component="img"
+                          src="/trilhaDoAgradecedor.png"
+                          alt="Trilha do Agradecedor"
+                          sx={{
+                            width: '100%',
+                            maxWidth: 350,
+                            height: 'auto',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      </Box>
+                    ) : (
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          mb: 1,
+                          fontSize: { xs: '16px', md: '20px' },
+                          color: theme.palette.text.primary,
+                        }}
+                      >
+                        {plan.title}
+                      </Typography>
+                    )}
+
+                    {plan.subtitle && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          mb: 2,
+                        }}
+                      >
+                        {plan.subtitle}
+                      </Typography>
+                    )}
+
+                    {plan.subtitle2 && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          mb: 3,
+                        }}
+                      >
+                        {plan.subtitle2}
+                      </Typography>
+                    )}
+
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 2,
+                        mb: 2,
+                        background:
+                          plan.type === 'free'
+                            ? 'transparent'
+                            : plan.isRecommended
+                              ? `${theme.palette.warning.main}15`
+                              : theme.palette.background.default,
+                        border:
+                          plan.type === 'free'
+                            ? `1px solid ${theme.palette.divider}`
+                            : 'none',
+                      }}
+                    >
+                      {plan.priceOld && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            textDecoration: 'line-through',
+                            color: theme.palette.text.disabled,
+                            display: 'block',
+                            mb: 0.5,
+                          }}
+                        >
+                          {plan.priceOld}
+                        </Typography>
+                      )}
+
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          textTransform: 'uppercase',
+                          color: theme.palette.text.secondary,
+                          fontWeight: 600,
+                          display: 'block',
+                          mb: 0.5,
+                        }}
+                      >
+                        {plan.priceLabel}
+                      </Typography>
+
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: theme.palette.warning.main,
+                          mb: 0.5,
+                        }}
+                      >
+                        {plan.priceValue}
+                      </Typography>
+
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          color: theme.palette.text.secondary,
+                          display: 'block',
+                        }}
+                      >
+                        {plan.priceDescription}
+                      </Typography>
+
+                      {plan.monthlyPrice && (
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color: theme.palette.text.secondary,
+                            display: 'block',
+                            mt: 1,
+                            pt: 1,
+                            borderTop: `1px solid ${theme.palette.divider}`,
+                          }}
+                        >
+                          +{' '}
+                          <strong
+                            style={{
+                              color: theme.palette.warning.main,
+                            }}
+                          >
+                            {plan.monthlyPrice}
+                          </strong>{' '}
+                          {plan.monthlyLabel}
+                        </Typography>
+                      )}
+                    </Paper>
+
+                    <List dense sx={{ mb: 2 }}>
+                      {plan.benefits.map((benefit, index) => (
+                        <ListItem key={index} disableGutters>
+                          <ListItemIcon sx={{ minWidth: 32 }}>
+                            <CheckCircleIcon
+                              sx={{
+                                fontSize: '18px',
+                                color:
+                                  plan.type === 'free'
+                                    ? theme.palette.grey[400]
+                                    : theme.palette.warning.main,
+                              }}
+                            />
+                          </ListItemIcon>
+
+                          <ListItemText
+                            primary={benefit}
+                            primaryTypographyProps={{
+                              variant: 'body2',
+                              sx: {
+                                color: theme.palette.text.primary,
+                                fontSize: '13px',
+                              },
+                            }}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </CardContent>
+
+                  <CardActions>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color={
+                        plan.type === 'free' ? 'inherit' : 'warning'
+                      }
+                      onClick={() => handleButtonClick(plan)}
+                      sx={{
+                        textTransform: 'uppercase',
+                        fontWeight: 700,
+                        fontSize: '12px',
+                        py: 1.5,
+                      }}
+                    >
+                      {plan.buttonText}
+                    </Button>
+                  </CardActions>
+
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: theme.palette.text.secondary,
+                      display: 'block',
+                      m: 2,
+                    }}
+                  >
+                    {plan.textUnderButton}
+                  </Typography>
+                </Card>
+              </Box>
+            ))}
+          </Box>
+
+          {/* Quarta coluna horizontal */}
+          {horizontalPlan && (
+            <Card
+              variant={getCardVariant(horizontalPlan.type)}
+              sx={{
+                width: '100%',
+                border: horizontalPlan.isRecommended
+                  ? `2px solid ${theme.palette.warning.main}`
+                  : undefined,
+                transition: 'all 0.3s ease',
+                background: horizontalPlan.isRecommended
+                  ? `linear-gradient(
+                      135deg,
+                      ${theme.palette.warning.light}20 0%,
+                      ${theme.palette.warning.light}10 100%
+                    )`
+                  : undefined,
+                '&:hover': {
+                  boxShadow: theme.shadows[8],
+                  transform: 'translateY(-4px)',
+                },
+              }}
+            >
+              <CardContent
                 sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  border: plan.isRecommended ? `2px solid ${theme.palette.warning.main}` : undefined,
-                  transform: plan.isRecommended ? 'scale(1.05)' : 'scale(1)',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: theme.shadows[8],
-                    transform: plan.isRecommended ? 'scale(1.05)' : 'translateY(-4px)',
+                  display: 'grid',
+                  gridTemplateColumns:
+                    'minmax(220px, 0.9fr) minmax(220px, 0.8fr) minmax(360px, 1.4fr)',
+                  gap: 3,
+                  alignItems: 'stretch',
+                  p: 3,
+                  '&:last-child': {
+                    pb: 3,
                   },
-                  background: plan.isRecommended
-                    ? `linear-gradient(135deg, ${theme.palette.warning.light}20 0%, ${theme.palette.warning.light}10 100%)`
-                    : undefined,
                 }}
               >
-                <CardContent sx={{ flex: 1 }}>
-                  {/* Badge */}
-                  {plan.badge !== '' && (
+                {/* Identificação */}
+                <Box>
+                  {horizontalPlan.badge !== '' && (
                     <Chip
-                      label={plan.badge}
+                      label={horizontalPlan.badge}
                       size="small"
-                      color={plan.isRecommended ? 'warning' : 'default'}
-                      variant={plan.isRecommended ? 'filled' : 'outlined'}
-                      sx={{ mb: plan.id === 'webapp' ? 0 : 2 }}
+                      color={
+                        horizontalPlan.isRecommended || horizontalPlan.type === 'webapp'
+                          ? 'warning'
+                          : 'default'
+                      }
+                      variant={
+                        horizontalPlan.isRecommended || horizontalPlan.type === 'webapp'
+                          ? 'filled'
+                          : 'outlined'
+                      }
+                      sx={{ mb: 1 }}
                     />
                   )}
 
-                  {/* Title */}
-                  {plan.id === 'webapp' ? (
-                    <Box
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Box
-                        component="img"
-                        src="/Agradecimembros v4.png"
-                        alt="AgradeceMembros"
-                        sx={{
-                          width: '100%',
-                          maxWidth: 350,
-                          height: 'auto',
-                          objectFit: 'contain',
-                        }}
-                      />
-                    </Box>
-                  ) : plan.id === 'planilha' ? (
-                    <Box
-                      sx={{
-                        width: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Box
-                        component="img"
-                        src="/trilhaDoAgradecedor.png"
-                        alt="Trilha do Agradecedor"
-                        sx={{
-                          width: '100%',
-                          maxWidth: 350,
-                          height: 'auto',
-                          objectFit: 'contain',
-                        }}
-                      />
-                    </Box>
-                  ) : (
+                  <Box
+                    component="img"
+                    src="/Agradecimembros v4.png"
+                    alt="AgradeceMembros"
+                    sx={{
+                      width: '100%',
+                      maxWidth: 300,
+                      height: 'auto',
+                      objectFit: 'contain',
+                      display: 'block',
+                      mb: 2,
+                    }}
+                  />
 
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                        mb: 1,
-                        fontSize: { xs: '16px', md: '20px' },
-                        color: theme.palette.text.primary,
-                      }}
-                    >
-                      {plan.title}
-                    </Typography>
-                  )}
-
-                  {/* Subtitle */}
-                  {plan.subtitle && (
+                  {horizontalPlan.subtitle && (
                     <Typography
                       variant="body2"
                       sx={{
                         color: theme.palette.text.secondary,
-                        mb: 2,
+                        mb: horizontalPlan.subtitle2 ? 2 : 0,
                       }}
                     >
-                      {plan.subtitle}
+                      {horizontalPlan.subtitle}
                     </Typography>
                   )}
-                  {plan.subtitle && (
+
+                  {horizontalPlan.subtitle2 && (
                     <Typography
                       variant="body2"
                       sx={{
                         color: theme.palette.text.secondary,
-                        mb: 3,
                       }}
                     >
-                      {plan.subtitle2}
+                      {horizontalPlan.subtitle2}
                     </Typography>
                   )}
+                </Box>
 
-                  {/* Price Section */}
+                {/* Preço e botão */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
                   <Paper
                     elevation={0}
                     sx={{
                       p: 2,
                       mb: 2,
-                      background: plan.type === 'free'
-                        ? 'transparent'
-                        : plan.isRecommended
-                          ? `${theme.palette.warning.main}15`
-                          : theme.palette.background.default,
-                      border: plan.type === 'free' ? `1px solid ${theme.palette.divider}` : 'none',
+                      background: horizontalPlan.isRecommended
+                        ? `${theme.palette.warning.main}15`
+                        : theme.palette.background.default,
                     }}
                   >
-                    {plan.priceOld && (
+                    {horizontalPlan.priceOld && (
                       <Typography
                         variant="caption"
                         sx={{
@@ -347,9 +614,10 @@ export default function PrincingComponent() {
                           mb: 0.5,
                         }}
                       >
-                        {plan.priceOld}
+                        {horizontalPlan.priceOld}
                       </Typography>
                     )}
+
                     <Typography
                       variant="caption"
                       sx={{
@@ -360,8 +628,9 @@ export default function PrincingComponent() {
                         mb: 0.5,
                       }}
                     >
-                      {plan.priceLabel}
+                      {horizontalPlan.priceLabel}
                     </Typography>
+
                     <Typography
                       variant="h5"
                       sx={{
@@ -370,8 +639,9 @@ export default function PrincingComponent() {
                         mb: 0.5,
                       }}
                     >
-                      {plan.priceValue}
+                      {horizontalPlan.priceValue}
                     </Typography>
+
                     <Typography
                       variant="caption"
                       sx={{
@@ -379,9 +649,10 @@ export default function PrincingComponent() {
                         display: 'block',
                       }}
                     >
-                      {plan.priceDescription}
+                      {horizontalPlan.priceDescription}
                     </Typography>
-                    {plan.monthlyPrice && (
+
+                    {horizontalPlan.monthlyPrice && (
                       <Typography
                         variant="caption"
                         sx={{
@@ -392,25 +663,93 @@ export default function PrincingComponent() {
                           borderTop: `1px solid ${theme.palette.divider}`,
                         }}
                       >
-                        + <strong style={{ color: theme.palette.warning.main }}>{plan.monthlyPrice}</strong> {plan.monthlyLabel}
+                        +{' '}
+                        <strong
+                          style={{
+                            color: theme.palette.warning.main,
+                          }}
+                        >
+                          {horizontalPlan.monthlyPrice}
+                        </strong>{' '}
+                        {horizontalPlan.monthlyLabel}
                       </Typography>
                     )}
                   </Paper>
 
-                  {/* Benefits */}
-                  <List dense sx={{ mb: 2 }}>
-                    {plan.benefits.map((benefit, index) => (
-                      <ListItem key={index} disableGutters>
-                        <ListItemIcon sx={{ minWidth: 32 }}>
+                  <Box sx={{ mt: 'auto' }}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color={
+                        horizontalPlan.type === 'free'
+                          ? 'inherit'
+                          : 'warning'
+                      }
+                      onClick={() =>
+                        handleButtonClick(horizontalPlan)
+                      }
+                      sx={{
+                        textTransform: 'uppercase',
+                        fontWeight: 700,
+                        fontSize: '12px',
+                        py: 1.5,
+                      }}
+                    >
+                      {horizontalPlan.buttonText}
+                    </Button>
+
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        display: 'block',
+                        mt: 1.5,
+                      }}
+                    >
+                      {horizontalPlan.textUnderButton}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {/* Benefícios em duas colunas */}
+                <List
+                  dense
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns:
+                      'repeat(2, minmax(0, 1fr))',
+                    columnGap: 2,
+                    alignContent: 'start',
+                    p: 0,
+                    m: 0,
+                  }}
+                >
+                  {horizontalPlan.benefits.map(
+                    (benefit, index) => (
+                      <ListItem
+                        key={index}
+                        disableGutters
+                        sx={{
+                          alignItems: 'flex-start',
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 32,
+                            mt: 0.25,
+                          }}
+                        >
                           <CheckCircleIcon
                             sx={{
                               fontSize: '18px',
-                              color: plan.type === 'free'
-                                ? theme.palette.grey[400]
-                                : theme.palette.warning.main,
+                              color:
+                                horizontalPlan.type === 'free'
+                                  ? theme.palette.grey[400]
+                                  : theme.palette.warning.main,
                             }}
                           />
                         </ListItemIcon>
+
                         <ListItemText
                           primary={benefit}
                           primaryTypographyProps={{
@@ -422,44 +761,16 @@ export default function PrincingComponent() {
                           }}
                         />
                       </ListItem>
-                    ))}
-                  </List>
-                </CardContent>
-
-                {/* Button */}
-                <CardActions>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color={plan.type === 'free' ? 'inherit' : 'warning'}
-                    onClick={() => handleButtonClick(plan)}
-                    sx={{
-                      textTransform: 'uppercase',
-                      fontWeight: 700,
-                      fontSize: '12px',
-                      py: 1.5,
-                    }}
-                  >
-                    {plan.buttonText}
-                  </Button>
-                </CardActions>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    color: theme.palette.text.secondary,
-                    display: 'block',
-                    m: 2
-                  }}
-                >
-                  {plan.textUnderButton}
-                </Typography>
-              </Card>
-            </Box>
-          ))}
+                    ),
+                  )}
+                </List>
+              </CardContent>
+            </Card>
+          )}
         </Box>
       )}
 
-      {/* Mobile View - Accordion */}
+      {/* Mobile */}
       {isMobile && (
         <Stack spacing={2}>
           {plans.map((plan) => (
@@ -482,11 +793,19 @@ export default function PrincingComponent() {
                     <Chip
                       label={plan.badge}
                       size="small"
-                      color={plan.isRecommended ? 'warning' : 'default'}
-                      variant={plan.isRecommended ? 'filled' : 'outlined'}
-                      sx={{ mb: plan.id === 'webapp' ? 0 : 1, mr: plan.id === 'webapp' ? 0 : 1 }}
+                      color={
+                        plan.isRecommended || plan.type === 'webapp' ? 'warning' : 'default'
+                      }
+                      variant={
+                        plan.isRecommended || plan.type === 'webapp' ? 'filled' : 'outlined'
+                      }
+                      sx={{
+                        mb: plan.id === 'webapp' ? 0 : 1,
+                        mr: plan.id === 'webapp' ? 0 : 1,
+                      }}
                     />
                   )}
+
                   {plan.id === 'webapp' ? (
                     <Box
                       component="img"
@@ -513,30 +832,39 @@ export default function PrincingComponent() {
                         mt: 0.5,
                       }}
                     />
-                  ) :
-                    (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontWeight: 700,
-                          color: theme.palette.text.primary,
-                        }}
-                      >
-                        {plan.title}
-                      </Typography>
-                    )}
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        fontWeight: 700,
+                        color: theme.palette.text.primary,
+                      }}
+                    >
+                      {plan.title}
+                    </Typography>
+                  )}
                 </Box>
+
                 <ExpandMoreIcon
                   sx={{
-                    transform: expandedPlan === plan.id ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transform:
+                      expandedPlan === plan.id
+                        ? 'rotate(180deg)'
+                        : 'rotate(0deg)',
                     transition: 'transform 0.3s ease',
-                    color: plan.isRecommended ? theme.palette.warning.main : theme.palette.text.secondary,
+                    color: plan.isRecommended
+                      ? theme.palette.warning.main
+                      : theme.palette.text.secondary,
                   }}
                 />
               </Button>
 
               <Collapse in={expandedPlan === plan.id}>
-                <CardContent sx={{ borderTop: `1px solid ${theme.palette.divider}` }}>
+                <CardContent
+                  sx={{
+                    borderTop: `1px solid ${theme.palette.divider}`,
+                  }}
+                >
                   {plan.subtitle && (
                     <Typography
                       variant="body2"
@@ -549,17 +877,29 @@ export default function PrincingComponent() {
                     </Typography>
                   )}
 
-                  {/* Price Section */}
+                  {plan.subtitle2 && (
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: theme.palette.text.secondary,
+                        mb: 2,
+                      }}
+                    >
+                      {plan.subtitle2}
+                    </Typography>
+                  )}
+
                   <Paper
                     elevation={0}
                     sx={{
                       p: 2,
                       mb: 2,
-                      background: plan.type === 'free'
-                        ? 'transparent'
-                        : plan.isRecommended
-                          ? `${theme.palette.warning.main}15`
-                          : theme.palette.background.default,
+                      background:
+                        plan.type === 'free'
+                          ? 'transparent'
+                          : plan.isRecommended
+                            ? `${theme.palette.warning.main}15`
+                            : theme.palette.background.default,
                       border: `1px solid ${theme.palette.divider}`,
                     }}
                   >
@@ -576,6 +916,7 @@ export default function PrincingComponent() {
                         {plan.priceOld}
                       </Typography>
                     )}
+
                     <Typography
                       variant="caption"
                       sx={{
@@ -588,6 +929,7 @@ export default function PrincingComponent() {
                     >
                       {plan.priceLabel}
                     </Typography>
+
                     <Typography
                       variant="h6"
                       sx={{
@@ -598,6 +940,7 @@ export default function PrincingComponent() {
                     >
                       {plan.priceValue}
                     </Typography>
+
                     <Typography
                       variant="caption"
                       sx={{
@@ -607,6 +950,7 @@ export default function PrincingComponent() {
                     >
                       {plan.priceDescription}
                     </Typography>
+
                     {plan.monthlyPrice && (
                       <Typography
                         variant="caption"
@@ -618,12 +962,19 @@ export default function PrincingComponent() {
                           borderTop: `1px solid ${theme.palette.divider}`,
                         }}
                       >
-                        + <strong style={{ color: theme.palette.warning.main }}>{plan.monthlyPrice}</strong> {plan.monthlyLabel}
+                        +{' '}
+                        <strong
+                          style={{
+                            color: theme.palette.warning.main,
+                          }}
+                        >
+                          {plan.monthlyPrice}
+                        </strong>{' '}
+                        {plan.monthlyLabel}
                       </Typography>
                     )}
                   </Paper>
 
-                  {/* Benefits */}
                   <List dense sx={{ mb: 2 }}>
                     {plan.benefits.map((benefit, index) => (
                       <ListItem key={index} disableGutters>
@@ -631,12 +982,14 @@ export default function PrincingComponent() {
                           <CheckCircleIcon
                             sx={{
                               fontSize: '18px',
-                              color: plan.type === 'free'
-                                ? theme.palette.grey[400]
-                                : theme.palette.warning.main,
+                              color:
+                                plan.type === 'free'
+                                  ? theme.palette.grey[400]
+                                  : theme.palette.warning.main,
                             }}
                           />
                         </ListItemIcon>
+
                         <ListItemText
                           primary={benefit}
                           primaryTypographyProps={{
@@ -651,11 +1004,12 @@ export default function PrincingComponent() {
                     ))}
                   </List>
 
-                  {/* Button */}
                   <Button
                     fullWidth
                     variant="contained"
-                    color={plan.type === 'free' ? 'inherit' : 'warning'}
+                    color={
+                      plan.type === 'free' ? 'inherit' : 'warning'
+                    }
                     onClick={() => handleButtonClick(plan)}
                     sx={{
                       textTransform: 'uppercase',
@@ -667,12 +1021,13 @@ export default function PrincingComponent() {
                     {plan.buttonText}
                   </Button>
                 </CardContent>
+
                 <Typography
                   variant="caption"
                   sx={{
                     color: theme.palette.text.secondary,
                     display: 'block',
-                    m: 2
+                    m: 2,
                   }}
                 >
                   {plan.textUnderButton}
