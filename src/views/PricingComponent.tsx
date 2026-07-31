@@ -167,6 +167,10 @@ export default function PrincingComponent() {
   const link =
     'https://muagrauni.hotmart.host/trilha-do-agradecedor-93a92980-d16d-4162-87ce-3d57dc93c09c';
 
+  const link2 = 'https://oito-minutos-equilibrio.lovable.app/';
+
+  const link3 = 'https://trilhadoagradecedor.atoms.world/';
+
   const togglePlan = (planId: string) => {
     setExpandedPlan(expandedPlan === planId ? null : planId);
   };
@@ -174,6 +178,14 @@ export default function PrincingComponent() {
   const handleButtonClick = (plan: PricingPlan) => {
     if (plan.id === 'free') {
       navigate('/home');
+      return;
+    }
+    if (plan.id === 'rendalizado') {
+      window.location.href = link2
+      return;
+    }
+    if (plan.id === 'planilha') {
+      window.location.href = link3
       return;
     }
 
