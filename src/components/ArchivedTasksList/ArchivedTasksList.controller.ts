@@ -30,9 +30,14 @@ export function useArchivedTasksListController() {
             setLoading(true);
         }
 
-        const userTasks = await getTasks(user.uid, true, forceRefresh);
-        setArchivedTasks(userTasks.filter((task) => task.archived));
-        setLoading(false);
+        try {
+            const userTasks = await getTasks(user.uid, true, forceRefresh);
+            setArchivedTasks(userTasks.filter((task) => task.archived));
+        } catch (error) {
+            console.error("Error fetching archived tasks:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
