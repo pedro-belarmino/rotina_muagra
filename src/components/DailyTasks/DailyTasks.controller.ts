@@ -16,7 +16,7 @@ import {
 } from "../../service/counterService";
 import type { SeverityType } from "../shared/SharedSnackbar";
 import { daysInMonth, daysInYear, formatISODate, getNowInBrasilia } from "../../utils/period";
-
+import { FirebaseError } from "firebase/app";
 export const useDailyTasksController = () => {
     const { user } = useAuth();
     const [timeLeft, setTimeLeft] = useState("");
@@ -106,12 +106,41 @@ export const useDailyTasksController = () => {
 
         try {
             let userTasks = await getTasks(user.uid, false, forceRefresh);
-            for (const t of userTasks) {
+
+
+            for (const task of userTasks) {
                 try {
-                    await ensureTaskPeriodIsCurrent(user.uid, t);
-                    await ensureTaskYearIsCurrent(user.uid, t);
-                } catch (err) {
-                    console.error(`Error ensuring period/year is current for task ${t.id}:`, err);
+                    await ensureTaskPeriodIsCurrent(user.uid, task);
+                } catch (error) {
+                    if (error instanceof FirebaseError) {
+                        console.error("Erro ao atualizar período:", {
+                            taskId: task.id,
+                            code: error.code,
+                            message: error.message,
+                        });
+                    } else {
+                        console.error(
+                            `Erro inesperado ao atualizar período da tarefa ${task.id}:`,
+                            error
+                        );
+                    }
+                }
+
+                try {
+                    await ensureTaskYearIsCurrent(user.uid, task);
+                } catch (error) {
+                    if (error instanceof FirebaseError) {
+                        console.error("Erro ao atualizar ano:", {
+                            taskId: task.id,
+                            code: error.code,
+                            message: error.message,
+                        });
+                    } else {
+                        console.error(
+                            `Erro inesperado ao atualizar ano da tarefa ${task.id}:`,
+                            error
+                        );
+                    }
                 }
             }
             userTasks = await getTasks(user.uid, false, forceRefresh);
