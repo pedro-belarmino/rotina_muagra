@@ -40,46 +40,63 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-            if (currentUser && currentUser.email) {
-                const [authorized, authorizedPartial] = await Promise.all([
-                    isEmailAuthorized(currentUser.email),
-                    isEmailAuthorizedPartial(currentUser.email)
-                ]);
+            try {
+                if (currentUser && currentUser.email) {
+                    let authorized = false;
+                    let authorizedPartial = false;
 
-                setIsAuthorized(authorized);
-                setIsAuthorizedPartial(authorizedPartial);
-
-                const userRef = doc(db, "users", currentUser.uid);
-                const snapshot = await getDoc(userRef);
-
-                if (!snapshot.exists()) {
-                    await setDoc(userRef, {
-                        uid: currentUser.uid,
-                        displayName: currentUser.displayName,
-                        email: currentUser.email,
-                        photoURL: currentUser.photoURL,
-                        createdAt: Timestamp.now(),
-                        hasSeenWelcomeModal: false,
-                    });
-
-                    if (!authorized && !authorizedPartial) {
-                        setShowWelcomeModal(true);
+                    try {
+                        const [authResult, authPartialResult] = await Promise.all([
+                            isEmailAuthorized(currentUser.email),
+                            isEmailAuthorizedPartial(currentUser.email)
+                        ]);
+                        authorized = authResult;
+                        authorizedPartial = authPartialResult;
+                    } catch (error) {
+                        console.error("Error checking email authorization:", error);
                     }
+
+                    setIsAuthorized(authorized);
+                    setIsAuthorizedPartial(authorizedPartial);
+
+                    try {
+                        const userRef = doc(db, "users", currentUser.uid);
+                        const snapshot = await getDoc(userRef);
+
+                        if (!snapshot.exists()) {
+                            await setDoc(userRef, {
+                                uid: currentUser.uid,
+                                displayName: currentUser.displayName,
+                                email: currentUser.email,
+                                photoURL: currentUser.photoURL,
+                                createdAt: Timestamp.now(),
+                                hasSeenWelcomeModal: false,
+                            });
+
+                            if (!authorized && !authorizedPartial) {
+                                setShowWelcomeModal(true);
+                            }
+                        } else {
+                            const userData = snapshot.data();
+                            if (!authorized && !authorizedPartial && userData.hasSeenWelcomeModal === false) {
+                                setShowWelcomeModal(true);
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Error updating or retrieving user document in AuthContext:", error);
+                    }
+
+                    setUser(currentUser);
                 } else {
-                    const userData = snapshot.data();
-                    if (!authorized && !authorizedPartial && userData.hasSeenWelcomeModal === false) {
-                        setShowWelcomeModal(true);
-                    }
+                    setUser(null);
+                    setIsAuthorized(false);
+                    setIsAuthorizedPartial(false);
                 }
-
-                setUser(currentUser);
-            } else {
-                setUser(null);
-                setIsAuthorized(false);
-                setIsAuthorizedPartial(false);
+            } catch (error) {
+                console.error("Critical error in onAuthStateChanged hook:", error);
+            } finally {
+                setLoading(false);
             }
-
-            setLoading(false);
         });
 
         return () => unsubscribe();

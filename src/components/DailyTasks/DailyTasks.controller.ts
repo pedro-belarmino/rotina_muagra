@@ -104,34 +104,43 @@ export const useDailyTasksController = () => {
         if (!user) return;
         setLoading(true);
 
-        let userTasks = await getTasks(user.uid, false, forceRefresh);
-        for (const t of userTasks) {
-            await ensureTaskPeriodIsCurrent(user.uid, t);
-            await ensureTaskYearIsCurrent(user.uid, t);
+        try {
+            let userTasks = await getTasks(user.uid, false, forceRefresh);
+            for (const t of userTasks) {
+                try {
+                    await ensureTaskPeriodIsCurrent(user.uid, t);
+                    await ensureTaskYearIsCurrent(user.uid, t);
+                } catch (err) {
+                    console.error(`Error ensuring period/year is current for task ${t.id}:`, err);
+                }
+            }
+            userTasks = await getTasks(user.uid, false, forceRefresh);
+
+            userTasks.sort((a, b) => {
+                if (a.priority && !b.priority) return -1;
+                if (!a.priority && b.priority) return 1;
+                if (a.priority && b.priority) return b.priority.toMillis() - a.priority.toMillis();
+                const [ah, am] = a.schedule.split(":").map(Number);
+                const [bh, bm] = b.schedule.split(":").map(Number);
+                return ah * 60 + am - (bh * 60 + bm);
+            });
+
+            setTasks(userTasks);
+
+            const now = getNowInBrasilia();
+            const today = formatISODate(now);
+            const logsToday = await getTaskLogsByDay(user.uid, today);
+            const status: Record<string, string | null> = {};
+            for (const task of userTasks) {
+                const log = logsToday.find(l => l.taskId === task.id);
+                status[task.id!] = log ? log.id! : null;
+            }
+            setDoneToday(status);
+        } catch (error) {
+            console.error("Error fetching tasks in DailyTasks.controller:", error);
+        } finally {
+            setLoading(false);
         }
-        userTasks = await getTasks(user.uid, false, forceRefresh);
-
-        userTasks.sort((a, b) => {
-            if (a.priority && !b.priority) return -1;
-            if (!a.priority && b.priority) return 1;
-            if (a.priority && b.priority) return b.priority.toMillis() - a.priority.toMillis();
-            const [ah, am] = a.schedule.split(":").map(Number);
-            const [bh, bm] = b.schedule.split(":").map(Number);
-            return ah * 60 + am - (bh * 60 + bm);
-        });
-
-        setTasks(userTasks);
-
-        const now = getNowInBrasilia();
-        const today = formatISODate(now);
-        const logsToday = await getTaskLogsByDay(user.uid, today);
-        const status: Record<string, string | null> = {};
-        for (const task of userTasks) {
-            const log = logsToday.find(l => l.taskId === task.id);
-            status[task.id!] = log ? log.id! : null;
-        }
-        setDoneToday(status);
-        setLoading(false);
     };
 
     // Ao mudar filtro ou tasks: recalcula filteredTasks e reseta para página 1
