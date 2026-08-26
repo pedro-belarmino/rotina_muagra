@@ -1,43 +1,32 @@
-import { db } from "../firebase/config";
+import { db, functions } from "../firebase/config";
 import {
     collection,
-    addDoc,
     getDocs,
     getDocsFromCache,
     getDocsFromServer,
-    Timestamp,
-    doc,
-    updateDoc,
-    deleteDoc,
-    query,
-    where,
-
-
 } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import type { Task } from "../types/Task";
-import { getNowInBrasilia, getPeriodStartForType } from "../utils/period";
 
-
-export async function addTask(userId: string, task: Task) {
-    const tasksRef = collection(db, "users", userId, "tasks");
-    const now = getNowInBrasilia();
-    const periodStart = getPeriodStartForType(now, task.totalGoalType as any);
-    let now2 = new Date()
-    await addDoc(tasksRef, {
-        ...task,
-        createdAt: now2,
-        archived: false,
-        days: 0,
-        periodStart: periodStart ?? null,
-        daysYear: 0,
-        yearStart: String(now.getFullYear()),
-        totalMonth: 0,
-        totalYear: 0,
+export async function addTask(_userId: string, task: Task) {
+    const createTaskFn = httpsCallable<any, Task>(functions, "createTask");
+    const response = await createTaskFn({
+        name: task.name,
+        description: task.description,
+        measure: task.measure,
+        dailyGoal: task.dailyGoal,
+        totalGoal: task.totalGoal,
+        totalGoalType: task.totalGoalType,
+        schedule: task.schedule,
+        dailyTask: task.dailyTask,
+        taskType: task.taskType,
+        gratitudeTrack: task.gratitudeTrack,
+        icon: task.icon,
     });
-    // Força a atualização do cache após adicionar uma nova tarefa
-    await getTasks(userId, false, true);
-}
 
+    await getTasks(_userId, false, true);
+    return response.data;
+}
 
 export async function getTasks(userId: string, includeArchived = false, forceRefresh = false): Promise<Task[]> {
     const tasksRef = collection(db, "users", userId, "tasks");
@@ -48,7 +37,6 @@ export async function getTasks(userId: string, includeArchived = false, forceRef
     } else {
         try {
             snapshot = await getDocsFromCache(tasksRef);
-            // Se o cache estiver vazio, busca do servidor
             if (snapshot.empty) {
                 snapshot = await getDocs(tasksRef);
             }
@@ -76,86 +64,40 @@ export async function getTasks(userId: string, includeArchived = false, forceRef
         .filter((task) => includeArchived || !task.archived);
 }
 
-
-
 export async function updateTask(userId: string, taskId: string, updates: Partial<Task>) {
-    const taskRef = doc(db, "users", userId, "tasks", taskId);
-    await updateDoc(taskRef, updates);
-    // Se estiver desarquivando, forçamos a atualização do cache
+    const updateTaskFn = httpsCallable<any, { success: boolean }>(functions, "updateTask");
+    await updateTaskFn({ taskId, updates });
+
     if (updates.archived === false) {
         await getTasks(userId, false, true);
     }
 }
 
-
-export async function updateTaskPriority(userId: string, taskId: string, isPriority: boolean) {
-    const taskRef = doc(db, "users", userId, "tasks", taskId);
-    const priorityValue = isPriority ? Timestamp.now() : null;
-    await updateDoc(taskRef, { priority: priorityValue });
+export async function updateTaskPriority(_userId: string, taskId: string, isPriority: boolean) {
+    const updateTaskFn = httpsCallable<any, { success: boolean }>(functions, "updateTask");
+    await updateTaskFn({ taskId, updates: { priority: isPriority } });
 }
 
-
-
-export async function ensureTaskPeriodIsCurrent(userId: string, task: Task): Promise<boolean> {
-    if (!task || !task.id) return false;
-    const now = getNowInBrasilia();
-    const currentPeriodStart = getPeriodStartForType(now, task.totalGoalType as any);
-
-    if (!currentPeriodStart) {
-
-        if (task.periodStart) {
-            await updateTask(userId, task.id, { periodStart: null, days: task.days ?? 0, totalMonth: 0, });
-            return true;
-        }
-        return false;
-    }
-
-    if (task.periodStart !== currentPeriodStart) {
-
-        await updateTask(userId, task.id, { days: 0, periodStart: currentPeriodStart });
-        return true;
-    }
-    return false;
+export async function ensureTaskPeriodIsCurrent(_userId: string, _task: Task): Promise<boolean> {
+    const ensureFn = httpsCallable<any, { updatedCount: number }>(functions, "ensureTaskPeriods");
+    const res = await ensureFn();
+    return res.data.updatedCount > 0;
 }
 
-export async function ensureTaskYearIsCurrent(userId: string, task: Task): Promise<boolean> {
-    if (!task || !task.id) return false;
-    const now = getNowInBrasilia();
-    const currentYear = String(now.getFullYear());
-
-    if (task.yearStart !== currentYear) {
-
-        await updateTask(userId, task.id, { daysYear: 0, yearStart: currentYear, totalYear: 0, });
-        return true;
-    }
-    return false;
+export async function ensureTaskYearIsCurrent(_userId: string, _task: Task): Promise<boolean> {
+    const ensureFn = httpsCallable<any, { updatedCount: number }>(functions, "ensureTaskPeriods");
+    const res = await ensureFn();
+    return res.data.updatedCount > 0;
 }
-
-
 
 export async function archiveTask(userId: string, taskId: string) {
-    const taskRef = doc(db, "users", userId, "tasks", taskId);
-    await updateDoc(taskRef, { archived: true });
-    // Força a atualização do cache após arquivar uma tarefa
+    const updateTaskFn = httpsCallable<any, { success: boolean }>(functions, "updateTask");
+    await updateTaskFn({ taskId, updates: { archived: true } });
     await getTasks(userId, false, true);
 }
 
-
 export async function deleteTaskPermanently(userId: string, taskId: string) {
-
-    const taskRef = doc(db, "users", userId, "tasks", taskId);
-    await deleteDoc(taskRef);
-
-
-    const logsRef = collection(db, "users", userId, "taskLogs");
-    const q = query(logsRef, where("taskId", "==", taskId));
-    const snapshot = await getDocs(q);
-
-    const batchDeletes = snapshot.docs.map((logDoc) =>
-        deleteDoc(logDoc.ref)
-    );
-
-    await Promise.all(batchDeletes);
-    // Força a atualização do cache após excluir permanentemente uma tarefa
+    const deleteTaskFn = httpsCallable<any, { success: boolean }>(functions, "deleteTask");
+    await deleteTaskFn({ taskId });
     await getTasks(userId, false, true);
 }

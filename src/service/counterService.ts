@@ -1,18 +1,14 @@
-import { db } from "../firebase/config";
+import { db, functions } from "../firebase/config";
 import { getNowInBrasilia } from "../utils/period";
 import {
     doc,
     getDoc,
-    setDoc,
-    updateDoc,
-    increment,
-    Timestamp,
     collection,
     getDocs,
-    runTransaction,
     query,
     where,
 } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 
 export const getTodayKey = () => {
     const today = getNowInBrasilia();
@@ -21,8 +17,6 @@ export const getTodayKey = () => {
     const dd = String(today.getDate()).padStart(2, "0");
     return `${yyyy}-${mm}-${dd}`;
 };
-
-
 
 export async function getDailyCounter(userId: string, dateKey?: string): Promise<{ value: number, comment: string }> {
     const key = dateKey ?? getTodayKey();
@@ -37,69 +31,16 @@ export async function getDailyCounter(userId: string, dateKey?: string): Promise
     return { value: data.value, comment: data.comment || "" };
 }
 
-
-export async function incrementDailyCounter(userId: string): Promise<number> {
-    const todayKey = getTodayKey();
-    const userCounterRef = doc(db, "users", userId, "dailyCounters", todayKey);
-    const globalCounterRef = doc(db, "GlobalCounter", "global_counter");
-
-    return await runTransaction(db, async (transaction) => {
-        const userCounterSnap = await transaction.get(userCounterRef);
-        const globalCounterSnap = await transaction.get(globalCounterRef);
-
-        if (!userCounterSnap.exists()) {
-            transaction.set(userCounterRef, {
-                value: 1,
-                dateKey: todayKey,
-                updatedAt: Timestamp.now(),
-                comment: "",
-            });
-
-            if (!globalCounterSnap.exists()) {
-                transaction.set(globalCounterRef, { value: 1 });
-            } else {
-                transaction.update(globalCounterRef, { value: increment(1) });
-            }
-            return 1;
-        }
-
-        const data = userCounterSnap.data() as { value: number };
-        transaction.update(userCounterRef, {
-            value: increment(1),
-            updatedAt: Timestamp.now(),
-        });
-
-        if (!globalCounterSnap.exists()) {
-            transaction.set(globalCounterRef, { value: 1 });
-        } else {
-            transaction.update(globalCounterRef, { value: increment(1) });
-        }
-
-        return data.value + 1;
-    });
+export async function incrementDailyCounter(_userId: string): Promise<number> {
+    const incrementFn = httpsCallable<any, { value: number }>(functions, "incrementDailyCounter");
+    const res = await incrementFn();
+    return res.data.value;
 }
 
-
-export async function updateDailyComment(userId: string, comment: string): Promise<void> {
-    const todayKey = getTodayKey();
-    const counterRef = doc(db, "users", userId, "dailyCounters", todayKey);
-    const snap = await getDoc(counterRef);
-
-    if (!snap.exists()) {
-        await setDoc(counterRef, {
-            value: 0,
-            dateKey: todayKey,
-            updatedAt: Timestamp.now(),
-            comment: comment,
-        });
-    } else {
-        await updateDoc(counterRef, {
-            comment: comment,
-            updatedAt: Timestamp.now(),
-        });
-    }
+export async function updateDailyComment(_userId: string, comment: string): Promise<void> {
+    const commentFn = httpsCallable<any, { success: boolean }>(functions, "updateDailyComment");
+    await commentFn({ comment });
 }
-
 
 export async function getAllDailyCounters(userId: string): Promise<{ dateKey: string; value: number; comment: string }[]> {
     const countersRef = collection(db, "users", userId, "dailyCounters");
@@ -113,7 +54,6 @@ export async function getAllDailyCounters(userId: string): Promise<{ dateKey: st
 
     return result;
 }
-
 
 export async function getTotalCounter(userId: string): Promise<number> {
     const all = await getAllDailyCounters(userId);
