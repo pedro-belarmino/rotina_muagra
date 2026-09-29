@@ -4,6 +4,7 @@ import type { User } from "firebase/auth"
 import { auth, db } from "../firebase/config";
 import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
 import { isEmailAuthorized, isEmailAuthorizedPartial } from "../service/authorizedEmailService";
+import { isAdmin } from "../utils/admin";
 
 type AuthContextType = {
     user: User | null;
@@ -42,18 +43,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             try {
                 if (currentUser && currentUser.email) {
-                    let authorized = false;
+                    // Administradores têm acesso total e não passam pelas validações de autorização.
+                    const admin = isAdmin(currentUser.email);
+                    let authorized = admin;
                     let authorizedPartial = false;
 
-                    try {
-                        const [authResult, authPartialResult] = await Promise.all([
-                            isEmailAuthorized(currentUser.email),
-                            isEmailAuthorizedPartial(currentUser.email)
-                        ]);
-                        authorized = authResult;
-                        authorizedPartial = authPartialResult;
-                    } catch (error) {
-                        console.error("Error checking email authorization:", error);
+                    if (!admin) {
+                        try {
+                            const [authResult, authPartialResult] = await Promise.all([
+                                isEmailAuthorized(currentUser.email),
+                                isEmailAuthorizedPartial(currentUser.email)
+                            ]);
+                            authorized = authResult;
+                            authorizedPartial = authPartialResult;
+                        } catch (error) {
+                            console.error("Error checking email authorization:", error);
+                        }
                     }
 
                     setIsAuthorized(authorized);
