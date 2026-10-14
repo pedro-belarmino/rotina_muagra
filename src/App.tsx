@@ -9,6 +9,7 @@ import Template from './components/shared/Template';
 import History from './views/History';
 import Report from './views/Report';
 import PrivateWrapper from './routes/PriavateWrapper';
+import AdminWrapper from './routes/AdminWrapper';
 import ArchivedTasks from './views/ArchivedTasks';
 import GlobalCounter from './views/GlobalCounter';
 import AuthorizeEmail from './views/AuthorizeEmail';
@@ -16,6 +17,7 @@ import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 // import AccessDenied from './views/AccessDenied';
 import PrincingComponent from './views/PricingComponent';
 import AdminDashboard from './views/AdminDashboard';
+import PhoneNumberModal from './components/PhoneNumberModal/PhoneNumberModal';
 
 function App() {
 
@@ -29,13 +31,17 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
+            <PhoneNumberModal />
             <BrowserRouter>
                 <Routes>
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Login />} />
-                    <Route path='/authorize-email' element={<AuthorizeEmail />} />
-                    <Route path='/authorize-email-partial' element={<AuthorizeEmailPartial />} />
                     <Route path='/acesso-negado' element={<PrincingComponent />} />
+
+                    <Route element={<AdminWrapper />}>
+                        <Route path='/authorize-email' element={<AuthorizeEmail />} />
+                        <Route path='/authorize-email-partial' element={<AuthorizeEmailPartial />} />
+                    </Route>
 
                     <Route element={<PrivateWrapper />}>
                         <Route element={<Template />}>

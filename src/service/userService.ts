@@ -1,5 +1,5 @@
 import { db } from "../firebase/config";
-import { collection, getDocs, query, orderBy, Timestamp } from "firebase/firestore";
+import { collection, doc, getDocs, query, orderBy, Timestamp, updateDoc } from "firebase/firestore";
 
 export interface UserProfile {
     uid: string;
@@ -8,6 +8,19 @@ export interface UserProfile {
     photoURL: string | null;
     createdAt: Timestamp;
     hasSeenWelcomeModal: boolean;
+    phoneNumber?: string;
+    phoneNumberUpdatedAt?: Timestamp;
+}
+
+// Grava o telefone (E.164) sem tocar nos demais campos do perfil. updateDoc
+// falha se users/{uid} não existir, evitando criar um documento parcial; a
+// promise só resolve após a confirmação do servidor.
+export async function updateUserPhoneNumber(userId: string, phoneNumber: string): Promise<void> {
+    const userRef = doc(db, "users", userId);
+    await updateDoc(userRef, {
+        phoneNumber,
+        phoneNumberUpdatedAt: Timestamp.now(),
+    });
 }
 
 export async function getAllUsers(): Promise<UserProfile[]> {
