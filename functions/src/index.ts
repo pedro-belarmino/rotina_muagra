@@ -24,3 +24,4 @@ export { addAuthorizedEmailPartial } from "./authorizedEmails/addAuthorizedEmail
 export { ensureUserProfile } from "./users/ensureUserProfile";
 export { markWelcomeModalAsSeen } from "./users/markWelcomeModalAsSeen";
 export { updatePhoneNumber } from "./users/updatePhoneNumber";
+export { findUserByPhoneNumber } from "./users/findUserByPhoneNumber";
