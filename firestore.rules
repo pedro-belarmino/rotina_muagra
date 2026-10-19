@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // User profile and subcollections
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /tasks/{taskId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false; // All mutations go through Cloud Functions Admin SDK
+      }
+
+      match /tasks/{taskId}/dayMarks/{dayKey} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+
+      match /taskLogs/{logId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+
+      match /dailyCounters/{dateKey} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if false;
+      }
+    }
+
+    // Global counter - readable by all authenticated users, writes strictly prohibited from client
+    match /GlobalCounter/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Authorized emails - readable by authenticated users for auth checks, writes strictly prohibited
+    match /authorizedEmails/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /authorizedEmailsPartial/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
