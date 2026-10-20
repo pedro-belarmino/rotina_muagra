@@ -18,6 +18,7 @@ import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 import PrincingComponent from './views/PricingComponent';
 import AdminDashboard from './views/AdminDashboard';
 import PhoneNumberModal from './components/PhoneNumberModal/PhoneNumberModal';
+import GlobalWelcomeModal from './components/shared/GlobalWelcomeModal';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
             <CssBaseline />
             <PhoneNumberModal />
             <BrowserRouter>
+                <GlobalWelcomeModal />
                 <Routes>
                     <Route path='/' element={<Login />} />
                     <Route path='*' element={<Login />} />

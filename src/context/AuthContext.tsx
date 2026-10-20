@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             // Descarta o resultado anterior até a nova verificação concluir.
             setPhoneCheck(null);
+            setShowWelcomeModal(false);
             try {
                 if (currentUser && currentUser.email) {
                     let authorized = false;
