@@ -17,7 +17,6 @@ import AuthorizeEmailPartial from './views/AuthorizeEmailPartial';
 // import AccessDenied from './views/AccessDenied';
 import PrincingComponent from './views/PricingComponent';
 import AdminDashboard from './views/AdminDashboard';
-import PhoneNumberModal from './components/PhoneNumberModal/PhoneNumberModal';
 import GlobalWelcomeModal from './components/shared/GlobalWelcomeModal';
 
 function App() {
@@ -32,7 +31,6 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <PhoneNumberModal />
             <BrowserRouter>
                 <GlobalWelcomeModal />
                 <Routes>

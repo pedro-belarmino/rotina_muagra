@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth"
 import { auth, db } from "../firebase/config";
-import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp, getDoc, onSnapshot } from "firebase/firestore";
 import { isEmailAuthorized, isEmailAuthorizedPartial } from "../service/authorizedEmailService";
 import { updateUserPhoneNumber } from "../service/userService";
 import { isValidE164 } from "../utils/phone";
@@ -60,6 +60,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const needsPhoneNumber = !!user && phoneCheck?.uid === user.uid && phoneCheck.needsPhoneNumber;
 
+    // O telefone é acompanhado em tempo real, e não por uma leitura única no
+    // onAuthStateChanged: se aquela leitura falhasse (ex.: "client is offline"
+    // no cold start com cache persistente), o erro era só logado e a modal
+    // nunca abria. O listener se recupera sozinho quando a conexão volta.
+    const uid = user?.uid;
+    useEffect(() => {
+        if (!uid) return;
+        const userRef = doc(db, "users", uid);
+        const unsubscribe = onSnapshot(userRef, { includeMetadataChanges: true }, (snap) => {
+            // Só decide com dados confirmados pelo servidor, para não abrir a
+            // modal a partir de um cache local desatualizado.
+            if (snap.metadata.fromCache) return;
+            setPhoneCheck({ uid, needsPhoneNumber: !isValidE164(snap.data()?.phoneNumber) });
+        }, (error) => {
+            console.error("Error listening to user phone number:", error);
+        });
+        return () => unsubscribe();
+    }, [uid]);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             // Descarta o resultado anterior até a nova verificação concluir.
@@ -101,13 +120,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             if (!authorized && !authorizedPartial) {
                                 setShowWelcomeModal(true);
                             }
-                            setPhoneCheck({ uid: currentUser.uid, needsPhoneNumber: true });
                         } else {
                             const userData = snapshot.data();
                             if (!authorized && !authorizedPartial && userData.hasSeenWelcomeModal === false) {
                                 setShowWelcomeModal(true);
                             }
-                            setPhoneCheck({ uid: currentUser.uid, needsPhoneNumber: !isValidE164(userData.phoneNumber) });
                         }
                     } catch (error) {
                         console.error("Error updating or retrieving user document in AuthContext:", error);
