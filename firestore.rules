@@ -1,0 +1,105 @@
+rules_version = '2';
+
+// Modelo de acesso do rotina_muagra.
+//
+// Premissa atual: o cliente (Firebase JS SDK) ainda escreve DIRETO no Firestore
+// — as callables em functions/src existem mas não são chamadas pelo frontend.
+// Por isso as escritas do próprio usuário em users/{uid}/** continuam liberadas.
+// Quando a migração para Cloud Functions for concluída, essas escritas devem
+// passar a `if false` (o Admin SDK ignora estas regras).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function callerEmail() {
+      return request.auth.token.email;
+    }
+
+    // Enforcement real do papel de admin. A lista equivalente em
+    // src/utils/admin.ts é apenas de UI e não protege nada.
+    function isAdmin() {
+      return isSignedIn()
+        && callerEmail() != null
+        && callerEmail().lower() in [
+          'fabiomarcheriserrano@gmail.com',
+          'pedro.gbelarmino@gmail.com',
+          'crispserranom@gmail.com'
+        ];
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    // Telefone em E.164 (mesma regra de src/utils/phone.ts).
+    function isValidPhoneNumber(value) {
+      return value is string && value.matches('^[+][1-9][0-9]{7,14}$');
+    }
+
+    // Perfil do usuário. O painel administrativo (getAllUsers) precisa listar
+    // a coleção inteira, então `list` é restrito a admin.
+    // phoneNumber só é validado quando gravado/alterado, para não bloquear
+    // outras atualizações do próprio perfil (ex.: hasSeenWelcomeModal).
+    match /users/{uid} {
+      allow get: if isOwner(uid) || isAdmin();
+      allow list: if isAdmin();
+      allow create: if isOwner(uid)
+        && (!('phoneNumber' in request.resource.data)
+            || isValidPhoneNumber(request.resource.data.phoneNumber));
+      allow update: if isOwner(uid)
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['phoneNumber'])
+            || isValidPhoneNumber(request.resource.data.phoneNumber));
+      allow delete: if false;
+
+      match /tasks/{taskId} {
+        allow read, write: if isOwner(uid);
+
+        match /dayMarks/{dayKey} {
+          allow read, write: if isOwner(uid);
+        }
+      }
+
+      match /taskLogs/{logId} {
+        allow read, write: if isOwner(uid);
+      }
+
+      // getUserStats lê os contadores de outros usuários no painel admin.
+      match /dailyCounters/{dateKey} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow write: if isOwner(uid);
+      }
+    }
+
+    // Listas de liberação: são o controle de acesso do produto pago.
+    // Escrita apenas por admin — fecha a auto-autorização via /authorize-email.
+    // Leitura restrita ao próprio e-mail, para que o AuthContext continue
+    // conseguindo checar a própria autorização sem expor a base de clientes.
+    match /authorizedEmails/{docId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.email == callerEmail());
+      allow write: if isAdmin();
+    }
+
+    match /authorizedEmailsPartial/{docId} {
+      allow read: if isAdmin() || (isSignedIn() && resource.data.email == callerEmail());
+      allow write: if isAdmin();
+    }
+
+    // Contador global do Muagrômetro, incrementado pelo cliente.
+    // Continua gravável por qualquer usuário autenticado porque a escrita ainda
+    // sai do browser (src/service/counterService.ts:41). Mover essa escrita para
+    // a callable incrementDailyCounter permite trocar por `if false`.
+    match /GlobalCounter/{docId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // Qualquer caminho não declarado acima permanece negado (default do Firestore).
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

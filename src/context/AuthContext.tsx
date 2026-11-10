@@ -2,9 +2,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import type { User } from "firebase/auth"
 import { auth, db } from "../firebase/config";
-import { doc, setDoc, Timestamp, getDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp, getDoc, onSnapshot } from "firebase/firestore";
 import { isEmailAuthorized, isEmailAuthorizedPartial } from "../service/authorizedEmailService";
 import { isAdmin } from "../utils/admin";
+import { updateUserPhoneNumber } from "../service/userService";
+import { isValidE164 } from "../utils/phone";
 
 type AuthContextType = {
     user: User | null;
@@ -13,6 +15,8 @@ type AuthContextType = {
     isAuthorizedPartial: boolean;
     showWelcomeModal: boolean;
     markWelcomeModalAsSeen: () => Promise<void>;
+    needsPhoneNumber: boolean;
+    savePhoneNumber: (phoneNumber: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -22,7 +26,13 @@ const AuthContext = createContext<AuthContextType>({
     isAuthorizedPartial: false,
     showWelcomeModal: false,
     markWelcomeModalAsSeen: async () => { },
+    needsPhoneNumber: false,
+    savePhoneNumber: async () => { },
 });
+
+// Resultado da verificação de telefone, amarrado ao uid que foi verificado:
+// impede que o estado de um usuário anterior vaze após logout/troca de conta.
+type PhoneCheck = { uid: string; needsPhoneNumber: boolean };
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -30,6 +40,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [isAuthorizedPartial, setIsAuthorizedPartial] = useState(false);
     const [showWelcomeModal, setShowWelcomeModal] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [phoneCheck, setPhoneCheck] = useState<PhoneCheck | null>(null);
 
     const markWelcomeModalAsSeen = async () => {
         if (user) {
@@ -39,8 +50,41 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const savePhoneNumber = async (phoneNumber: string) => {
+        if (!user) {
+            throw new Error("Usuário não autenticado.");
+        }
+        const uid = user.uid;
+        await updateUserPhoneNumber(uid, phoneNumber);
+        setPhoneCheck(prev => (prev?.uid === uid ? { uid, needsPhoneNumber: false } : prev));
+    };
+
+    const needsPhoneNumber = !!user && phoneCheck?.uid === user.uid && phoneCheck.needsPhoneNumber;
+
+    // O telefone é acompanhado em tempo real, e não por uma leitura única no
+    // onAuthStateChanged: se aquela leitura falhasse (ex.: "client is offline"
+    // no cold start com cache persistente), o erro era só logado e a modal
+    // nunca abria. O listener se recupera sozinho quando a conexão volta.
+    const uid = user?.uid;
+    useEffect(() => {
+        if (!uid) return;
+        const userRef = doc(db, "users", uid);
+        const unsubscribe = onSnapshot(userRef, { includeMetadataChanges: true }, (snap) => {
+            // Só decide com dados confirmados pelo servidor, para não abrir a
+            // modal a partir de um cache local desatualizado.
+            if (snap.metadata.fromCache) return;
+            setPhoneCheck({ uid, needsPhoneNumber: !isValidE164(snap.data()?.phoneNumber) });
+        }, (error) => {
+            console.error("Error listening to user phone number:", error);
+        });
+        return () => unsubscribe();
+    }, [uid]);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            // Descarta o resultado anterior até a nova verificação concluir.
+            setPhoneCheck(null);
+            setShowWelcomeModal(false);
             try {
                 if (currentUser && currentUser.email) {
                     // Administradores têm acesso total e não passam pelas validações de autorização.
@@ -114,7 +158,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             isAuthorized,
             isAuthorizedPartial,
             showWelcomeModal,
-            markWelcomeModalAsSeen
+            markWelcomeModalAsSeen,
+            needsPhoneNumber,
+            savePhoneNumber
         }}>
             {children}
         </AuthContext.Provider>
